@@ -7,11 +7,11 @@
 
 # set DEBUG to y if you want to get the source for and compile 
 # debug versions of the needed udebs
-#DEBUG = y
+DEBUG = y
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.4.0-parrot1
+LINUX_KERNEL_ABI ?= 4.5.0-parrot
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di

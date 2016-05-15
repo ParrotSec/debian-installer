@@ -1,3 +1,9 @@
+debian-installer (20160514+parrot1) testing; urgency=medium
+
+  * Minor fixes
+
+ -- Lorenzo "Palinuro" Faletra <eclipse@parrotsec.org>  Sat, 14 May 2016 14:13:04 +0200
+
 debian-installer (20160514+parrot0) testing; urgency=medium
 
   * Fix keyring

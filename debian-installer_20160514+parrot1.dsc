@@ -2,7 +2,7 @@ Format: 1.0
 Source: debian-installer
 Binary: debian-installer
 Architecture: any
-Version: 20160514+parrot0
+Version: 20160514+parrot1
 Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org
 Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Standards-Version: 3.9.8
@@ -13,8 +13,8 @@ Build-Conflicts: libnewt-pic [mipsel]
 Package-List:
  debian-installer deb devel optional arch=any
 Checksums-Sha1:
- 6a0deb24be64b9131a99e5b5a2c3ad082b6011b5 1453279 debian-installer_20160514+parrot0.tar.gz
+ 866f3d58c73702a5b246e5dac5ac457c7b403a40 1457192 debian-installer_20160514+parrot1.tar.gz
 Checksums-Sha256:
- 12ec5f8807ffb57b982e4c19de360737c7dfdec9fa664bd2a37d8127a9155e0a 1453279 debian-installer_20160514+parrot0.tar.gz
+ 4b671c579e7161be1ac36762191519c49300b88d60d8c5950d10e1efb0494cd3 1457192 debian-installer_20160514+parrot1.tar.gz
 Files:
- 33f0f6e206b206e1d0cc61b4898ccb82 1453279 debian-installer_20160514+parrot0.tar.gz
+ 28e6f0f5c98eec2095a6987f55ae594a 1457192 debian-installer_20160514+parrot1.tar.gz

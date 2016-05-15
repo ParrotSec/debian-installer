@@ -8,8 +8,8 @@ SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f
 
 ifneq ($(filter stable testing,$(SUITE)),)
 # Special treatment for parrot stable/testing
-SUITE=testing
-USE_UDEBS_FROM=testing
+SUITE=parrot
+USE_UDEBS_FROM=parrot
 USE_PROPOSED_UPDATES=0
 else
 # Other "normal" releases

@@ -1,5 +1,6 @@
 # These udebs will be needed on nearly every image. Include this file to
 # get them.
+multiarch-support
 busybox-udeb
 anna
 archdetect
@@ -18,6 +19,7 @@ udpkg
 rescue-check
 env-preseed
 pciutils-udeb
+parrot-archive-keyring
 
 #include "udev"
 

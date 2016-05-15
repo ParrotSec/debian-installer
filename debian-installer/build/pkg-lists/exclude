@@ -18,3 +18,6 @@ libnewt0.52 -
 # some arches and versions of glibc link against libgcc1,
 # it will be pulled in via library reduction
 libgcc1 -
+# zlib1g is common to break some build steps due
+# to its multiarch-support pre-dependency
+zlib1g -
