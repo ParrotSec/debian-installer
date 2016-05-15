@@ -1,0 +1,26 @@
+<appendix id="coordination-team"><title>&d-i; i18n coordinators</title>
+
+<para>
+The &d-i; internationalisation (i18n) coordinators are currently:
+</para>
+
+<itemizedlist>
+<listitem>
+<para>
+Christian Perrier <email>bubulle@debian.org</email> is responsible for the i18n manual maintenance, daily monitoring of the i18n automation tools and should be contacted for any i18n related problems during the &d-i; development process.
+</para>
+</listitem>
+<listitem>
+<para>
+Davide Viti <email>zinosat@tiscali.it</email> is responsible for the automated spellchecking tools and status pages.
+</para>
+</listitem>
+<listitem>
+<para>
+Frans Pop <email>fjp@debian.org</email> is responsible for the
+Installation Guide and its localization effort.
+</para>
+</listitem>
+</itemizedlist>
+
+</appendix>

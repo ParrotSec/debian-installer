@@ -1,0 +1,190 @@
+<chapter id="spellchecking"><title>Translations spellchecking</title>
+
+<sect1>
+<title>Introduction</title>
+
+<para>
+The spellchecker is a set of scripts which manipulate po files and
+produce statistics usually displayed on a web page. Spotting typos is
+the most obvious feature, but translators can use it to improve the
+overall quality of their translations.
+
+Translations are often spread over a bunch of po files translated by
+different people with different styles even if belonging to the same
+language-team; the spellchecker gathers all of its output in a <quote>per
+language</quote> rather than <quote>per po file</quote> basis, so that each translator
+using it, will check not only his/her own translations.
+</para>
+</sect1>
+
+<sect1>
+<title>Understanding the output</title>
+
+<para>
+The statistics page (&url-spellchecker-status;) contains the following
+columns for every language supported:
+
+<itemizedlist>
+<listitem>
+<para>
+"Language" - extended English name of the language and corresponding
+ISO code
+</para>
+</listitem>
+
+<listitem>
+<para>
+<quote>Unknown words</quote> - is the number of unique words not found in the
+dictionary of a particular language. <quote>-</quote> , which means that the spellchecker
+is not configured to check translations for this language (usually
+because an aspell dictionary for the language is not available)
+</para>
+</listitem>
+
+<listitem>
+<para>
+<quote>Messages</quote> - contains all the strings for lang extracted from the po
+files: you can use any spellchecker against this file to look for
+typos. This file is very useful also when improving consistency: when
+translations are spread over many po files, it is difficult to make sure
+that certain rules are applied to all files, so here you can check for
+example that "CD-ROM" is written always the same way.
+</para>
+</listitem>
+
+<listitem>
+<para>
+<quote>List of unknown words</quote> - is a sorted list of words not found in the 
+aspell dictionary along with the number of occurrences.
+</para>
+</listitem>
+
+<listitem>
+<para>
+<quote>suspect variables</quote> - po files often contain variables ${LIKE_THIS}; a
+script checks that the name of the variable in the msgid is matched in
+the msgstr. It is also checked that the number of variables in the
+msgstr is the same in the msgid.
+</para>
+</listitem>
+
+<listitem>
+<para>
+<quote>custom wordlist</quote> - translators can write a list of custom words not
+found in the aspell dictionary for their language. More details about
+wordlists can be found here (FIXME).
+</para>
+</listitem>
+
+<listitem>
+<para>
+<quote>all files</quote> - is a tarball containing all the above files. Translators
+can download it and work off-line.
+</para>
+</listitem>
+</itemizedlist>
+Sometimes columns are followed by a "(*)": it means that the
+associated file has changed since the last time the spellchecker was
+run. By clicking on the "(*)" it is possible to see what changed.
+</para>
+</sect1>
+
+<sect1>
+<title>Spotting typos</title>
+
+<para>
+First of all you should look for errors: typically typos or wrong
+variables. The list of unknown words contains words not in the aspell
+dictionary and <quote>out of their context</quote>; once one has been found, you
+need to locate the error in the po file.
+
+Since <quote>Messages</quote> contains all the (translated) strings for all the po files,
+you can look for the wrong word there; the structure of the text file
+is the following:
+
+<screen>
+*** path1/lang.po
+- "strings for this file"
+
+*** path2/lang.po
+- "strings for this file"
+
+...
+
+*** pathN/lang.po
+- "strings for this file"
+</screen>
+
+if the word is easy to find you won't need any help from me to locate
+it and you just need to see which po file it belongs to. Emacs has a
+very handy function "forward-paragraph" (ctrl-up on my system) that
+takes you directly to the line containing the path. Otherwise you can
+search backward for "*** " to find it.
+
+Things can be more complicated if the unknown word is very short and
+so it is matched too many times inside the file because it is a <quote>sub-word</quote> of
+longer words; in that case you should use regexps to restrict your
+search. Here follow a few practical examples that can help you; refer
+to some documentation about regexp to find out more.
+
+If you use emacs you can match an exact word by using
+isearch-forward-regexp and "\&lt;word\&gt;"
+
+From the shell you can run 'grep -nw "word" lang_all.txt'
+(the <quote>n</quote> parameter will tell grep to print the line number where match
+occurs)
+
+Sometimes you may have to look for something like "a word composed
+by two letters: the first is "p" the second is not a printable char";
+in that case "word" in the previous examples can be replaced with
+"p."
+</para>
+</sect1>
+
+
+<sect1>
+<title>Suspect variables</title>
+
+<para>
+Variables in po files are of the form ${VARIABLE}; the spellchecker
+is able to catch the following common mistakes:
+
+<itemizedlist>
+<listitem>
+<para>
+mispelled variable names
+</para>
+</listitem>
+
+<listitem>
+<para>
+wrong braces
+</para>
+</listitem>
+
+<listitem>
+<para>
+missing <quote>$</quote> character
+</para>
+</listitem>
+
+<listitem>
+<para>
+different number of variables in the msgid and the msgstr
+</para>
+</listitem>
+
+</itemizedlist>
+
+The variable name should not be translated in the msgstr and braces
+should not be changed. The variable name is replaced with something
+more useful at run-time; if the translator manipulates it, the results
+will be rather ugly. When the original msgid contains multiple occurrences
+of a particular variable, sometimes translators translate the string
+as to use the variable just once; the script will report such strings
+as wrong and it is up to the translator to check if it is a mistake or
+not (this is the main reason for calling them <quote>suspect variables</quote>).
+</para>
+</sect1>
+
+</chapter>

@@ -1,0 +1,36 @@
+<!-- subdocuments -->
+
+<!ENTITY bookinfo.xml         SYSTEM "##SRCPATH##/bookinfo.xml">
+<!ENTITY preface.xml          SYSTEM "##SRCPATH##/preface.xml">
+
+<!ENTITY coordination.xml      SYSTEM "##SRCPATH##/coordination.xml">
+<!ENTITY maintainers.xml      SYSTEM "##SRCPATH##/maintainers.xml">
+<!ENTITY translators.xml      SYSTEM "##SRCPATH##/translators/translators.xml">
+<!ENTITY translators-level1.xml      SYSTEM "##SRCPATH##/translators/level1.xml">
+<!ENTITY translators-level2.xml      SYSTEM "##SRCPATH##/translators/level2.xml">
+<!ENTITY translators-level3.xml      SYSTEM "##SRCPATH##/translators/level3.xml">
+<!ENTITY translators-level4.xml      SYSTEM "##SRCPATH##/translators/level4.xml">
+<!ENTITY translators-level5.xml      SYSTEM "##SRCPATH##/translators/level5.xml">
+<!ENTITY string-freezes.xml      SYSTEM "##SRCPATH##/translators/string-freezes.xml">
+<!ENTITY new-language.xml      SYSTEM "##SRCPATH##/new-language.xml">
+
+<!ENTITY technical.xml      SYSTEM "##SRCPATH##/technical/technical.xml">
+<!ENTITY status-pages.xml      SYSTEM "##SRCPATH##/technical/status-pages.xml">
+<!ENTITY supported-languages.xml      SYSTEM "##SRCPATH##/technical/supported-languages.xml">
+<!ENTITY prospective-languages.xml      SYSTEM "##SRCPATH##/technical/prospective-languages.xml">
+<!ENTITY active-languages.xml      SYSTEM "##SRCPATH##/technical/active-languages.xml">
+<!ENTITY synchronization.xml      SYSTEM "##SRCPATH##/technical/synchronization.xml">
+
+<!ENTITY manual.xml      SYSTEM "##SRCPATH##/manual.xml">
+<!ENTITY spellchecking.xml      SYSTEM "##SRCPATH##/spellchecking.xml">
+<!ENTITY language-tasks.xml      SYSTEM "##SRCPATH##/language-tasks.xml">
+
+
+<!ENTITY gpl.xml              SYSTEM "##SRCPATH##/appendix/gpl.xml">
+<!ENTITY coordination-team.xml              SYSTEM "##SRCPATH##/appendix/coordination-team.xml">
+<!ENTITY svn-basics.xml              SYSTEM "##SRCPATH##/appendix/svn-basics.xml">
+<!ENTITY checkouts.xml              SYSTEM "##SRCPATH##/appendix/checkouts.xml">
+<!ENTITY bug-reports.xml              SYSTEM "##SRCPATH##/appendix/bug-reports.xml">
+<!ENTITY gettext-tools.xml              SYSTEM "##SRCPATH##/appendix/gettext-tools.xml">
+<!ENTITY methods-advices.xml              SYSTEM "##SRCPATH##/appendix/methods-advices.xml">
+<!ENTITY language-codes.xml              SYSTEM "##SRCPATH##/appendix/language-codes.xml">

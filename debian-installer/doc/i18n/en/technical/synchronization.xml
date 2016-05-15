@@ -1,0 +1,679 @@
+<sect1 id="synchronisation-scripts">
+<title>Translation synchronisation</title>
+
+<sect2>
+<title>
+The need for a synchronization process
+</title>
+
+<para>
+The files which are really used for building &d-i; packages are hosted
+in the <acronym>SVN</acronym> (Subversion) repository used for the development of &d-i;
+packages. Each &d-i; package sources is hosted in a subdirectory of
+the <filename>packages/</filename> directory, with a very classical
+Debian package source tree organization, including the
+<filename>debian/po</filename> directory where the package's
+translation are hosted.
+</para>
+
+<para>
+These files need to be synchronised with the so-called
+<emphasis>master</emphasis> files from the packages/po directory, as
+the translators only work with these master files. This
+synchronization must work both ways with changes to original strings
+going from individual packages to the master files and changes/updates
+from the master files going to individual packages:
+</para>
+
+<itemizedlist>
+  <listitem>
+    <para>
+      When &d-i; packages templates are changed, the individual
+      <filename>debian/po/templates.pot</filename> file will
+      change. These changes have to be moved to files in
+      <filename>packages/po</filename>;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      When translations are updated in the
+      <filename>packages/po</filename> directory, these changes have
+      to be moved back into individual
+      <filename>debian/po/*.po</filename> files for each package. This
+      does not need to be done at each translation update but must be
+      done <emphasis>before</emphasis> building packages.
+  </para>
+  </listitem>
+</itemizedlist>
+
+<para>
+The task of keeping track of the correct synchronisation is one of the
+most important tasks of the &i18n-coords;. It is handled by the
+<command>scripts/l10n/l10n-sync</command> script.
+</para>
+
+</sect2>
+
+<sect2>
+<title>
+Localization files synchronisation process
+</title>
+
+<sect3>
+<title>
+Initial synchronization
+</title>
+
+<para>
+This paragraph is here for historical reasons and is irrelevant after
+the initial process has run once.
+</para>
+
+<para>
+The <filename>template.pot</filename> is generated from the &d-i;
+repository by merging together all
+<filename>debian/po/templates.pot</filename> files. The
+<command>scripts/l10n/l10n-sync</command> script may be used
+for this. First check that no PO files stay in
+<filename>packages/po</filename> when running it for the first time.
+</para>
+
+</sect3>
+
+<sect3 id="switch-language">
+<title>
+Switch a language translations to the master file
+</title>
+
+<para>
+This paragraph is here for historical reasons and should be now
+irrelevant as all languages translations have been switched to the
+master file.
+</para>
+
+<para>
+This process is meant to collect together all translations spread out
+in the individual package, for one language, and merge them in a
+single master file.  This action should only happen once for each
+language.
+</para>
+
+<para>
+The detailed process follows. For each step, the following list will
+mention whether the action is to be done by the language translators
+or by the &i18n-coords;.
+</para>
+
+<itemizedlist>
+  <listitem>
+    <para>
+      (translators) bring this language to 100% translation in all
+      packages. This step is not mandatory but will help in tracking
+      down fuzzy strings;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      (&i18n-coords;) stop the cron jobs running
+      <command>scripts/l10n/l10n-sync</command> to avoid
+      conflicts;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      (translators) stop commiting <filename>&lt;language&gt;.po</filename> files
+      for this language;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      (&i18n-coords;) build the general <filename>&lt;language&gt;.po</filename> file
+      in <filename>packages/po</filename> by using the
+      <command>scripts/l10n/gettext-helper</command> script;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      (translators) fill in the PO file header properly. The
+      <userinput>Plural-Forms</userinput> header may need to be added
+      manually;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      (&i18n-coords;) launch the synchronization script once with the
+      special <userinput>--keep-revision=&lt;language&gt;</userinput>
+      switch which will enforce the
+      <userinput>PO-Revision-Date</userinput> header to be left
+      unchanged in all packages. The synchronisation script will then
+      spread out the "new" translations to all packages;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      (translators) in the newly created master file, track
+      <emphasis>fuzzy</emphasis> strings which are often caused by
+      identical strings with different translations in different &d-i;
+      packages. These fuzzy strings will temporarily show all
+      translation variants from which the translators will have to
+      pick up one version only, of course.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      (translators) commit back the updated
+      <filename>&lt;language&gt;.po</filename> file to
+      <filename>packages/po</filename>. This will automatically
+      trigger individual PO files update when packages will be built.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+An helper script named <command>switch-language</command> has been
+written to handle this switch to the master file. Using it absolutely
+needs that no action happens simultaneously on the switched language
+files. Translators are requested to <emphasis>not use</emphasis> it
+and rather ask one of the &i18n-coords; to do it for themselves.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Synchronization process
+</title>
+
+<para>
+The <command>l10n-sync</command> script is run periodically by one of
+the &i18n-coords;. It should preferrably be run on a reliable Debian
+host such as people.debian.org and will update the general
+<filename>template.pot</filename> and all PO files from individual
+<filename>templates.pot</filename> files from all &d-i; packages.
+</para>
+
+<para>
+While running, this script will also run
+<command>debconf-updatepo</command> for each &d-i; package and will
+commit back the regenerated templates.pot files (package maintainers
+often forget running <command>debconf-udpatepo</command> when
+commiting changes to English templates).
+</para>
+
+<para>
+During normal development, this synchronization process is run once a
+day. During release preparations, the frequency will be increased to
+speed up the full cycle.
+</para>
+
+<para>
+When operating on the sarge branch, the l10n-sync will also merge
+translations from master files in the trunk branch, by using the
+<userinput>--merge</userinput> option. Synchronisations on the sarge
+branch only occur once a week.
+</para>
+
+<para>  
+The general process is:
+</para>
+
+<orderedlist>
+  <listitem>
+    <para>
+      <emphasis>Initial step</emphasis>: synchronize the whole repository;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <emphasis>Individual packages update step</emphasis>. For each
+      &d-i; package:
+    </para>
+    <orderedlist>
+      <listitem>
+        <para>
+          synchronize the local copy with the &d-i; <acronym>SVN</acronym>;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          run <command>debconf-updatepo</command>;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          commit back the files in <filename>debian/po</filename>.
+        </para>
+      </listitem>
+    </orderedlist>
+  </listitem>
+  <listitem>
+    <para>
+      <emphasis>Master templates file update step</emphasis>:
+    </para>
+    <orderedlist>
+      <listitem>
+        <para>
+          merge all <filename>templates.pot</filename> files to
+          <filename>packages/po/template.pot</filename>. The
+          <filename>packages/po/header.pot</filename> is mandatory
+          (this file will provide the standard header for the merged
+          POT file;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          commit this file.
+        </para>
+      </listitem>
+    </orderedlist>
+  </listitem>
+  <listitem>
+    <para>
+      <emphasis>Master PO files update step</emphasis>. For each PO
+      file in <filename>packages/po</filename>:
+    </para>
+    <orderedlist>
+      <listitem>
+        <para>
+          synchronize with &d-i; <acronym>SVN</acronym>;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          if the script is run with the <userinput>--merge</userinput> option, merge translations from the reference PO file (the reference file is given priority for identical strings);
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          update with
+          <filename>packages/po/template.pot</filename>. This step
+          uses the <command>msgmerge</command>. The resulting PO file
+          formatting details will depend on the version of this
+          utility. For that reasons, the synchronization script should
+          always be run from machines using the same Debian release
+          version (there are known differences between the woody and
+          sarge versions of the gettext utilities);
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          commit back the changed file to &d-i; <acronym>SVN</acronym>.
+        </para>
+      </listitem>
+    </orderedlist>
+  </listitem>
+  <listitem>
+    <para>
+      <emphasis>Individual packages PO files update
+      step</emphasis>. For each &d-i; package:
+    </para>
+    <orderedlist>
+      <listitem>
+        <para>
+          synchronize the local copy with the &d-i; <acronym>SVN</acronym> (in case some
+          update occurred in the meantime);
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          update <filename>debian/po/*.po</filename> files with master
+          files;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          commit back the changes to &d-i; <acronym>SVN</acronym>;
+        </para>
+      </listitem>
+    </orderedlist>
+  </listitem>
+</orderedlist>
+
+<para>
+This system minimizes race conditions which could trigger conflicts.
+</para>
+
+<para>
+The conflict windows have been minimised as much as possible in the
+<command>l10n-sync</command> script. However, in order to limit the
+number of commits made by the script, files are not commited as soon
+as they are modified (except by using the
+<userinput>--atomic-commits</userinput> switch which slows down the
+whole process a lot and triggers a lot of commit actions). So, the
+script is sometimes likely to trigger conflicts. For that reason, it
+will stop working on a <acronym>SVN</acronym> copy where <acronym>SVN</acronym> conflict files are
+present. This explains why this script must always be monitored even
+when it is scheduled to execute periodically.
+</para>
+
+</sect3>
+
+<sect3 id="l10n_synchronisation_script">
+<title>
+Synchronization script use
+</title>
+
+<para>
+The l10n synchronisation script is kept in &d-i; repository in the
+<filename>scripts/l10n-utilities</filename> directory and is named
+<filename>l10n-sync</filename>.
+</para>
+
+<para>
+This is a shell script (which may contain some bashisms until a
+skilled shell programmer cleans it out).
+</para>
+
+<para>
+The script uses some command-line switches which may affect its behaviour. Some of these switches are mostly present for historical reasons and are kept because they may have some new use in the future:
+</para>
+
+
+<itemizedlist>
+  <listitem>
+    <para>
+        <userinput>--debug</userinput> will trigger more output by the
+        script. Otherwise, the script reports about its actions but
+        commands output (such as <command>svn</command>,
+        <command>debconf-updatepo</command>,
+        <command>msgmerge</command>) will be redirected to
+        <filename>/dev/null</filename>;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        <userinput>--online</userinput> triggers <command>svn
+        update</command> commands before working on files. Except for
+        testing, there is no reason for <emphasis>not</emphasis> using
+        this switch.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        <userinput>--commit</userinput> allows the script to
+        <emphasis>commit</emphasis> files back to the &d-i;
+        repository. Otherwise, the modified files are kept in the
+        local <acronym>SVN</acronym> copy. Of course, this switch should be used in
+        production. Omitting it is useful only for testing.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        the <userinput>--atomic</userinput> switch instructs
+        <command>l10n-sync</command> to commit files as soon as they
+        are modified. This makes the script quite slow and may trigger
+        dozens of commits. As &d-i; commits are sent to the
+        development IRC channel and are followed by several &d-i;
+        maintainers, this switch should not be used except in very
+        rare occasions;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        the <userinput>--atomic-updates</userinput> switch instructs
+        l10n-sync to issue a <command>svn update</command> command
+        before working on each package. This may be very CPU, network-
+        and time-consuming and should only be used when there is some
+        need to limit possible conflicts;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        the <userinput>--keep-revision</userinput> switch needs an
+        argument which must be a language code (one only). It will
+        force <command>l10n-sync</command> to restore the
+        <userinput>PO-Revision-Date</userinput> field of this language
+        on each modified file. This switch is used when switching
+        languages to the master file (see <xref
+        linkend="switch-language"/>. It should
+        <emphasis>not</emphasis> be used in other occasions;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        the <userinput>--svn</userinput> switch defines the command for
+        calling the <command>svn</command> utility. It may be used in
+        case some special behaviour is needed;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        the <userinput>--debconf-updatepo</userinput> defines the
+        command for calling the <command>debconf-updatepo</command>
+        utility. It allows using a specially crafted
+        <command>debconf-updatepo</command> switch, often the
+        <userinput>--skip-merge</userinput> switch which only updates
+        <filename>templates.pot</filename> files and not PO files
+        (using this speeds up the general synchronization script);
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        the <userinput>--sort-order</userinput> switch allows giving
+        at the command line the order the packages should be dealt
+        with. This allows to put a crafted order in the generated
+        <filename>templates.pot</filename> file so that the
+        translators begin to work on the most important packages;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+        the <userinput>--merge</userinput> switch allows merging
+        master files from another branch. It is used, for instance, on
+        the sarge branch for merging translations coming from trunk.
+    </para>
+  </listitem>
+</itemizedlist>
+
+<para>
+The script needs the location of the local copy of the &d-i;
+repository as an argument. It makes some simple checks about the
+copy. A partial <acronym>SVN</acronym> checkout may be used, with only
+the <filename>packages/</filename> directory.
+</para>
+
+<para>
+When using this script with commits, the &d-i; copy must be as clean as
+possible. It should not be used for development tasks. The script
+checks for possible <acronym>SVN</acronym> conflict files and aborts if it finds some.
+</para>
+
+<para>
+Prospective languages (see <xref linkend="prospective"/>)
+are handled in a special way: for all such languages, the translations
+are not copied in the individual packages directories.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+The PROSPECTIVE list
+</title>
+
+<para>When languages are on early stages of translation after they have been added through the new language process (<xref linkend="new-language"/>), they are temporarily listed in a file named <filename>packages/po/PROSPECTIVE</filename>.
+</para>
+
+<para>
+Languages listed in that file are excluded from synchronization, and,
+therefore, PO files are not created in individual packages. As a consequence, <emphasis>activating</emphasis> a language means that the language code is <emphasis>removed</emphasis> from the <filename>PROSPECTUVE</filename> file.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+List of handled packages
+</title>
+
+<para>
+A special file, named <filename>packages/po/packages_list</filename>,
+lists the &d-i; packages which are included in the master files. This
+file also sorts these packages by order or priority for
+translations. The strings at the beginning of the files are to be
+translated first.
+</para>
+
+<para>
+The &d-i; packages maintainers must request for their packages to be
+included in this file, when they estimate that their package is ready
+for translation. Only &i18n-coords; can integrate packages there, after
+checking that the strings have been reviewed.
+</para>
+
+</sect3>
+<sect3>
+<title>
+Synchronization script and automated commits
+</title>
+
+<para>
+Being aimed to be an automated process with automated commits, the
+script requires a few prerequisites to be run without user
+interaction.
+</para>
+
+<para>
+First of all, when run from a cron job, the script has to be able to
+commit files. This means that the account it is run from should use a
+<acronym>SSH</acronym> key with an empty passphrase and add this key
+to the account it commits to on &svn-debian;.
+</para>
+
+<para>
+First, create a <acronym>SSH</acronym> key with an empty passphrase and put it in a special file:
+</para>
+
+<informalexample>
+<screen>
+user@host:~> ssh-keygen -t dsa
+Generating public/private dsa key pair.
+Enter file in which to save the key (/home/user/.ssh/id_dsa): \
+        /home/user/.ssh/nopass
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/user/.ssh/nopass.
+Your public key has been saved in /home/user/.ssh/nopass.pub.
+The key fingerprint is:
+75:fa:62:54:2c:34:09:96:ad:f2:57:cf:16:ce:74:69 bubulle@mykerinos
+</screen>
+</informalexample>
+
+<para>
+Then, this key should be added to
+<filename>~/.ssh/authorized_keys</filename> on &svn-debian; for the
+Alioth account (&lt;alioth_account&gt;) under which identity commits
+will be done.
+</para>
+
+<para>
+Finally, on the host from which <command>l10n-sync</command> runs will
+happen, the following should be added to
+<filename>~/.ssh/config</filename>:
+</para>
+
+<informalexample>
+<screen>
+host &svn-debian;
+  user &lt;alioth_account&gt;
+  IdentityFile /home/user/.ssh/nopass
+</screen>
+</informalexample>
+
+<para>
+Of course, this actually means that this local account will then be
+able to commit to &svn-debian; with &lt;alioth_account&gt; as
+identity, <emphasis>without further control</emphasis>. This means
+that the account the script is run with should be very safely
+protected.
+</para>
+</sect3>
+
+<sect3>
+<title>
+Synchronization script control
+</title>
+
+<para>
+Some mechanisms have been implemented to add more safety and remote
+control possibilities to the synchronisation script.
+</para>
+
+<para>
+First of all, before doing any work, the script opens a special file
+kept in the <acronym>SVN</acronym> repository and named
+<filename>packages/po/run-l10n-sync</filename>. The "run=" line in
+this file mentions whether synchronisation should happen or not. If
+the file contains "run=0", then the script will exit without taking
+any action.
+</para>
+
+<para>
+This mechanism gives all &d-i; developers with commit access to the
+<acronym>SVN</acronym> repository a very simple way to disable the
+synchronization script actions. For this, developers just need to
+change the file and commit the new version.
+</para>
+
+<para>
+While the script is disabled, runs can still be enforced by using the
+<command>--force</command> swith, which will ignore the
+<filename>packages/po/run-l10n-sync</filename> file.
+</para>
+
+<para>
+While it is running, the script also creates a file named
+<filename>.l10n-sync.lock</filename> at the root of the local copy of
+&d-i; repository. The file is removed only after successful runs of
+the script. When this file already exists, the script does not run and exits with an error message.
+</para>
+
+<para>
+This mechanism prevents running the synchronization script twice on
+the same &d-i; repository checkout copy.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Synchronization script automated runs
+</title>
+
+<para>
+(this section should be updated when the script run conditions are changed)
+</para>
+
+<para>
+The script actually runs under Christian Perrier account on people.debian.org.
+</para>
+
+<para>
+It is run through cron jobs:
+</para>
+
+<informalexample>
+<screen>
+TODO
+</screen>
+</informalexample>
+
+<para>
+A special cron entry is also added in order to allow other &d-i;
+developers to trigger runs of the script at any moment. They just need
+to create a specialf "flag" file on people.debian.org (this restricts
+the feature to official Debian developers who have an account on this
+machine).
+</para>
+
+<para>
+As people.debian.org is a woody machine and as the behaviour of
+gettext utilities such as <command>msgmerge</command> changes with the
+version of &debian; systems, &d-i; developers should avoid using the
+script on other machines to avoid useless massive commits.
+</para>
+
+</sect3>
+</sect2>
+
+</sect1>

@@ -1,0 +1,69 @@
+ARM based Kurobox Pro and Linkstation Pro/Live machines are similar
+machines which primary use is as NAS devices or small home servers. They
+are produced and selled for experienced GNU/Linux users. There are earlier
+machines based on PowerPC but they are not supported.
+
+The machines:
+
+ - Kurobox Pro, has 256 MB MTD flash which stores the original firmware
+ - Linkstation Live v1
+ - Linkstation Live v2
+ - Linkstation Pro v1
+ - Linkstation Pro v2
+
+From the point of view of debian-installer all of the machines above are
+the same. The only difference is that Linkstation Pro/Live don't have any
+onboard flash for storing the original firmware.
+
+All the machines have:
+ - an ARM based CPU (MHz can vary, but the same kernel works on all)
+ - one network interface
+ - DDR2 SDRAM
+ - Flash ROM
+
+Kurobox Pro and Linkstation Pro/Live v2 have additionally:
+- 2 USB 2.0 ports
+- SATA adapter for internal drive
+
+Kurobox Pro additionally has a PCI-Express x1 bus and 256 MB NAND flash.
+
+Boot procedure:
+
+The Kurobox Pro defaults to boot from flash but the U-Boot bootloader
+environment is changed, to boot from disk, via the config-debian script
+before d-i starts. People who have installed FreeLink have already setup
+their U-Boot environment to boot from disk.
+
+Since Linkstation devices does not have any onboard flash the original
+firmware is placed on the disk. The kernel and ramdisk are loaded from the
+first partition on the disk, the files are called uImage.buffalo and
+initrd.buffalo respectively.  Also, there is a kernel parameter
+"initrd=..15M" that has to be removed for it to work with Debian ramdisks.
+
+Buffalo firmware:
+
+The original Buffalo firmware exists on MTD flash on the Kurobox Pro, on
+the Linkstation Pro/Live the original firmware exists as a special pair of
+kernel and ramdisk on hard drive. It is based on Busybox and has several
+goodies in it. On both, the bootloader, U-Boot, exists on flash.
+
+On the Linkstation the firmware is called EM, for Emergency Mode. When the
+hard drive is removed from the Linkstation the device boots from TFTP.
+The same applies to the Kurobox Pro.
+
+U-Boot:
+
+U-Boot is a nice bootloader, it is possible to connect to it with either a
+serial console or netcat (newer versions only). There is good documentation
+and upstream is active. It reads the configuration from its environment,
+that resides on flash. The original Buffalo firmware has a tool called
+`nvram' that can read and modify U-Boot's environment from the OS. Similar
+tools are available in Debian in the package uboot-envtools.
+
+When U-Boot boots from hard drive on these devices it can only load kernels
+and ramdisks from an ext2 filesystem.
+
+debian-installer: we support installations via SSH (the default) as well as
+via the serial console. In the case of SSH, the password is either
+preseeded or the default password 'install' is used.
+

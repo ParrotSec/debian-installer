@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# This code is covered by the GNU General Public License (GPLv2 or higher)
+
+NVRAM=$(which nvram)
+FW_PRINTENV=$(which fw_printenv)
+
+path=$(mount | grep ext[23] | sed -n '/sda2\|md0\|disk1_1/ {s/\/dev\/\(sda2\|md0\|.*disk1_1\) on \(.*\) type.*/\2/; p}')
+if [ -z "$path" ]; then
+	echo "You have to create an ext2 filesystem on the first physical partition"
+	exit 1
+fi
+
+if [ ! -e $path/uImage.buffalo ]; then
+	echo "You have to download the uImage.buffalo file from the debian-installer for Linkstation, and put it in $path"
+	exit 1
+fi
+
+if [ ! -e $path/initrd.buffalo ]; then
+	echo "You have to download the initrd.buffalo file from the debian-installer for Linkstation, and put it in $path"
+	exit 1
+fi
+
+if [ -n "$NVRAM" ]; then
+	PRINTENV="$NVRAM -c printenv"
+	SETENV="$NVRAM -c set"
+	GETENV="$NVRAM -c get"
+elif [ -n "$FW_PRINTENV" ]; then
+	if [ -z "$(which fw_setenv)" ]; then
+		echo "Program fw_setenv not found, cannot modify U-Boot environment..."
+		exit 1
+	elif [ ! -f /etc/fw_env.config ]; then
+		echo "Configuration file for fw_printenv not found."
+		exit 1
+	else
+		PRINTENV=$FW_PRINTENV
+		SETENV=$(which fw_setenv)
+		GETENV="$FW_PRINTENV -n"
+	fi
+else
+	echo "No tool found for modifying U-Boot environment..."
+	exit 1
+fi
+
+BOOTVER=$($GETENV buffalo_ver | sed 's/^.*=//')
+if [ -z "$BOOTVER" ]; then
+	echo "Unable to detect Buffalo bootloader version.  Please ensure that your bootloader supports automatic initrd position/size detection."
+	exit 1
+else
+	BOOTVER_MAJOR=${BOOTVER%.*}
+	BOOTVER_MINOR=${BOOTVER#*.}
+	if [ $BOOTVER_MAJOR -eq 1 -a $BOOTVER_MINOR -lt 10 ]; then
+		echo "Incompatible bootloader version detected.  Please update to the latest firmware version."
+		exit 1
+	fi
+fi
+
+printf "Saving U-Boot environment to ubootenv.bak... "
+$PRINTENV > ubootenv.bak || exit 1
+echo "done."
+
+echo "Changing U-Boot environment... "
+$SETENV bootargs_root "root=/dev/sda2 rw panic=5"
+echo "done."
+
+echo "Please reboot your Linkstation."

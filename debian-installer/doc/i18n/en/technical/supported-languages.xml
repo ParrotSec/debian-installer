@@ -1,0 +1,13 @@
+<sect1 id="supported">
+<title>Supported languages list</title>
+
+<para>
+The i18n coordinators record all needed information about supported languages in a file named the <emphasis>supported languages list</emphasis>. This file is an XML file which can be found as installer/doc/i18n/languages.xml in the installer SVN tree.
+</para>
+
+<para>
+The data of this file are used to represent information about the supported languages in &d-i; at the following address: <ulink url="&url-languagelist;">&url-languagelist;</ulink>.
+</para>
+
+</sect1>
+

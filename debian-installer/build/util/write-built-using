@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo -n "initrd:Built-Using=" >> debian/debian-installer.substvars
+cat build/tmp/*/built-using.txt \
+    | sort -u \
+    | tr "\n" "," \
+    | sed 's/,/, /g;s/, $//g' >> debian/debian-installer.substvars
+echo >> debian/debian-installer.substvars
+
+EXTRA_PACKAGES="bf-utf-source syslinux u-boot-imx u-boot-omap u-boot-sunxi u-boot-rockchip"
+echo -n "extra:Built-Using=" >> debian/debian-installer.substvars
+for package in $EXTRA_PACKAGES; do
+  dpkg-query -f '${source:Package} (= ${source:Version}), ' -W $package 2>/dev/null
+done >> debian/debian-installer.substvars
+echo >> debian/debian-installer.substvars

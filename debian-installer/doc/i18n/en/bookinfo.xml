@@ -1,0 +1,32 @@
+<bookinfo id="debian_installer_i18n_documentation">
+<title>&d-i; Internationalization and Localization Guide</title>
+
+<abstract>
+<para>
+This document describes how &d-i; internationalisation (i18n) and localisation (l10n) are handled.
+</para>
+
+<para>
+It is aimed at being used as a reference for all &d-i; translators and
+developers when i18n/l10n topics are involved.
+</para>
+</abstract>
+
+<copyright>
+ <year>2001-2010</year>
+ <holder>the &d-i; team</holder>
+ <holder>Petter Reinholdtsen</holder>
+ <holder>Dennis Stampfer</holder>
+ <holder>Christian Perrier</holder>
+</copyright>
+
+<legalnotice>
+<para>
+
+This manual is free software; you may redistribute it and/or modify it
+under the terms of the GNU General Public License. Please refer to the
+license in <xref linkend="appendix-gpl"/>.
+
+</para>
+</legalnotice>
+</bookinfo>

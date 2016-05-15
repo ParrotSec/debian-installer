@@ -1,0 +1,109 @@
+# Common configuration options for all images.
+#
+# Note that you might find it useful to create a config/local file and
+# override settings from this file there instead of modifying this file for
+# local setting such as EXTRAFILES. That way you won't accidentially commit
+# your local changes.
+
+# set DEBUG to y if you want to get the source for and compile 
+# debug versions of the needed udebs
+#DEBUG = y
+
+# Default kernel ABI version to use. Append a kernel flavour to
+# produce KERNELVERSION.
+LINUX_KERNEL_ABI ?= 4.4.0-parrot1
+
+# Always "di" these days
+KERNEL_FLAVOUR ?= di
+
+# List here any extra udebs that are not in the list file but that
+# should still be included on the system.
+EXTRAS ?=
+
+# This variable can be used to copy in additional files from the system
+# that is doing the build. Useful if you need to include strace, or gdb,
+# etc.
+#EXTRAFILES = /usr/bin/strace
+
+# This variable can be used to add a preseed file to the initrd itself.
+# It will be loaded by the initrd-preseed udeb.
+PRESEED = preseed.cfg
+
+# The library reducer to use. Set to mklibs (to build with library reduction)
+# or mklibs-copy (to build without library reduction).
+MKLIBS = mklibs-copy
+
+# Normally the sources.list for building d-i will be derived from your
+# "normal" sources.list. However, you can specify a mirror here to override
+# this. You can use copy:/ to use a local mirror
+MIRROR = http://archive.parrotsec.org/parrot parrot main
+
+# Options to pass to dpkg when it is unpacking the udebs to create the
+# image. None should be needed, but --force-overwrite might need to be
+# enabled from time to time if udebs have conflicting files.
+DPKG_UNPACK_OPTIONS = --force-overwrite
+
+# The codename of the Debian release that should be installed by default.
+DEBIAN_RELEASE = parrot
+
+# The version (number and codename) of the Debian release targeted by the
+# installation images. (Only the codename is used while the version number
+# has not yet been determined.)
+DEBIAN_VERSION = 3.0 (parrot)
+DEBIAN_VERSION ?= parrot
+
+# Define here from what release (codename!) components (udebs) should be taken
+# to build debian-installer. By default this is set to 'unstable' for building
+# daily images. For official builds this is overruled in debian/rules.
+USE_UDEBS_FROM ?= parrot
+
+# Archive components from which to fetch debian-installer modules.
+UDEB_COMPONENTS ?= main/debian-installer
+
+# The date the installer is built.
+BUILD_DATE ?= $(shell date -u '+%Y%m%d-%H:%M')
+# The date the installer source was last changed;  we prefer that the
+# caller defines a meaningful value, but below is a safe fallback.
+SOURCE_DATE_EPOCH ?= $(shell date '+%s')
+
+# Produce a beep at boot menu
+BOOTMENU_BEEP ?= n
+
+# Filesystem type for the initrd, currently valid values are ext2, cramfs,
+# and initramfs.
+# NOTE: Your kernel must support this filesystem, not just a module. 
+INITRD_FS = initramfs
+
+# What device to write floppies on
+FLOPPYDEV = /dev/fd0
+
+# What qemu to use, with any options.
+QEMU = qemu
+
+# media where images may be written to (via dd).
+WRITE_MEDIA = floppy
+
+# HACK Alert:
+# pkg-lists is still sorted by type, so we have to provide
+# some mapping MEDIUM -> TYPE
+TYPE = $(MEDIUM)
+
+# Used to write a /etc/lsb-release file in the installer initrd.
+LSB_DISTRIB_ID=Parrot
+LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) installer"
+# Inlude the build date of the installer in here.
+LSB_DISTRIB_RELEASE="$(DEBIAN_VERSION) - installer build $(BUILD_DATE)"
+
+# This keyring is only used to verify udeb downloads using apt. Since the
+# build process does not run as root, apt cannot read /etc/apt/trusted.gpg.
+KEYRING=/usr/share/keyrings/parrot-archive-keyring.gpg
+
+# All images that include cdebconf should include symbols needed by these
+# plugins.
+EXTRAUDEBS=cdebconf-newt-entropy cdebconf-text-entropy
+
+# List of languages only supported with the graphical cdebconf frontend.
+GI_LANGS = '(am|bn|dz|ka|gu|hi|km|ml|mr|ne|pa|ta)'
+# They should be dropped by default, so this must be set only in targets
+# that build graphical installer images.
+KEEP_GI_LANGS =

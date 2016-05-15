@@ -1,0 +1,29 @@
+# These udebs are needed on a single-floppy system that currently serves two
+# purposes:
+# 1. load the rest of the installer modules from driver floppies
+# 2. get up on the network with just this single floppy (for common network
+#    setups)
+# If space becomes tight again, #2 will be relegated to a third floppy..
+
+#include "base"
+# The kernel is not really included on the floppy, on arches that have a
+# separate boot floppy. This is included so it will be in the status file,
+# and so depmod will have a kernel to run against.
+#include "kernel"
+
+localechooser
+bogl-bterm-udeb
+di-utils-terminfo
+console-setup-udeb
+kbd-udeb
+cdebconf-newt-udeb
+installation-locale
+
+nano-udeb
+
+# floppy loading support
+load-media
+media-retriever
+
+preseed-common
+initrd-preseed

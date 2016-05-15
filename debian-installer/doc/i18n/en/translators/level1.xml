@@ -1,0 +1,392 @@
+<!-- <chapter id="translators-level1"><title>Translating &d-i; - Level 1</title> -->
+
+<sect1 id="translators-level1">
+<title>
+Level 1
+</title>
+
+<sect2>
+<title>
+Contents
+</title>
+
+<para>
+Level 1 consists of all <quote>core</quote> &d-i; packages, i.e. all packages with
+translatable material in the &d-i; development tree.
+</para>
+
+<para>
+Most parts of the translatable material is spread over core &d-i;
+packages. The package development is handled in the main &d-i;
+Subversion (<acronym>SVN</acronym>) repository.
+</para>
+
+<para>
+Some material (country names and keyboard maps names) are handled in
+non core &d-i; packages. This material will be part of the level 2 of
+translations.
+</para>
+
+<para>
+Level 1 is the key for a language being fully integrated in &d-i;.
+A language will be <emphasis>activated</emphasis> by &i18n-coords; only when the first two sublevels are completely translated.
+</para>
+
+</sect2>
+
+<sect2 id="sublevels">
+<title>
+Sublevels
+</title>
+
+<para>
+In the past, all &d-i; level 1 strings were gathered into a single <quote>master</quote> file. While that was easy to manage, it had the inconvenience of grouping very important and often used strings with very obscure strings that are relevant for some architectures only, or some special (and rarely used) features.
+</para>
+
+<para>
+In order for translators to better prioritize their work, this master file has been split into five <quote>sublevel</quote> files:
+</para>
+
+<itemizedlist>
+  <listitem>
+    <para>
+      Sublevel 1: strings used for default installs on common architectures
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      Sublevel 2: general strings not used during default installs. Includes error messages and dialogs
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      Sublevel 3: expert strings (some low priority features such as RAID, encrypted partitions, etc.)
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      Sublevel 4: specific to less-popular arches (powerpc, mips, sparc) or used in experimental features
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      Sublevel 5: same for high-end (hppa, ia64, s390, s390x) and hobby (m68k) arches and old stuff (partconf,
++partitioner, that are replaced by partman for a while)
+    </para>
+  </listitem>
+</itemizedlist>
+
+</sect2>
+
+<sect2>
+<title>
+Files location and access methods
+</title>
+
+<para>
+Translators should remember that using <acronym>SVN</acronym> is strongly encouraged as
+this is the only way for them to commit their own translations.
+</para>
+
+<itemizedlist>
+  <listitem>
+    <para>
+      <acronym>SVN</acronym> access: &svn-level1;. Sublevel files are in directories named <filename>sublevelX</filename>
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <acronym>HTTP</acronym> access: &url-level1;
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          &url-sublevel1-pot-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel1-po-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel2-pot-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel2-po-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel3-pot-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel3-po-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel4-pot-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel4-po-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel5-pot-link;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-sublevel5-po-link;
+        </para>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+</itemizedlist>
+
+
+<para>
+To begin the translation work for sublevel 1, translators should copy the
+<filename>packages/po/sublevel1/template.pot</filename> to
+<filename>&language;.po</filename> (where &language; is
+the ISO-639 code of the language, see <xref
+linkend="language-codes"/>) and complete this file. The same stands for other sublevels.
+</para>
+
+</sect2>
+
+<sect2>
+<title>
+Updating/Adding translations
+</title>
+
+<para>
+Translation updates should be done by direct commits to the &d-i; <acronym>SVN</acronym>
+repository (see <xref linkend="svn-basics"/> for details about <acronym>SVN</acronym>
+use). In case this is absolutely impossible, these updates can be sent
+as bug reports against the <classname>debian-installer</classname>
+package (see <xref linkend="bug-reports"/> for details).
+</para>
+
+</sect2>
+
+<sect2>
+<title>
+Prioritizing work
+</title>
+
+<para>
+Translators should read <xref linkend="prioritizing"/>
+to choose the best priority order for their work on sublevels.
+</para>
+
+</sect2>
+<sect2>
+<title>
+Specific recommendations
+</title>
+
+<para>
+The &d-i; core file uses hundreds of strings which represent the content
+of the screens which are or may be shown to &d-i; users during the
+installation process.
+</para>
+
+<para>
+Several of these strings are commented with indications or hints for
+translators.
+</para>
+
+<sect3>
+<title>
+Limited length strings
+</title>
+<para>
+Several strings are limited in length. This means they
+should not exceed 65 characters for single-width character languages
+and 32 characters for double-width character languages such as CJK
+(Chinese/Japanese/Korean) and similar languages.
+</para>
+
+<para>
+This constraint may be checked by the <filename>scripts/l10n/choices-check.pl</filename> script from the &d-i; development tree:
+</para>
+
+<para>
+<command>scripts/l10n/choices-check.pl &lt; packages/po/&language;.po</command>
+</para>
+
+<para>
+This script will output the offending line(s) number(s) as well as the number of characters in this/these line(s).
+</para>
+</sect3>
+
+<sect3>
+<title>
+<quote>Choose language</quote> menu entry
+</title>
+
+<para>
+This entry is the language selection screen entry for each
+language. Translators can translate it but they should keep <quote>Choose
+language</quote> in English as an alternative so that users mistakenly
+choosing a language can still find the appropriate entry to change it
+back to their own language.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Main menu entries
+</title>
+
+<para>
+Most &d-i; packages have a main menu entry, which is the text that appears
+in the &d-i; main menu to allow users to select the corresponding action.
+</para>
+
+<para>
+The length of this main menu entry is limited to 58 columns, i.e. 58 characters
+for single-width languages and only 29 characters for double-width languages.
+These main menu entries all have a comment with <quote>Main menu item</quote> in the PO and POT files.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Variable names
+</title>
+
+<para>
+Many places in &d-i; use variables (e.g. <quote>${LOCALE} is currently not
+supported in Debian</quote>). The variable names should <emphasis>not be
+translated</emphasis> and be kept inside braces prepended by the
+dollar sign in the translation.
+</para>
+
+<para>
+This constraint is checked by the spell checking scripts, which report
+these errors separately (see <xref linkend="spellchecking"/> for
+details about the spell checking scripts).
+</para>
+
+<para>
+Advanced translation software such as <command>lokalize</command> are able to visually display such
+errors and warn about them before saving files.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Choices entries
+</title>
+
+<para>
+Several entries in PO files are unsplit choices lists such as:
+</para>
+
+<informalexample>
+<screen>
+#. Type: select
+#. Choices
+#: ../netcfg-common.templates:124
+msgid "Infrastructure (Managed) network, Ad-hoc network (Peer to peer)"
+msgstr ""
+</screen>
+</informalexample>
+
+<para>
+For these translations, translators should take care of separating all
+choices with a normal comma sign, even if commas are not used in their
+language. Only standard commas should be used and not special commas
+such as those used by the Arabic language.
+</para>
+
+<para>
+Commas should <emphasis>not</emphasis> be used
+<emphasis>inside</emphasis> individual choices unless they are properly
+escaped with a <emphasis>backslash (\)</emphasis> character:
+</para>
+
+<para>For instance, the following is incorrect:</para>
+
+<informalexample>
+<screen>
+#. Type: select
+#. Choices
+#: ../netcfg-common.templates:124
+msgid "Infrastructure (Managed) network, Ad-hoc network (Peer to peer)"
+msgstr "Infrastructure network, also called Managed, Ad-hoc network, or peer to peer"
+</screen>
+</informalexample>
+
+<para>While this is correct:</para>
+
+<informalexample>
+<screen>
+#. Type: select
+#. Choices
+#: ../netcfg-common.templates:124
+msgid "Infrastructure (Managed) network, Ad-hoc network (Peer to peer)"
+msgstr "Infrastructure network\, also called Managed, Ad-hoc network\, or peer to peer"
+</screen>
+</informalexample>
+
+<para>
+Such errors are detected by the spellchecker scripts (see <xref linkend="spellchecking"/>).
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Default mirror country
+</title>
+
+<para>
+A special string from the <classname>choose-mirror</classname> package
+is intended to setup the default Debian archive mirror country,
+depending on the language. Translators should put there the ISO-3166
+code of the country to be used as default, most often their own
+country name, or the country their language is spoken in. For
+instance, the Brazilian Portuguese translator will use <quote>BR</quote> as
+translation there, as this is the ISO-3166 code for Brazil.
+</para>
+
+<para>
+Such errors are detected by the spellchecker scripts (see <xref linkend="spellchecking"/>).
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Partman entries
+</title>
+
+<para>
+A few entries in the <classname>partman</classname> are limited to 8
+symbols only. Translators must be VERY careful about not exceeding
+this value, otherwise, the display in the
+<classname>partman</classname> screens will be badly broken.
+</para>
+
+</sect3>
+
+</sect2>
+
+</sect1>
+
+<!-- </chapter> -->

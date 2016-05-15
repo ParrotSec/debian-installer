@@ -1,0 +1,146 @@
+<appendix id="checkouts"><title>Checkout commands</title>
+
+<sect1>
+<title>Translation checkout commands for d-i</title>
+</sect1>
+
+<para>
+First said, translators don't need to checkout the repositories by
+hand to translate the po files. They can get all files here:
+</para>
+
+<informalexample>
+<screen>
+&url-status;/&lt;LEVEL&gt;/files/&lt;LANGUAGECODE&gt;/
+</screen>
+</informalexample>
+
+<para>
+where &lt;STAGE&gt; is either level1, level2, level3, level4 and level5 &lt;LANGUAGECODE&gt; your language code like de, es, zh_CN, ...
+</para>
+
+<para>
+POT templates can be found at:
+</para>
+
+<informalexample>
+<screen>
+&url-status;/&lt;LEVEL&gt;/POT/
+</screen>
+</informalexample>
+
+<sect2>
+<title>Checkout commands</title>
+</sect2>
+
+<para>
+For translators who prefer working from developer's repositories, the following lists, level by level, all checkout commands to get access to translation material.
+</para>
+
+<sect3>
+<title>Level 1</title>
+
+<itemizedlist>
+<listitem>
+Anonymous: <command>&svn-level1-anon;</command>
+</listitem>
+<listitem>
+Non anonymous: <command>&svn-level1;</command>
+</listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3>
+<title>Level 2</title>
+
+<sect4>
+<title>Tasksel</title>
+
+<itemizedlist>
+<listitem>
+Anonymous: <command>&svn-tasksel-anon;</command>
+</listitem>
+<listitem>
+Non anonymous: <command>&svn-tasksel;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+<sect4>
+<title>Iso-codes</title>
+
+<itemizedlist>
+<listitem>
+Anonymous: <command>&git-iso-codes-anon;</command>
+</listitem>
+<listitem>
+Non anonymous: <command>&git-iso-codes;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+<sect4>
+<title>Console-data</title>
+
+<itemizedlist>
+<listitem>
+Anonymous: <command>&svn-console-data;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+<sect4>
+<title>Popularity-contest</title>
+
+<itemizedlist>
+<listitem>
+Anonymous: <command>&svn-popcon;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+</sect3>
+
+<sect3>
+<title>Level 3</title>
+
+<sect4>
+<title>Debconf</title>
+
+<itemizedlist>
+<listitem>
+Anonymous: <command>&svn-debconf;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+<sect4>
+<title>Newt</title>
+
+<para>
+No repository yet
+</para>
+
+</sect4>
+
+<sect4>
+<title>Win32-loader</title>
+
+<itemizedlist>
+<listitem>
+Anonymous: <command>&svn-win32-loader-anon;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+</sect3>
+
+
+</appendix>

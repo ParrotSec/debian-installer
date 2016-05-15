@@ -1,0 +1,51 @@
+<?xml version='1.0'?>
+<!-- -*- DocBook -*- -->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+    "/usr/share/sgml/docbook/dtd/xml/4.2/docbookx.dtd" [
+ <!ENTITY % sgml.features "IGNORE">
+ <!ENTITY % xml.features  "INCLUDE">
+ <!ENTITY % entities-path "##ENTPATH##">
+ <!ENTITY % sources-path "##SRCPATH##">
+ <!ENTITY % dbcent PUBLIC
+      "-//OASIS//ENTITIES DocBook Character Entities V4.2//EN"
+      "/usr/share/sgml/docbook/dtd/xml/4.2/dbcentx.mod"> %dbcent;
+ <!ENTITY % dynamicdata    SYSTEM "../##TEMPDIR##/dynamic.ent"       > %dynamicdata;
+ <!ENTITY % commondata     SYSTEM "##ENTPATH##/common.ent"        > %commondata;
+ <!ENTITY % urlsdata       SYSTEM "##ENTPATH##/urls.ent"          > %urlsdata;
+
+]>
+
+<!-- retain these comments for translator revision tracking -->
+<!-- $Id: install.en.xml 21636 2004-09-14 22:43:53Z fjpop-guest $ -->
+
+<book lang="##LANG##">
+
+&bookinfo.xml;
+&preface.xml;
+<toc/>
+<!--
+&welcome.xml;
+-->
+
+&translators.xml;
+&maintainers.xml;
+&new-language.xml;
+&manual.xml;
+&coordination.xml;
+&technical.xml;
+&spellchecking.xml;
+&language-tasks.xml;
+
+<!--appendices-->
+
+<!-- coming soon to a cvs site near you -->
+<!-- &tech-info.xml; -->
+&methods-advices.xml;
+&svn-basics.xml;
+&checkouts.xml;
+&bug-reports.xml;
+&gettext-tools.xml;
+&language-codes.xml;
+&coordination-team.xml;
+&gpl.xml;
+</book>

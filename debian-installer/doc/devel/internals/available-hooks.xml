@@ -1,0 +1,292 @@
+<appendix id="ap-hooks">
+<title>Available hooks</title>
+
+<para>
+
+This appendix given an overview of hooks available for debian-installer
+modules and extensions. See also <xref linkend="hooks"/>.
+
+</para><para>
+
+This overview may not be fully complete.
+
+</para>
+
+ <sect1>
+ <title>run-parts type hooks</title>
+
+<para>
+
+This type of hook consists of a directory in which any component can drop
+a script that's to be executed at a specific point of the installation
+procedure. The component responsible for the hook will simply execute any
+scripts that are present at that time. Scripts are executed in sequence
+and since the order of execution is often important, they are usually
+prefixed with a sequence number.
+
+</para><para>
+
+Note that currently in most cases the component executing run-parts scripts
+do not fail or show an error if a called script returns an error.
+
+</para>
+
+  <sect2 id="ap-hooks-boot">
+  <title>System boot</title>
+
+<para>
+
+Scripts that are executed as part of the boot process of Debian Installer.
+Various scripts in these directories are architecture-specific.
+See also <xref linkend="di-boot"/>.
+
+</para>
+
+<variablelist>
+<varlistentry>
+
+<term>/lib/debian-installer-startup.d/* [rootskel]</term>
+<listitem><para>
+   Early boot scripts. Special feature is that scripts get called if they
+   are executable, and get sourced if they are not.
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/etc/rcS.d/S[0-9][0-9]* [rootskel]</term>
+<listitem><para>
+    Additional early boot scripts; executed or sourced just after the scripts
+    in <filename>/lib/debian-installer-startup.d</filename>.
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/lib/debian-installer.d/* [rootskel]</term>
+<listitem><para>
+   Initialization and startup of the D-I user interface. These scripts always
+   get sourced.
+</para><para>
+   These scripts will be run again if the main installer process dies for
+   some reason.
+</para></listitem>
+
+</varlistentry>
+</variablelist>
+
+  </sect2>
+
+  <sect2 id="ap-hooks-general">
+  <title>General purpose run-parts hooks</title>
+
+<para>
+
+This section lists general purpose run-parts directories where other
+components commonly drop scripts in order to have actions executed at
+that stage of the installation. They are listed roughly in the order
+in which they are executed during a standard installation.
+
+</para>
+
+<variablelist>
+<varlistentry>
+
+<term>/usr/lib/base-installer.d/* [base-installer]</term>
+<listitem><para>
+    The files in this directory are executed after the system has been
+    bootstrapped (generally by debootstrap), but before the system is used
+    in any way. It is intended to be used for very basic configuration of
+    the target system. APT has not yet been configured at this point.
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/usr/lib/post-base-installer.d/* [base-installer]</term>
+<listitem><para>
+    The files in this directory are executed after basic configuration of
+    APT and just before kernel selection and installation.
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/usr/lib/pre-pkgsel.d/* [pkgsel]</term>
+<listitem><para>
+    The files in this directory are executed before tasksel is called in
+    the <filename>/target</filename> environment. Example usage: install
+    custom tasks (<classname>tasksel-data</classname>) from a source added
+    during <classname>apt-setup</classname>.
+</para><para>
+    Directly accessing the installation CD and thus installing udebs is not
+    possible in these scripts (but should also not be needed).
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/usr/lib/finish-install.d/* [finish-install]</term>
+<listitem><para>
+    The files in this directory are executed at the end of the installation.
+</para></listitem>
+
+</varlistentry>
+</variablelist>
+
+  </sect2>
+
+  <sect2 id="ap-hooks-special">
+  <title>Special purpose run-parts hooks</title>
+
+<para>
+
+This section lists run-parts directories that are less likely to be used
+by other components or for customization, although it is still possible
+to do so.
+
+</para>
+
+<variablelist>
+<varlistentry>
+
+<term>/lib/main-menu.d/* [main-menu]</term>
+<!--
+<listitem><para>
+   FIXME
+</para></listitem>
+-->
+
+</varlistentry><varlistentry>
+
+<term>/lib/rescue.d/* [rescue]</term>
+<!--
+<listitem><para>
+   FIXME
+</para></listitem>
+-->
+
+</varlistentry><varlistentry>
+
+<term>/usr/lib/apt-setup/generators/* [apt-setup]</term>
+<listitem><para>
+   Contains scripts responsible for generating entries in the
+   <filename>/etc/apt/sources.list</filename> on the target system.
+</para></listitem>
+
+</varlistentry>
+</variablelist>
+
+  </sect2>
+
+  <sect2>
+  <title>Partitioning &mdash; deprecated components</title>
+
+<para>
+
+The hooks listed in this section are from udebs that are only still
+being used for the mips architecture. All other architectures use
+<classname>partman</classname> instead.
+
+</para>
+
+<variablelist>
+<varlistentry>
+
+<term>/var/lib/partconf/fstab.d/* [partconf?]</term>
+<listitem><para>
+    partconf and mkfstab read all files in this directory and append
+    the lines (with or without modification) to the generated
+    /target/etc/fstab.
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/var/lib/partconf/block.d/* [partconf?]</term>
+<listitem><para>
+    partconf executes for each partition every script in this
+    directory, so some udebs can place scripts here, and then block
+    the output of some partitions; very useful for raid/lvm support.
+    (planned to be included by Thorsten Sauter)
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/usr/share/partitioner/${ARCH}.sh</term>
+<term>/usr/share/partitioner/common.sh [partitioner?]</term>
+<listitem><para>
+    partitioner first tries to call the shell script for the current
+    architecture, and if this script doesn't exist it runs common.sh
+    with the selection harddisk as argument. The script can then do
+    whatever is needed to partition a harddisk on this arch (e.g.
+    running fdisk (text) or cfdisk (slang)).
+</para></listitem>
+
+</varlistentry>
+</variablelist>
+
+  </sect2>
+ </sect1>
+
+ <sect1>
+ <title>Other hooks</title>
+
+<para>
+
+The hooks in this section do not contain scripts, but are single files or
+a directory containing files that are read by a certain component or utility.
+Some of these hooks can be used for customization, but others should only be
+modified by using the correct utilities.
+
+</para>
+
+  <sect2>
+  <title>Hooks available for customization</title>
+
+<variablelist>
+<varlistentry>
+
+<term>/cdrom/.disk/udeb_include</term>
+<term>/cdrom/.disk/udeb_exclude [anna]</term>
+<listitem><para>
+    List of packages (udebs) to install into or exclude from the d-i
+    ramdisk.
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/cdrom/.disk/base_include</term>
+<term>/cdrom/.disk/base_exclude [base-installer]</term>
+<listitem><para>
+    The contents of these files are taken as lists of packages to
+    install into or exclude from the target area.
+</para></listitem>
+
+</varlistentry>
+</variablelist>
+
+  </sect2>
+
+  <sect2>
+  <title>Hooks reserved for internal use</title>
+
+<variablelist>
+<varlistentry>
+
+<term>/var/lib/anna-install/queue</term>
+<term>/var/lib/apt-install/queue [di-utils]</term>
+<listitem><para>
+    Used by <classname>anna-install</classname> and
+    <classname>apt-install</classname> respectively to queue udebs or
+    packages for later installation.
+</para></listitem>
+
+</varlistentry><varlistentry>
+
+<term>/run/udev/firmware-missing [udev,hw-detect]</term>
+<listitem><para>
+    Used to register for which kernel modules udev was unable to load
+    firmware.
+</para></listitem>
+
+</varlistentry>
+</variablelist>
+
+  </sect2>
+ </sect1>
+</appendix>

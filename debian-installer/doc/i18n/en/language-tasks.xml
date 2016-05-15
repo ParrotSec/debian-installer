@@ -1,0 +1,158 @@
+<chapter id="language-tasks"><title>Language tasks for tasksel</title>
+
+<sect1>
+<title>Introduction</title>
+
+<para>
+The <classname>tasksel</classname> package is responsible for the installation of several <emphasis>package sets</emphasis>, for various activities (desktop, file server, ...).
+</para>
+
+<para>
+Among the various tasks offered by <classname>tasksel</classname>,
+language tasks have a special behaviour: they are aimed at installing
+a set of packages which can be considered useful for the users of a
+given language.
+</para>
+
+<para>
+These tasks are not meant to be optionally selected during
+<classname>tasksel</classname> runs. Indeed, they are
+automatically selected depending on the language used for installation
+as well as the type of install.
+</para>
+
+<para>
+For instance, if &d-i; is run in French language, the <emphasis>french</emphasis> task will
+be automatically installed.
+</para>
+
+<para>
+<emphasis>Language tasks</emphasis> are separated in two type of tasks: the <emphasis>&language;</emphasis> task and the  <emphasis>&language;-desktop</emphasis> task. The former is installed for every standard system install while the latter is only installed if the <emphasis>desktop</emphasis> tasks is selected by the user (the <emphasis>desktop</emphasis> task installs a basic graphical environment, which can be completed with the <emphasis>Gnome</emphasis> or <emphasis>KDE</emphasis> tasks.
+</para>
+
+</sect1>
+
+<sect1>
+<title>&language; task</title>
+
+<para>
+This task should install packages which are useful for the users of
+&language; in a very basic (text-only) environment.
+</para>
+
+<para>
+Appropriate choices for such task are:
+</para>
+
+<itemizedlist>
+<listitem>
+<para>
+Documentation in &language;;
+</para>
+</listitem>
+<listitem>
+<para>
+Documentation about using Linux or &debian; in &language;;
+</para>
+</listitem>
+<listitem>
+<para>
+Dictionaries or word lists for &language;
+</para>
+</listitem>
+<listitem>
+<para>
+Set of manual pages translated in &language;
+</para>
+</listitem>
+<listitem>
+<para>
+Console input methods for &language;
+</para>
+</listitem>
+<listitem>
+<para>
+Console fonts for &language;
+</para>
+</listitem>
+<listitem>
+<para>
+.../...
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+Translators (or other users) proposing packages to be included in
+these <emphasis>&language;</emphasis> tasks should be careful about
+dependencies and avoid proposing packages which would trigger too
+many other unrelated packages to be installed.
+</para>
+
+<para>
+Like all packages included in tasks, packages included in <emphasis>&language;</emphasis> tasks should be suitably generic for a large number of the users of the language (at least 25%).
+</para>
+
+</sect1>
+
+<sect1>
+<title>&language;-desktop task</title>
+
+<para>
+This task should install packages which are useful for the users of
+&language; in a graphical environment.
+</para>
+
+<para>
+Appropriate choices for such task are:
+</para>
+
+<itemizedlist>
+<listitem>
+<para>
+Localization packages for packages which are included in the
+<emphasis>desktop</emphasis> task
+</para>
+</listitem>
+<listitem>
+<para>
+Fonts useful for the display of &language;;
+</para>
+</listitem>
+<listitem>
+<para>
+Special input methods for &language; in a graphical environment
+</para>
+</listitem>
+<listitem>
+<para>
+.../...
+</para>
+</listitem>
+</itemizedlist>
+
+</sect1>
+
+<sect1>
+<title>Requesting changes/addition of language tasks</title>
+
+<para>
+Translators are often the most competent users for proposing changes
+to language tasks. They should be aware that the quality of these
+tasks will directly influence the quality of the installed system, and
+they should bring to the maintenance of the language tasks the same
+carefulness they put in translations.
+</para>
+
+<para>
+Requesting changes to existing language tasks or addition of new
+language tasks should be made by reporting a bug against the
+<classname>tasksel</classname> package, attaching the needed task file
+to the bug report (or at the minimum mentioning the needed
+packages). For details about bug reporting, see <xref
+linkend="bug-reports"/>.
+</para>
+
+</sect1>
+
+</chapter>

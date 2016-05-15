@@ -1,0 +1,302 @@
+#!/usr/bin/perl
+# Outputs a list of udebs to install. Pass it the type of image to build as
+# the first parameter. The second parameter can point to a different image
+# type which the image is a driver disk for. Next the kernel flavour, then
+# the major kernel type (2.4, 2.6, etc), then the sub architecture (or an
+# empty string if there are none) and then the kernel version(s) as the rest
+# of the parameters. Reads the lists in pkg-lists.
+use warnings;
+use strict;
+
+if (int(@ARGV) < 5) {
+	die "Usage: $0 type DRIVER_FOR KERNEL_FLAVOUR KERNELMAJOR SUB_ARCH KERNEL_VERSION [KERNEL_VERSION ...]\n";
+}
+my $type=shift;
+my $driver_for=shift;
+my $kernel_flavour=shift;
+my $kernel_major=shift;
+my $sub_arch=shift;
+my @kernel_versions=@ARGV;
+
+my $deb_host_arch=`LANG=C dpkg-architecture -qDEB_HOST_ARCH`;
+chomp $deb_host_arch;
+
+my $deb_host_arch_os=`dpkg-architecture -qDEB_HOST_ARCH_OS 2>/dev/null`;
+if ($? != 0) {
+	# Take account of old dpkg-architecture output.
+	$deb_host_arch_os=`dpkg-architecture -qDEB_HOST_GNU_SYSTEM`;
+	$deb_host_arch_os=~s/-gnu//;
+	if ($deb_host_arch_os eq 'gnu') {
+		$deb_host_arch_os='hurd';
+	}
+}
+chomp $deb_host_arch_os;
+
+sub warning {
+	print STDERR "** warning: @_\n";
+}
+
+my $debug=0;
+my $debugindent=0;
+
+sub debug {
+	return unless $debug;
+	
+	my $indent=shift;
+	my $text=shift;
+
+	print STDERR "pkg-lists: ".("    " x $debugindent)." $text\n" if $text;
+	$debugindent+=$indent;
+}
+
+# Run apt-cache on udebs, return result.
+sub apt_cache {
+	my $params=shift;
+	
+	my $sourceslist;
+	if (-f 'sources.list.udeb.local') {
+		$sourceslist='sources.list.udeb.local';
+	} else {
+		$sourceslist='sources.list.udeb';
+	}
+	
+	return `LANG=C apt-cache \\
+		-o Dir::Etc::sourcelist=./$sourceslist \\
+		-o Dir::Etc::sourceparts=/dev/null \\
+		-o Dir::Etc::Preferences=./preferences.udeb.local \\
+		-o Dir::State=./apt.udeb/state \\
+		-o Dir::State::Status=./apt.udeb/state/status \\
+		-o Dir::Cache=./apt.udeb/cache $params 2>/dev/null`;
+}
+
+# Add a package, possibly expanding dependencies.
+sub collectpackage {
+	my $line=shift;
+	my $collect=shift;
+	my $exclude=shift;
+	my $postponed=shift;
+
+	if ($line=~s/^(.*) \[([0-9. ]+)\]$/$1/) {
+		my %kernels=();
+		$kernels{$_} = 1 foreach split ' ', $2;
+		return unless $kernels{$kernel_major};
+	}
+	elsif ($line=~s/^(.*) \[(.+)\]$/$1/) {
+		my %oses=();
+		$oses{$_} = 1 foreach split ' ', $2;
+		return unless $oses{$deb_host_arch_os};
+	}
+	elsif ($line=~s/\s*\?$//) {
+		# Question mark at the end means check for the package and
+		# don't include it if it's not available in apt sources.
+		return unless length apt_cache("show '$line'");
+	}
+
+	if ($line=~/^(.*) \-$/) {
+		# Minus sign at the end means exclude this package from the
+		# list.
+		my $package=$1;
+		$exclude->{$package}=1;
+		debug 0, "excluding $package";
+	}
+	else {
+		my $package=$line;
+		$collect->{$package}=1;
+		debug 0, "adding $package";
+		collectdeps($package, $collect, $postponed);
+	}
+}
+
+my %seendeps;
+
+# Recursively add dependencies of package.
+sub collectdeps {
+	my $package=shift;
+	my $collect=shift;
+	my $postponed=shift;
+	
+	return if $seendeps{$package};
+	$seendeps{$package}=1;
+	
+	debug(1, "collecting dependencies for $package");
+	
+	foreach my $deplist (pkgdeps($package)) {
+		if (@$deplist > 1) {
+			# If there's more than one alternative to satisfy a
+			# dep, postpone trying to satisfy it until later.
+			push @{$postponed}, $deplist;
+			debug 0, "postponed satisfying dep on ".
+				join(" | ",@$deplist)." for $package";
+		}
+		else {
+			$collect->{$deplist->[0]}=1;
+			debug 0, "added $deplist->[0] for $package";
+			collectdeps($deplist->[0], $collect, $postponed);
+		}
+	}
+
+	debug(-1);
+}
+
+# Get the dependencies of a package. Returns a list of sublists; at least
+# one item from each sublist is needed to satisfy the dependencies.
+sub pkgdeps {
+	my $package=shift;
+	my @ret;
+	my @lines=map { chomp $_; $_ } apt_cache("depends $package");
+	shift @lines; # package name;
+	for (my $x=0; $x < @lines; $x++) {
+		my $dep=$lines[$x];
+		# Note that this intentionally skips alternate
+		# dependencies, since udebs are not allowed to have
+		# alternates.
+		if ($dep=~/^\s*Depends:\s/) {
+			$dep=~s/^\s*Depends:\s*//;
+			if ($dep=~/\<.+\>/) {
+				# Virtual package, so collect all providers.
+				my @deps;
+				for ($x++; $x < @lines; $x++) {
+					if ($lines[$x]=~/^    (.+)/) {
+						my $prov=$1;
+						my %fields;
+						for my $fieldline (apt_cache("show \Q$prov")) {
+							if ($fieldline=~/(.*?):\s*(.*)/) {
+								$fields{lc $1}=$2;
+							}
+						}
+						if (exists $fields{'kernel-version'} and not grep { $_ eq $fields{'kernel-version'} } @kernel_versions) {
+							next;
+						}
+						elsif (exists $fields{subarchitecture} and not grep { $_ eq $sub_arch } split ' ', $fields{subarchitecture}) {
+							next;
+						}
+						push @deps, $prov;
+					}
+					else {
+						$x--;
+						last;
+					}
+				}
+				if (@deps) {
+					push @ret, \@deps;
+				}
+			}
+			else {
+				push @ret, [$dep];
+			}
+		}
+	}
+	return @ret;
+}
+
+# Return two hash references, one of udebs to include, one to exclude.
+sub getlists {
+	my $type=shift;
+
+	my %collect;
+	my %exclude;
+	my @postponed;
+	
+	my @lists = ("pkg-lists/local", "pkg-lists/exclude");
+	my $t="";
+	foreach my $subtype (split "/", $type) {
+		if (! length $t) {
+			$t=$subtype;
+		}
+		else {
+			$t="$t/$subtype";
+		}
+		push @lists, ("pkg-lists/$t/local", "pkg-lists/$t/common",
+		              "pkg-lists/$t/$deb_host_arch.cfg");
+		push @lists, "pkg-lists/$t/$deb_host_arch/$sub_arch.cfg" if $sub_arch;
+	}
+
+	while (@lists) {
+		my $list=pop @lists;
+		debug 1, "processing $list";
+		if (! -e $list) {
+			warning("missing list, $list, for type $type")
+				if $list !~ /local$/ && $list !~ m#$deb_host_arch/$sub_arch.cfg$#;
+		}
+		else {
+			open (LIST, $list) || die "open $list $!";
+			while (<LIST>) {
+				chomp;
+	
+				# includes
+				if (/^#include \"(.*)\"/) {
+					my $include=$1;
+					push @lists, "pkg-lists/$include";
+				}
+				
+				# comments
+				s/^#.*//;
+				next unless length;
+				
+				# normal kernel version substitution
+				if (/\$\{kernel:Version\}/) {
+					foreach my $v (@kernel_versions) {
+						my $l=$_;
+						$l=~s/\$\{kernel:Version\}/$v-$kernel_flavour/g;
+						collectpackage($l, \%collect, \%exclude, \@postponed);
+					}
+					next; # move on to the next line
+				}
+				collectpackage($_, \%collect, \%exclude, \@postponed);
+			}
+			close LIST;
+		}
+
+		debug(-1);
+	}
+
+	# Make sure any postponed sets of alternative dependencies
+	# are satisfied. If any of the dependencies in a set are already
+	# selected, that satisfies it. If not, arbitrarily choose the
+	# first.
+	while (@postponed) {
+		my $set=pop @postponed;
+		my $satisfied=0;
+		foreach my $d (@$set) {
+			if ($collect{$d}) {
+				$satisfied=1;
+			}
+		}
+		if (! $satisfied) {
+			$collect{$set->[0]}=1;
+			debug 0, "adding $set->[0] (chosen at random out of @$set)";
+			collectdeps($set->[0], \%collect, \@postponed);
+		}
+	}
+	
+	return \%collect, \%exclude;
+}
+
+# Main program.
+debug 1, "reading pkg-lists for $type";
+my ($collect, $exclude)=getlists($type);
+debug -1;
+
+my ($parentcollect, $parentexclude);
+if (length $driver_for) {
+	debug 1, "reading pkg-lists for $driver_for and excluding";
+	($parentcollect, $parentexclude)=getlists($driver_for);
+	debug -1;
+}
+foreach my $p (sort keys %$collect) {
+	print "$p\n" unless $exclude->{$p} || $parentcollect->{$p};
+
+	# Warn about missing deps.
+	foreach my $deplist (pkgdeps($p)) {
+		my $ok=0;
+		foreach my $dep (@$deplist) {
+			if ($collect->{$dep} || $exclude->{$dep} || $parentcollect->{$dep}) {
+				$ok=1;
+			}
+		}
+		if (! $ok) {
+			warning("in $type, $p has unsatisfied dependency on ".
+				join(" | ", @$deplist));
+		}
+	}
+}

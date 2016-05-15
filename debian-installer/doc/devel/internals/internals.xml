@@ -1,0 +1,102 @@
+<?xml version='1.0'?>
+<!-- -*- DocBook -*- -->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+    "/usr/share/sgml/docbook/dtd/xml/4.2/docbookx.dtd" [
+ <!ENTITY % sgml.features "IGNORE">
+ <!ENTITY % xml.features  "INCLUDE">
+ <!ENTITY % dbcent PUBLIC
+      "-//OASIS//ENTITIES DocBook Character Entities V4.2//EN"
+      "/usr/share/sgml/docbook/dtd/xml/4.2/dbcentx.mod"> %dbcent;
+
+ <!ENTITY running.xml    SYSTEM "running.xml"  >
+ <!ENTITY udebs.xml      SYSTEM "udebs.xml"    >
+ <!ENTITY building.xml   SYSTEM "building.xml" >
+ <!ENTITY maintenance.xml SYSTEM "maintenance.xml" >
+ <!ENTITY menu-item.xml  SYSTEM "menu-item-numbers.xml" >
+ <!ENTITY hooks.xml      SYSTEM "available-hooks.xml" >
+]>
+
+
+<book>
+
+  <bookinfo>
+    <title>Debian Installer internals</title>
+    <authorgroup>
+      <author>
+        <firstname>Frans</firstname>
+        <surname>Pop</surname>
+     </author>
+    </authorgroup>
+
+    <abstract>
+<para>
+
+The Debian Installer is sometimes described as a mini Linux distribution
+which gives an indication of its complexity. This document gives an
+introduction to the inner workings of the installer when it is running,
+its components (udebs) and its build system.
+
+</para>
+    </abstract>
+
+    <copyright>
+      <year>2006</year>
+      <year>2008</year>
+      <year>2010</year>
+      <holder>Frans Pop <email>fjp@debian.org</email></holder>
+    </copyright>
+
+    <legalnotice>
+<para>
+
+This document is free; you may redistribute it and/or modify it
+under the terms of version 2 of the GNU General Public License.
+
+</para>
+    </legalnotice>
+  </bookinfo>
+
+<toc/>
+
+<chapter id="intro">
+<title>Introduction</title>
+<para>
+
+This document is intended to make Debian Installer more accessible to new
+developers and as a central location to document technical information.
+
+If you have any suggestions to improve this document, please mail them to
+the debian-boot list.
+
+</para><para>
+
+For any kind of work on Debian Installer, you should check out the d-i
+repository on alioth, see
+<ulink url="http://anonscm.debian.org/viewvc/d-i/trunk/README?view=markup">
+the README file</ulink>.
+
+</para><para>
+
+Subscription to the debian-boot list is recommended. To request commit
+access to the repository, please send a mail to that list.
+
+</para><para>
+
+Additional development oriented documentation can be found on the <ulink
+url="http://wiki.debian.org/DebianInstaller">Debian Installer Wiki</ulink>,
+in the SVN repository under <filename>installer/doc/devel</filename> or
+in <filename>README</filename> files included with the source for various
+components.
+
+</para>
+</chapter>
+
+&running.xml;
+&udebs.xml;
+&building.xml;
+&maintenance.xml;
+
+&menu-item.xml;
+&hooks.xml;
+
+</book>

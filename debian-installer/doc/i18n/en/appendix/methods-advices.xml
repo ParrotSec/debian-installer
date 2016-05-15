@@ -1,0 +1,226 @@
+<appendix id="methods-advices"><title>Translation methods and advices</title>
+
+<sect1>
+<title>
+Introduction
+</title>
+
+<para>
+This section will give translators recommendations about work methods
+as well as more precise recommendations targeted for &d-i;
+translations.
+</para>
+
+<para>
+Reading more general documentation about Free Software translation
+work is also recommended to all &d-i; translators as several methods
+and concepts are common to all Free Software translation projects.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Work with translation teams
+</title>
+
+<para>
+If a translation team exists for a language, translators should
+<emphasis>work with them</emphasis>. They should first check the
+<email>debian-l10n-&lt;language&gt;</email> mailing list where
+&lt;language&gt; is the language name in English
+(e.g. <email>debian-l10n-polish</email>,
+<email>debian-l10n-portuguese</email>, etc.)
+</para>
+
+<para>
+The list of all available translation teams is available at <ulink
+url="&url-debian-list-archives;i18n.html">&url-debian-list-archives;i18n.html</ulink>.
+If in doubt, assistance and help may be requested on the
+&email-debian-i18n-list; mailing list.
+</para>
+
+<para>
+As soon as more than one translator works for a given language, the
+creation of a dedicated translation team is recommended. This is
+usually done with the creation of a dedicated mailing list,
+preferably on the Debian servers, where it will get more
+visibility. Assistance for this can be requested to the &i18n-coords;
+or on &email-debian-i18n-list;.
+</para>
+
+<para>
+Working with translation teams not dedicated to Debian work is also
+possible. Actually, several &d-i; translators come from such teams and
+continue working directly with these teams. This work method is
+however slightly weaker as the link between the &i18n-coords; and the
+translators for the given language depends on a single individual.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Use peer review
+</title>
+
+<para>
+In all translation efforts, peer reviewing is a key point of the
+quality assurance process. All translators may introduce errors,
+spelling or grammar mistakes in their translations. Thus, reviews by
+other native speakers of the language (even if not familiar with the
+technical background) can help in tracking these down.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Remain consistent
+</title>
+
+<para>
+Some strings or translations choices are identical in two or more
+packages. Translators should try to translate them consistently. The
+use of compendiums or translation dictionaries is suggested.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Work with previous translators
+</title>
+
+<para>
+From time to time, translators will find existing, incomplete (or
+inconsistent) translation, done by another individual.  They should do
+their best to contact the previous translator in order to prevent
+duplication of work.  His/her mail address can be found in the PO
+file header named <classname>Last-Translator</classname>.
+</para>
+
+<para>
+Such contacts may be a good opportunity to get more manpower in some
+teams. Translators should suggest the former translator to join their
+team.
+</para>
+
+<para>
+If this contact is unsuccessful (unresponsive former translator), the
+work can be taken over by a new translator, provided this is not
+prohibited by a non free licensing (some translators unfortunately put
+statements that make their work non-free such as restriction of
+distribution or restriction of modification).
+</para>
+
+<para>
+In any case, if the translation work is taken over and completed or
+corrected, the reference to the former translator must be kept in the
+PO file headers. Changing the <command>Last-Translator</command> field
+with the real name and address of the last person who effectively did
+some work on the file is recommended.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Follow development
+</title>
+
+<para>
+Packages involved in the various levels of &d-i; translations are
+constantly changing, which sometimes induces string changes.
+</para>
+
+<para>
+As a consequence, translation updates are sometimes required for these
+packages. &d-i; translators should follow the status of their
+translations for the various levels.
+</para>
+
+<para>The translation status pages are the recommended reference to use in order to follow each language's statistics. See 
+<xref linkend="gettext-tools"/> for details.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Testing translations
+</title>
+
+<para>
+When a translation is completed, it should always be proofread at
+least once to correct all meaning-, spelling-, grammar-, typo-, etc-
+mistakes.
+</para>
+
+<para>The validity of the new PO file must be tested. The following
+command should be used before committing or sending translation files:
+</para>
+
+<informalexample>
+<screen>
+  msgfmt --check --statistics &lt;language&gt;.po
+</screen>
+</informalexample>
+
+<para>For details about <command>msgfmt</command>, see <xref linkend="gettext-tools"/>.
+</para>
+
+<para>
+The Debian <classname>aspell</classname> package can be used to test
+the spelling in translation files.
+</para>
+
+<para>
+Finally, <command>podebconf-display-po</command> (from the
+<classname>po-debconf</classname> package) can be used on 
+<emphasis>debconf</emphasis> translation files:
+</para>
+
+<informalexample>
+<screen>
+  podebconf-display-po -fdialog &lt;language&gt;.po
+</screen>
+</informalexample>
+
+<para>
+For details about <command>podebconf-display-po</command>, see <xref
+linkend="gettext-tools"/>.
+</para>
+
+</sect1>
+<sect1>
+<title>
+Variables substitutions
+</title>
+
+<para>
+In several &d-i; packages, some embedded variable names such as "You
+are currently modifying ${PARTITION} properties" can be found.
+Translators <emphasis>should not</emphasis> translate the variable
+names and be very careful about keeping braces and <quote>dollar</quote> signs. For
+instance, the French translation of the above is: <quote>Vous modifiez
+actuellement les propriétés de ${PARTITION}</quote>.
+</para>
+
+<para>
+When translating programs such as <classname>dpkg</classname>,
+<classname>apt</classname> or <classname>shadow</classname>,
+translators should be careful about <quote>%s</quote> variables: the translation
+<emphasis>must</emphasis> have the same number of such variables as
+the original English string.
+</para>
+
+<para>
+Modern PO editing tools will warn translators about such mistakes and
+<command>msgfmt</command> will also report such
+<emphasis>errors</emphasis>.
+</para>
+
+</sect1>
+
+</appendix>

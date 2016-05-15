@@ -1,0 +1,675 @@
+<!-- <chapter id="translators-level2"><title>Translating &d-i; - Level 2</title> -->
+
+<sect1 id="translators-level2">
+<title>
+Level 2
+</title>
+
+<sect2>
+<title>
+Contents
+</title>
+
+<para>
+Most level 2 translations are related to packages used during the
+installation process which are not packages maintained by the &d-i;
+team.
+</para>
+
+<para>
+Most of these packages are installed during the <emphasis>Select and
+install packages</emphasis> step of &d-i; which occurs before the
+<emphasis>Finish install</emphasis> step.
+</para>
+
+<para>
+Some others provide translatable strings to other parts of &d-i;.
+</para>
+
+<para>
+All packages which interact with users while a Debian base system is
+installed, with the default level for the asked questions
+(<emphasis>high priority installs</emphasis> in &d-i; jargon) are
+considered part of the <emphasis>level 2</emphasis> of &d-i;
+localization.
+</para>
+
+<para>This includes one package maintained by the &d-i; team (tasksel) as well as a few
+other Debian packages:
+</para>
+	  <itemizedlist>
+	    <listitem>
+	      <para>
+		tasksel (&d-i; team)
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		iso-codes
+	      </para>
+	    </listitem>
+		<listitem>
+		  <para>
+		    popularity-contest
+		  </para>
+		</listitem>
+		<listitem>
+		  <para>
+		    eject
+		  </para>
+		</listitem>
+		<listitem>
+		  <para>
+		    espeakup
+		  </para>
+		</listitem>
+		<listitem>
+		  <para>
+		    grub2
+		  </para>
+		</listitem>
+	  </itemizedlist>
+
+<para>
+iso-codes package material is used by some level1
+packages from &d-i; while others are packages installed as part of the
+base system and prompting users during installs (either default ones
+or in some conditions).
+</para>
+
+<para>
+Translators should translate these files in the same order that they appear
+in this section.
+</para>
+
+</sect2>
+
+<sect2>
+<title>
+Tasksel
+</title>
+
+<sect3>
+<title>
+Package description
+</title>
+
+<para>
+The &tasksel; package, called for each installation, proposes <emphasis>tasks</emphasis> to trigger
+the installation of complete sets of Debian packages. A
+<emphasis>task</emphasis> is a collection of several individual Debian
+packages all related to a specific activity.
+</para>
+
+<para>
+This package is, technically speaking, a <quote>regular</quote>
+Debian package. However, the package maintainer is the &d-i; team and
+the package is managed and developed the same way core &d-i; packages
+are managed. More precisely, all &d-i; translators have been granted a
+commit access to the tasksel <acronym>GIT</acronym> repository.
+</para>
+
+<para>
+Several tasks are related to localized environments. These tasks
+install packages that are likely to be useful when using Debian with
+the mentioned languages. The <emphasis>language tasks</emphasis> are
+automatically tagged for install when the given localized environment
+has been used with &d-i;.
+</para>
+
+<para>
+Translators whose language does not currently have such task should
+provide one. See <xref linkend="language-tasks"/> for details about
+this. Other translators should check the existing language task for
+their language.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Files location and access methods
+</title>
+
+<para>
+This package is a <quote>regular</quote> Debian package. The
+package maintenance team uses GIT to maintain
+it. 
+</para>
+
+<para>This package's l10n material is spread over three files. These are, by
+order of importance:
+</para>
+
+<itemizedlist>
+<listitem>
+<para>
+<filename>tasks/po/debian-tasks.pot</filename>: tasks descriptions translations. These files are named <emphasis>tasks</emphasis>
+translations.
+</para>
+</listitem>
+<listitem>
+<para>
+<filename>debian/po/templates.pot</filename>: text of the screen shown to users. These files are named <emphasis>debconf</emphasis>
+translations.
+</para>
+</listitem>
+<listitem>
+<para>
+<filename>po/tasksel.pot</filename>: messages displayed by the
+program. These files are named <emphasis>program</emphasis>
+translations.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+Access to these files:
+</para>
+
+<itemizedlist>
+<listitem>
+<acronym>GIT</acronym> access: &git-tasksel; (documenting how to use GIT is way out of the scope of this document)
+</listitem>
+  <listitem>
+    <para>
+      <acronym>HTTP</acronym> access: 
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          &url-level2-pot-link;, <filename>tasksel_tasks.pot</filename> (tasks), <filename>tasksel_debian_po.pot</filename> (debconf) and <filename>tasksel_po.pot</filename> (programs)
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-level2-po-link;, <filename>tasksel_tasks_&language;.po</filename> (tasks), <filename>tasksel_debian_po_&language;.po</filename> (debconf) and <filename>tasksel_po_&language;.po</filename> (program)
+        </para>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+</itemizedlist>
+
+
+</sect3>
+
+<sect3>
+<title>
+Updating/Adding translations
+</title>
+
+<para>
+For the <emphasis>tasks</emphasis> translation, translators should
+copy the <filename>debian-tasks.pot</filename> file in <filename>tasks/po</filename> as
+<filename>&language;.po</filename> and work on this file, then add it to the
+repository and later commit the needed updates.
+</para>
+
+
+<para>
+For the <emphasis>debconf</emphasis> translation, translators should
+copy the <filename>templates.pot</filename> file in <filename>debian/po</filename> as
+<filename>&language;.po</filename> and work on this file, then add it to the
+repository and later commit the needed updates.
+</para>
+
+
+<para>
+For the <emphasis>program</emphasis> translation, translators should
+copy the <filename>tasksel.pot</filename> file in <filename>po</filename> as
+<filename>&language;.po</filename> and work on this file, then add it to the
+repository and later commit the needed updates.
+</para>
+
+<para>
+ In case <acronym>GIT</acronym> push actions are
+absolutely impossible, these updates can be sent as bug reports
+against the <classname>tasksel</classname> package (see <xref
+linkend="bug-reports"/> for details) and mention whether the file is
+the <emphasis>tasks</emphasis>, <emphasis>debconf</emphasis>
+or <emphasis>program</emphasis> translation.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Specific recommendations
+</title>
+
+<para>
+In the program translation file, "aptitude" is a program name and
+should not be translated.
+</para>
+
+</sect3>
+
+</sect2>
+
+
+<sect2>
+<title>
+Iso-codes
+</title>
+
+<sect3>
+<title>
+Package description
+</title>
+
+<para>
+A core &d-i; package (<classname>localechooser</classname>) uses
+country names and codes from the <classname>iso-codes</classname>
+package. The country name translations are taken from this package
+instead of being duplicated.  These country names translations are
+likely to be used in other parts of the Debian operating system.
+</para>
+
+<para>
+For this reason, translators need to translate country names
+from ISO-3166 in the <classname>iso-codes</classname> package (ISO-3166 is the
+standard for country (and other <quote>areas of specific geographic
+interest</quote> names and codes)).
+</para>
+
+
+</sect3>
+
+<sect3>
+<title>
+Files location and access methods
+</title>
+
+<para>
+This package is a <quote>regular</quote> Debian package. The
+package maintainer uses a <acronym>GIT</acronym> repository.
+However, <classname>iso-codes</classname> domains are also registered in the <ulink url="&url-tp;">Translation Project</ulink>. <classname>iso-codes</classname> encourage translators to use the Translation project in order to update translations for ISO-3166 (as well as ISO-639 for language names, ISO-4217 for currency names, ISO-3166-2 for countries subdivisions names and ISO-15924 for language scripts names).
+</para>
+
+<para>
+As a consequence, references to GIT are kept here only for reference.
+</para>
+
+<itemizedlist>
+  <listitem>
+Anonymous GIT checkout command: <command>&git-iso-codes-anon;</command>
+    <para>
+      The translation material is in directory <filename>iso_3166</filename> (working on <filename>iso_639</filename>, which contain language names, will be appreciated by maintainers, though not directly useful for &d-i;).
+    </para>
+
+  </listitem>
+
+  <listitem>
+    <para>
+      <acronym>HTTP</acronym> access: 
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <ulink url="&url-level2-pot;/iso-codes_iso_3166.pot">&url-level2-pot;/iso-codes_iso_3166.pot</ulink>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-level2-po;/iso-codes_iso_3166_&language;.po
+        </para>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3>
+<title>
+Updating/Adding translations
+</title>
+
+<para>
+Translations should preferrably be updated through the Translation Project. Alternatively, in case a given team of the TP is unresponsive, they can be reported as bugs against the
+<classname>iso-codes</classname> package.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Specific recommendations
+</title>
+
+<para>
+The ISO-3166 list includes all <emphasis>countries, regions and areas of
+specific geopolitical interest</emphasis> in the world. Translators
+should be aware that this translation is far from being a trivial
+work and may very quickly turn into some deep and complicated
+political difficulties. The original English names are those used
+officially by the relevant countries to designate themselves. Please make
+your best for staying as neutral and close to these names as
+possibles. Some countries Foreign Affairs (or equivalent) ministries
+keep lists of <emphasis>country</emphasis> names translations in their
+own languages.
+</para>
+
+<para>
+For each country, the standard defines a <emphasis>short</emphasis>
+name (to be used in lists) and a <emphasis>long</emphasis> name which
+is the official complete name of the country.
+</para>
+
+<para>
+If in doubt, translators should contact the iso-codes package
+maintainer: <email>iso-codes@packages.debian.org</email>.
+</para>
+
+<para>
+The ISO-639 (language names), ISO-15924 (scripts names) and ISO-4217 files (currencies names) can
+also be translated. However, this is a very tedious task which may
+turn to be very difficult (translating language names is even more
+difficult than translating country names). Finally, for the very courageous translators, ISO-3166-2 is available, featuring thousands of strings for the subdivisions of most countries in the world.
+</para>
+
+</sect3>
+
+</sect2>
+
+<sect2>
+<title>
+Popularity-contest
+</title>
+
+<sect3>
+<title>
+Package description
+</title>
+
+<para>
+The <classname>popularity-contest</classname> (very often nicknamed as
+<emphasis>popcon</emphasis>) package is automatically installed on
+every Debian system as it is part of what is called the
+<emphasis>base</emphasis> system.
+</para>
+
+<para>
+This package installs scripts which periodically send to Debian
+Developers statistics about installed packages on the local
+system. These statistics are used when building releases, for
+instances for getting informations about the most used architecture
+ports as well as the most used packages.
+</para>
+
+<para>
+Of course, as the Debian Project is highly committed to the respect of
+its users privacy, this survey is disabled by default. So, when the
+package is installed, it prompts the user whether (s)he wants to
+activate this survey system.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Files location and access methods
+</title>
+
+<itemizedlist>
+  <listitem>
+Anonymous SVN checkout command: <command>&svn-popcon;</command>
+  </listitem>
+  <listitem>
+    <para>
+      <acronym>HTTP</acronym> access: 
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <ulink url="&url-level2-pot;/popularity-contest_debian_po.pot">&url-level2-pot;/popularity-contest_debian_po.pot</ulink>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-level2-po;/popularity-contest_debian_po_&language;.po
+        </para>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3>
+<title>
+Updating/Adding translations
+</title>
+
+<para>
+Translations should be reported as bugs against the <classname>popularity-contest</classname> package.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Specific recommendations
+</title>
+
+<para>
+Translators must be very careful with this specific translation: keep
+the prompt very clear as it is in English and <emphasis>keep it
+short</emphasis>.
+</para>
+
+</sect3>
+
+</sect2>
+
+<sect2>
+<title>
+Eject
+</title>
+
+<sect3>
+<title>
+Package description
+</title>
+
+<para>
+The <classname>eject</classname> package is used as part of &d-i; to offer a menu entry allowing to eject the CD that is eventually in the CD-ROM drive.
+</para>
+
+<para>
+The translatable part is the menu entry title.
+</para>
+
+
+</sect3>
+
+<sect3>
+<title>
+Files location and access methods
+</title>
+
+<para>
+This package is a <quote>regular</quote> Debian package. The
+package maintenance team uses GIT to maintain
+it. 
+</para>
+
+<itemizedlist>
+<listitem>
+<acronym>GIT</acronym> access: &git-eject; 
+</listitem>
+  <listitem>
+    <para>
+      <acronym>HTTP</acronym> access: 
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <ulink url="&url-level2-pot;/eject_debian_po.pot">&url-level2-pot;/eject_debian_po.pot</ulink>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-level2-po;/eject_debian_po_&language;.po
+        </para>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3>
+<title>
+Updating/Adding translations
+</title>
+
+<para>
+Translations should be reported as bugs against the <classname>eject</classname> package.
+</para>
+
+</sect3>
+
+</sect2>
+
+<sect2>
+<title>
+Espeakup
+</title>
+
+<sect3>
+<title>
+Package description
+</title>
+
+<para>
+The <classname>espeakup</classname> package is used as part of &d-i;
+to offer a menu entry allowing to configure the voice syntheziser used
+for voice-enabled installs.
+</para>
+
+<para>
+The translatable part is the menu entry title.
+</para>
+
+
+</sect3>
+
+<sect3>
+<title>
+Files location and access methods
+</title>
+
+<para>
+This package is a <quote>regular</quote> Debian package. The
+package maintenance team uses GIT to maintain
+it. 
+</para>
+
+<itemizedlist>
+<listitem>
+<acronym>GIT</acronym> access: &git-espeakup; 
+</listitem>
+  <listitem>
+    <para>
+      <acronym>HTTP</acronym> access: 
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <ulink url="&url-level2-pot;/espeakup_debian_po.pot">&url-level2-pot;/espeakup_debian_po.pot</ulink>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-level2-po;/espeakup_debian_po_&language;.po
+        </para>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3>
+<title>
+Updating/Adding translations
+</title>
+
+<para>
+Translations should be reported as bugs against the <classname>espeakup</classname> package.
+</para>
+
+</sect3>
+
+</sect2>
+
+<sect2>
+<title>
+Grub2
+</title>
+
+<sect3>
+<title>
+Package description
+</title>
+
+<para>
+During expert installs on i386 and amd64, the <classname>grub2</classname> package may prompt users about installing GRUB 2 instead of the older GRUB.
+</para>
+
+</sect3>
+
+<sect3>
+<title>
+Files location and access methods
+</title>
+
+<para>
+This package is a <quote>regular</quote> Debian package. The
+package maintenance team uses an <acronym>BZR</acronym> repository.
+</para>
+
+<itemizedlist>
+  <listitem>
+Anonymous BZR checkout command: <command>&bzr-grub2;</command>
+</listitem>
+  <listitem>
+    <para>
+      <acronym>HTTP</acronym> access: 
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <ulink url="&url-level2-pot;/grub_debian_po.pot">&url-level2-pot;/grub_debian_po.pot</ulink>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &url-level2-po;/grub_debian_po_&language;.po
+        </para>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3>
+<title>
+Updating/Adding translations
+</title>
+
+<para>
+Translations should be reported as bugs against the <classname>grub2</classname> package.
+</para>
+
+</sect3>
+
+</sect2>
+
+
+</sect1>
+
+
+<!-- </chapter> -->

@@ -1,0 +1,126 @@
+<chapter id="maintenance">
+<title>Maintenance of the installer</title>
+<para>
+
+This document only provides an introduction to some tasks required to
+keep the installer up and running. It should be mostly helpful for
+d-i release managers.
+
+</para>
+
+<sect1><title>Updating to a new Linux<footnote><para>The same logic should
+be applicable to the FreeBSD kernel, even if some details might be
+different.</para></footnote> kernel version</title>
+
+<para>
+This is possible when the <classname>linux</classname> package gets
+uploaded, bumping its ABI. For example, it gets bumped from
+<code>3.9-1</code> to <code>3.10-1</code>. This becomes needed when
+the <classname>linux-latest</classname> package gets uploaded, since
+obsolete
+<classname>linux-image-&lt;oldabi&gt;-&lt;arch&gt;</classname>
+packages (and relevant kernel modules) get decrufted soon after
+that. Daily builds start to fail to build at this point, failing to
+fetch decrufted packages.
+
+</para><para>
+
+A cron job on <code>d-i.debian.org</code> generates an linux kernel
+ABI summary for the <code>testing</code>, <code>unstable</code>, and
+<code>experimental</code> suites, and also sends a notification when
+the ABI gets bumped in any of them. The summary is available here:
+<ulink url="https://d-i.debian.org/kernel-summary.html" />
+
+</para><para>
+
+The following files need to be updated:
+<filename>build/config/*.cfg</filename>; beware, some architectures
+have specific version handling, so it might be needed to update some
+extra variables (like the upstream kernel version), rather than only
+those containing the kernel ABI.
+
+</para>
+
+</sect1>
+
+
+<sect1><title>Dropping a deprecated filesystem</title>
+
+<para>
+
+This is needed when the kernel drops support for a filesystem, say
+<code>foofs</code>; on the kernel side, that means the following
+packages go away:
+<code>foofs-modules-&lt;abi&gt;-&lt;arch&gt;</code>. Kernel
+maintainers should send a notification to the mailing list in advance.
+
+</para><para>
+
+From a quick grep under the <code>packages/</code> directory, it
+appears that the following changes are needed. This list isn't ensured
+to be exhaustive:
+
+<orderedlist>
+  <listitem>
+
+    Drop all <code>foofs-modules-${kernel:Version}</code> occurrences
+    from the files under the <filename>build/config/</filename>
+    directory.
+
+  </listitem><listitem>
+
+    Get <code>partman-foofs</code> removed from the archive.
+
+  </listitem><listitem>
+
+    Move the <code>partman-foofs.git</code> repository below the
+    <code>attic/</code> directory.
+
+  </listitem><listitem>
+
+    Update the top-level <filename>.mrconfig</filename> file to mark
+    the said repository as obsolete, adding <code>deleted =
+    true</code> to its section.
+
+  </listitem><listitem>
+
+    Update <code>kernel-wedge</code> if relevant. FIXME: Find out when
+    that's needed, and what's needed.
+
+  </listitem><listitem>
+
+    Update <code>iso-scan</code> to drop <code>foofs</code> from the
+    <code>FS</code> variable in the
+    <filename>debian/iso-scan.postinst</filename> script.
+
+  </listitem><listitem>
+
+    Update <code>partman-auto</code> to drop <code>foofs</code>
+    from the <filename>lib/resize.sh</filename> script.
+
+    </listitem><listitem>
+
+    Update <code>os-prober</code> to drop <code>foofs</code> from the
+    <code>FILESYSTEMS</code> variable in the
+    <filename>os-probes/init/common/10filesystems</filename> file.
+
+  </listitem><listitem>
+
+    Update <code>partconf</code> to drop <code>foofs</code> from
+    the <code>file_system_modules</code> variable, but there might
+    be some more occurrences.
+
+  </listitem><listitem>
+
+    Update <code>rescue</code> to drop relevant dependencies, and
+    remove <code>try_load_module foofs</code> from
+    <filename>debian/rescue-mode.postinst</filename> accordingly.
+
+  </listitem>
+</orderedlist>
+
+</para>
+
+</sect1>
+
+</chapter>

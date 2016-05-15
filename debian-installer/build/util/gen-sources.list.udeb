@@ -1,0 +1,94 @@
+#! /bin/sh
+set -e
+
+OLDIFS="$IFS"
+NL="
+"
+
+SOURCES_LIST=$1
+SUITE=$2
+UDEB_COMPONENTS=$3
+USE_PROPOSED_UPDATES=$4 # optional
+
+# Set to 1 or 2 to see increasing debug info about mirror tests
+# Use 0 for quiet (normal) operation
+VERBOSE=0
+
+test_url() {
+	local url=$1
+	if [ $VERBOSE -ge 1 ]; then
+		echo "DEBUG: testing 'wget --spider $url'" >&2
+	fi
+	if [ $VERBOSE -ge 2 ]; then
+		# Redirect output from wget to stderr, with prefix
+		if wget --spider $url 2>&1 | sed "s/^/  OUT: /" >&2; then
+			return 0
+		fi
+	elif wget -q --spider $url >/dev/null 2>&1; then
+		return 0
+	fi
+	return 1
+}
+
+get_mirrors() {
+	local file
+	for file in $@; do
+		[ -s $file ] || continue
+		grep '^deb[[:space:]]' $file | \
+		   grep -v '^deb[[:space:]]\+cdrom:' | \
+		   sed 's,^deb \[[^]]*\] ,deb ,' | \
+		   grep -v '\(security.debian.org\|volatile.debian.\(net\|org\)\)' | \
+		   grep '[[:space:]]main' | \
+		   awk '{print $1 " " $2}' | \
+		   sed 's,^deb file,deb copy,' | \
+		   sed 's,/* *$,,'
+	done
+}
+
+# Cache the apt configuration dump, with only the needed namespace
+APT_CONFIG=$(apt-config dump | grep '^Dir::Etc')
+
+# Get the system apt directory
+APT_DIR_ETC=$(echo "$APT_CONFIG" | sed -n -e 's/^Dir::Etc *\"\(.*\)\";$/\1/p')
+
+# Fetch APT's sources.list
+APT_SOURCELIST=$(echo "$APT_CONFIG" | sed -n -e 's/^Dir::Etc::sourcelist *\"\(.*\)\";$/\1/p')
+
+# Fetch APT' sources.list.d
+APT_SOURCEPARTS=$(echo "$APT_CONFIG" | sed -n -e 's/^Dir::Etc::sourceparts *\"\(.*\)\";$/\1/p')
+
+# Also use mirrors defined in files in $SOURCES_LIST.d/
+MIRRORS="$(get_mirrors $SOURCES_LIST /$APT_DIR_ETC/$APT_SOURCELIST /$APT_DIR_ETC/$APT_SOURCEPARTS/*)"
+
+if ! which 'wget' >/dev/null; then
+	echo "ERROR: the command wget is not available; please install it" >&2
+	exit 1
+fi
+
+# Remove any duplicates at the end of the loop (the perl statement)
+IFS="$NL"
+for mirror in $MIRRORS; do
+	IFS="$OLDIFS"
+
+	tmirror="$(echo $mirror | sed -r "s/^deb //")"
+	# We should also check that d-i is available, but that's more complex.
+	# Settle for just checking the suite/codename for now.
+	if echo "$mirror" | grep -Eq "^deb (f|ht)tp"; then
+		if test_url $tmirror/dists/$SUITE/Release; then
+			echo "$mirror $SUITE $UDEB_COMPONENTS"
+		else
+			echo "WARNING: mirror '$tmirror' appears to be invalid; skipping" >&2
+		fi
+		if [ "$USE_PROPOSED_UPDATES" = 1 ] &&
+		   test_url $tmirror/dists/$SUITE-proposed-updates/Release; then
+			echo "$mirror $SUITE-proposed-updates $UDEB_COMPONENTS"
+			echo "INFO: using '$tmirror' for $SUITE-proposed-updates" >&2
+		fi
+	else
+		echo "$mirror $SUITE $UDEB_COMPONENTS"
+		if [ "$USE_PROPOSED_UPDATES" = 1 ]; then
+			echo "$mirror $SUITE-proposed-updates $UDEB_COMPONENTS"
+		fi
+	fi
+
+done | perl -ne 'print unless $seen{$_}; $seen{$_}=1'

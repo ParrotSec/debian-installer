@@ -1,0 +1,40 @@
+This is the debian-installer build system, which produces the
+Debian installation media.
+
+The debian-installer build system is Copyright 2001-2009 by Joey Hess
+<joeyh@debian.org> and the d-i team, and is licensed under the terms
+of the GNU GPL 2 or any later version, which can be found in
+/usr/share/common-licenses/GPL-2 on Debian systems.
+
+The install media built by the debian-installer build system contain a wide
+variety of free software, including the GNU C library, busybox, linux
+kernel, newt, etc. It also includes much of the rest of the
+debian-installer: main-menu, udpkg, anna, cdebconf, rootskel and di-utils.
+The sources to all of the software included in the install media, and the
+details about its copyright can be found in the Debian archive.
+
+The open use Debian logo is used in some boot screens. It is copyright (c)
+1999 Software in the Public Interest. This logo or a modified version may be
+used by anyone to refer to the Debian project, but does not indicate
+endorsement by the project. http://www.debian.org/logos/
+
+The joy theme images (list of files below) have been designed from the
+joy theme (© 2012 Adrien Aubourg, GPLv2) but use the klowner layout and
+a rebuilt-from-scratch "debian" word.
+
+    build/boot/hurd/pics/joy-hurd.svg
+    build/boot/kfreebsd/pics/joy-kbsd.svg
+    build/boot/x86/pics/joy.svg
+
+The Lines theme images (list of files below) have been designed from the
+Lines theme (© 2014 Juliette Taka BELIN, GPLv2+) but use the klowner
+layout.
+
+    build/boot/hurd/pics/lines-hurd.svg
+    build/boot/kfreebsd/pics/lines-kbsd.svg
+    build/boot/x86/pics/lines.svg
+
+The gen-hd-image tool, used to build bootable partitioned disk images, is
+Copyright 2014,2015 Karsten Merker <merker@debian.org> and is dual-licensed.
+It is provided under the terms of the GNU GPL version 2 or any later
+version, or alternatively under the terms of the X11 license.

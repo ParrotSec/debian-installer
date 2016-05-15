@@ -1,0 +1,87 @@
+#! /usr/bin/make -f
+
+ARCH=$(shell dpkg-architecture -qDEB_BUILD_ARCH)
+VERSION=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Version: | cut -d ' ' -f 2)
+DATE=$(shell echo $(VERSION) | cut -d '.' -f 1)
+SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
+SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
+
+ifneq ($(filter stable testing,$(SUITE)),)
+# Special treatment for parrot stable/testing
+SUITE=testing
+USE_UDEBS_FROM=testing
+USE_PROPOSED_UPDATES=0
+else
+# Other "normal" releases
+USE_UDEBS_FROM=$(SUITE)
+USE_PROPOSED_UPDATES=1
+endif
+
+TRANSSTATUS=translation-status
+BOOTMENU_BEEP=y
+
+ARCHIVEDIR=debian/tmp/installer-$(ARCH)
+DESTDIR=$(ARCHIVEDIR)/$(DATE)
+IMAGEDIR=$(DESTDIR)/images
+TARNAME=debian-installer-images_$(VERSION)_$(ARCH).tar.gz
+
+export SOURCE_DATE_EPOCH
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean
+	$(MAKE) -C build reallyclean
+	$(MAKE) -C doc/devel/partman clean
+	$(MAKE) -C doc/devel/internals clean
+
+# Must run as root, so is not run as part of regular build.
+build-images:
+	$(MAKE) -C build all_build stats release \
+		USE_UDEBS_FROM=$(USE_UDEBS_FROM) BUILD_DATE=$(DATE) \
+		USE_PROPOSED_UPDATES=$(USE_PROPOSED_UPDATES) \
+		TRANSSTATUS=$(TRANSSTATUS) BOOTMENU_BEEP=$(BOOTMENU_BEEP)
+
+build: build-arch build-indep
+build-arch: build-stamp
+build-indep: build-stamp
+
+build-stamp:
+	rm -f $@
+	$(MAKE) -C doc/devel/internals
+	$(MAKE) -C doc/devel/partman
+	touch $@
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	debian/rules build-images
+
+	install -d $(IMAGEDIR)
+	cp -a build/dest/* $(IMAGEDIR)
+	ln -s $(DATE) $(ARCHIVEDIR)/current
+
+binary-arch: install  
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs doc/* -X Makefile -X build.sh -X .xsl \
+		-X internals.xml -X partman-doc.sgml -X .gitignore
+	dh_compress
+	dh_fixperms
+
+	./build/util/write-built-using
+
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+	./build/util/gen-tarball debian/tmp ../$(TARNAME)
+	dpkg-distaddfile $(TARNAME) raw-installer -
+
+binary-indep:
+
+binary: binary-indep binary-arch 
+.PHONY: build build-images clean binary-indep binary-arch binary install 

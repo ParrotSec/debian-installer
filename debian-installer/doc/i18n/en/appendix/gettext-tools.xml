@@ -1,0 +1,207 @@
+<appendix id="gettext-tools"><title>Gettext files editors and tools</title>
+
+<sect1>
+<title>
+Gettext files editors
+</title>
+
+<para>
+Translators are highly encouraged to use dedicated GNU gettext message
+catalogs files (PO files) editing tools. Even though PO files are
+plain text files which may be modified with any text editor, the use
+of dedicated tools will save translators a lot of time.
+</para>
+
+<para>
+This document does not intend to be a reference document about these
+tools. Most tools have been packaged for the Debian GNU/Linux
+distribution and thus installing them on a Debian system is as easy as
+running <command>apt-get install &lt;package&gt;</command>.
+</para>
+
+<para>Short list of PO editing tools:
+</para>
+
+<itemizedlist>
+  <listitem>
+    <para>
+      <emphasis>Lokalize</emphasis> (Debian package
+      <classname>lokalize</classname>): very complete and
+      powerful. Needs installing the KDE libraries (but, of course, it
+      may work without the full KDE environment).
+    </para>
+    <para>
+      The Lokalize editor (formerly KBabel) is undoubtfully the most complete gettext
+      message catalogs editor and its use is recommended by the
+      &i18n-coords;. Its support for non-Latin languages is very
+      complete, including correct Right-To-Left (RTL) and BiDi support
+      For Arabic/Hebrew and other RTL languages as well as support for
+      combined languages such as languages using the Devanagari script.
+    </para>
+    <para>
+      The major drawback is for Gnome users: it may be quite long
+      to launch and memory hungry because of the need of KDE and Qt
+      libraries.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <emphasis>Gtranslator</emphasis> (Debian package
+      <classname>gtranslator</classname>): PO-file editor for the
+      GNOME Desktop.
+    </para>
+    <para>
+      Gtranslator is roughly the equivalent of Lokalize for users of the
+      Gnome environment. Of course, it can be used outside the Gnome
+      environment with the same drawback as Lokalize.
+    </para>
+    <para>
+      However, it is not well suited for &d-i; translations as
+      <emphasis>it does not properly support Plural
+      Forms</emphasis>. So translators working on files which include
+      plural forms (<classname>base-config</classname> are among those
+      files) should absolutely avoid using Gtranslator.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <emphasis>Poedit</emphasis> (Debian package
+      <classname>poedit</classname>): quite complete tool but no
+      correct handling of non Latin languages on Debian. Uses the
+      WxWindows toolkit.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      Emacs <emphasis>po-mode</emphasis> (Debian package
+      <classname>gettext-el</classname>): editing mode for the
+      Emacs/XEmacs editor. Emacs wizards will probably appreciate
+      using the same editing environment for gettext message catalog
+      files.
+    </para>
+    <para>
+      The Emacs po-mode is however limited when it comes to "advanced"
+      features such as auto-learning, message compendiums use and
+      other very useful features for translators.
+    </para>
+  </listitem>
+</itemizedlist>
+
+
+</sect1>
+
+<sect1>
+<title>
+Gettext files tools
+</title>
+
+<para>
+The Debian package <emphasis>gettext</emphasis> includes a whole set of command-line
+utilities for handling i18n material.
+</para>
+
+<para>Several utilities may help translators in manipulating the PO files
+contents. For all these utilities, see their respective man pages for
+details about their use:
+</para>
+
+<itemizedlist>
+  <listitem>
+    <para>
+      <command>msgcat</command> combines together one or several
+      files. When used on a single file, it will wrap the file
+      contents and make it easy to read.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <command>msgmerge</command> may merge together translations from
+      one or two files as well as update a PO files according to the
+      contents of a <filename>templates</filename> file.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <command>msgfmt</command> is aimed at compiling message catalog
+      files but is also very useful for checking files and get
+      statistics about their contents. The use of <command>msgfmt
+      --check --statistics --output-file=/dev/null
+      &language;.po</command> is highly recommended before commiting a
+      translation file or sending it to the package maintainer.
+    </para>
+  </listitem>
+</itemizedlist>
+
+</sect1>
+
+<sect1>
+<title>
+Debian specific tools
+</title>
+
+<para>
+<command>podebconf-display-po</command> will give translators a rough
+idea on how their translation will look like, particularly the screens
+length (use this utility on a usual 80x25 terminal).  But as cdebconf
+and debconf displays slightly differ, and as some scripts do heavy use
+of text substitution, one should not fully rely on this program. Running
+debian-installer is the only solution to test translations.
+</para>
+
+<para>
+Using <command>podebconf-display-po</command> is mandatory for testing
+debconf translations when they are mentioned to be tricky (such as
+<classname>shadow</classname>,
+<classname>popularity-contest</classname> and exim4 translations).
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Spellchecking tools
+</title>
+
+<para>
+<classname>aspell</classname>: this package is designed for testing
+the spelling in PO files as it will only test the spelling in their
+translated part. It relies on the <command>ispell</command> program :
+this will then only work with languages for which an ispell dictionary
+exists.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Gettext files headers
+</title>
+
+<para>
+Translators should not forget to properly fill up the PO files header,
+especially the <userinput>Last-Translator</userinput> field.
+</para>
+
+<para>
+The <userinput>Project-Id-Version</userinput> field should be filled
+with the package name : this will help translators in translation maintenance.
+</para>
+
+
+</sect1>
+
+<sect1>
+<title>
+Plural Forms
+</title>
+
+<para>
+Foo
+</para>
+
+</sect1>
+
+
+
+
+</appendix>

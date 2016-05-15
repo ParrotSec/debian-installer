@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+# Usage: bootvars-subst subst0 value0 subst1 value1 ...
+#                         < file > outfile
+
+my %subst;
+while (@ARGV) {
+	my $key=shift;
+	my $value=shift;
+	$subst{$key}=$value;
+}
+
+while (<>) {
+	s/\$\{BOOTPROMPT\}\n?$//g; # special case
+	s/\$\{([a-zA-Z0-9_]+)\}/$subst{$1}/g;
+	
+	print;
+}

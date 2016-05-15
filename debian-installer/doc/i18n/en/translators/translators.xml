@@ -1,0 +1,141 @@
+<chapter id="translators"><title>For translators: translating &d-i;</title>
+
+<sect1 id="levels">
+<title>
+The &d-i; levels of translation
+</title>
+
+<para>
+The Debian Installer translator process has been divided into several
+<emphasis>levels</emphasis> which represent steps towards a complete translation of the
+installer for the Debian GNU/Linux distribution.
+</para>
+
+<para>Translators should work in the order detailed below, level by
+level. Inside each level, complete the steps in the described
+order. This order is related to the degree of <emphasis>importance</emphasis> of
+material needing translation.
+</para>
+
+<para>The following parts of this chapter will give details and
+context about each level components, instructions for
+getting the material which needs translations as well as sending back
+the translated material.
+</para>
+
+<para>
+Translators should read them carefully, even if they already worked on
+Debian translations.
+</para>
+
+<para>
+Due to the granularity of Debian work and more specifically the
+packages system, translators may find differences between the various packages
+a bit annoying (some use <acronym>SVN</acronym>, some others <acronym>CVS</acronym>, some other no
+repository at all...). This is a consequence of the current work organization
+in Debian. 
+</para>
+
+</sect1>
+
+<sect1 id="levels_summary">
+<title>
+Levels summary
+</title>
+
+<para>
+This section is intended to give translators a general idea of each
+level contents.
+</para>
+
+	  <orderedlist>
+	    <listitem>
+	      <para>
+	        level 1: all core &d-i; packages;
+              </para>
+	      <para>
+	        This level is split in five "sublevels" by order of strings
+		priority (sublevel 1 groups together the strings used in all
+		default installs while sublevel 5 groups together very rare
+		strings used only for uncommon architectures).
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		level 2: all non-core &d-i; material involved for
+		user interaction screens during a <emphasis>default
+		priority</emphasis> installation of a Debian base
+		system with default choices;
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		level 3: all material indirectly related to installation;
+	      </para>
+	    </listitem>
+	  </orderedlist>
+
+</sect1>
+
+<sect1 id="prioritizing">
+<title>
+Prioritizing work
+</title>
+
+<para>
+While all five sublevels of level 1 are grouped together in &d-i;
+status pages, it is recommended to work on level 2 translations after
+completing sublevels 1 and 2. Sublevel 3 can then be started after
+completing level 2. Sublevel 4 can be started after completing Level 3
+and, finally, sublevel 5 can be started after completing Level 4.
+</para>
+
+<para>
+The resulting suggested work order is the following:
+</para>
+	  <orderedlist>
+	    <listitem>
+	      <para>
+                 Level 1 sublevel 1
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+                 Level 1 sublevel 2
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+                 Level 2
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+                 Level 1 sublevel 3
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+                 Level 3
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+                 Level 1 sublevel 4
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+                 Level 1 sublevel 5
+	      </para>
+	    </listitem>
+	  </orderedlist>
+
+</sect1>
+
+&translators-level1.xml;
+&translators-level2.xml;
+&translators-level3.xml;
+&string-freezes.xml;
+
+</chapter>

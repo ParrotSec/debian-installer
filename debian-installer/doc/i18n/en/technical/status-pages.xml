@@ -1,0 +1,92 @@
+<sect1 id="status-pages">
+<title>Translation status pages</title>
+
+<sect2>
+<title>Introduction
+</title>
+
+<para>
+The &d-i; team and the &i18n-coords; maintain web pages giving the
+statistics of translations for each language, level by level. The
+scripts that generate these statistics may be found in the
+<filename>scripts/l10n/statistics</filename> directory of &d-i;
+<acronym>SVN</acronym> repository.
+</para>
+
+<para>
+Translators should check these pages regularly in order to follow the
+possible changes to upstream packages and then update their work if
+needed.
+</para>
+
+<para>The address for the top page of translation statistics is <ulink
+url="&url-d-i-translation-status;">&url-d-i-translation-status;</ulink>.
+</para>
+
+<para>
+The statistics page will give statistics about translations as close
+as possible from the sources. If the package maintainer for a given
+package uses a publicly accessible repository, the statistics are
+generated from this repository.
+</para>
+
+<para>
+The real status for each package (i.e. the status of translations for
+the packages released in the Debian archive) can be found on the
+Debian general l10n pages: <ulink
+url="&url-debian-l10n;">&url-debian-l10n;</ulink>
+</para>
+
+</sect2>
+
+<sect2>
+<title>
+Status pages generation scripts
+</title>
+
+<para>
+FIXME: Here should come details about the status pages generation scripts: how the script work, how are determined packages and how information about packages locations is kept, status pages template file, etc.
+</para>
+
+</sect2>
+
+<sect2>
+<title>
+Status pages monitoring
+</title>
+
+<para>
+Translators often want an easy method for watching the translation
+status pages and learn about changes in packages listed in the various
+<emphasis>levels</emphasis> there.
+</para>
+
+<para>
+For this, Peter Mann wrote a monitoring script named <classname>websec-txt</classname>. This script is available in the <classname>scripts/l10n</classname> directory in &d-i; SVN repository.
+</para>
+
+<para>
+Using this script is fairly easy. It requires the use of a Unix system
+with wget and a working Internet connection. One should then create a
+directory such as <classname>$HOME/.websec-txt</classname> and put a
+file named <classname>sources.url</classname> there. This file should
+contain the contents of the monitored files.
+</para>
+
+<para>
+Below is the suggested contents for monitoring &d-i; translation status pages (assuming &lt;code&gt; being the translators language ISO-639 code):</para>
+
+<informalexample>
+<screen>
+&url-status;/level1/&lt;code&gt;.txt
+&url-status;/level2/&lt;code&gt;.txt
+&url-status;/level3/&lt;code&gt;.txt
+&url-status;/level4/&lt;code&gt;.txt
+&url-status;/level5/&lt;code&gt;.txt
+</screen>
+</informalexample>
+
+</sect2>
+
+</sect1>
+

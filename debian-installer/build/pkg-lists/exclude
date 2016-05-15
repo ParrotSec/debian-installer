@@ -1,0 +1,20 @@
+# These library packages are excluded from dependency checking because
+# they are currently provided not in udeb form but by the library
+# reduction step.
+
+# libc gets reduced, so using the udeb is not a good idea
+libc0.1 -
+libc0.1-udeb -
+libc0.3 -
+libc0.3-udeb -
+libc6 -
+libc6-udeb -
+libc6.1 -
+libc6.1-udeb -
+# slang is also reduced
+libslang2-udeb -
+# and newt
+libnewt0.52 -
+# some arches and versions of glibc link against libgcc1,
+# it will be pulled in via library reduction
+libgcc1 -

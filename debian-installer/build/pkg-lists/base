@@ -1,0 +1,25 @@
+# These udebs will be needed on nearly every image. Include this file to
+# get them.
+busybox-udeb
+anna
+archdetect
+cdebconf-udeb
+cdebconf-priority
+di-utils
+di-utils-reboot
+di-utils-shell
+libdebconfclient0-udeb
+libdebian-installer4-udeb
+libnss-dns-udeb
+lowmemcheck
+main-menu
+rootskel
+udpkg
+rescue-check
+env-preseed
+pciutils-udeb
+
+#include "udev"
+
+libkmod2-udeb [linux]
+kldutils-udeb [kfreebsd]

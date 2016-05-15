@@ -1,0 +1,20 @@
+This directory provides installer images in the form of a device-specific
+part (containing the partition table and the system firmware) and a
+device-independent part (containing the actual installer), which can be
+unpacked and concatenated together to build a complete installer image.
+
+The device-specific part is named firmware.<board_name>.img.gz
+and the device-independent part is named partition.img.gz.
+
+To create a complete image from the two parts on Linux systems, you can
+use zcat as follows:
+
+  zcat firmware.<board_name>.img.gz partition.img.gz > complete_image.img
+
+On Windows systems, you have to first decompress the two parts separately,
+which can be done e.g. by using 7-Zip, and then concatenate the decompressed
+parts together by running the command
+
+  copy /b firmware.<board_name>.img + partition.img complete_image.img
+
+in a Windows CMD.exe window.

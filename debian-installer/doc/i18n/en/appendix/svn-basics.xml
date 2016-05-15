@@ -1,0 +1,389 @@
+<appendix id="svn-basics"><title>Some basic notions about <acronym>SVN</acronym></title>
+
+<sect1>
+<title>Getting an account on &alioth;
+</title>
+
+<para>
+<acronym>SVN</acronym> commit access requires the creation of an account on the &alioth;
+server. This is as simple as opening &url-alioth; and going to the
+account creation pages.
+</para>
+
+<para>
+Official Debian developers will probably use the same login as their
+Debian login, but must go through the account creation process
+anyway. Non-Debian developers should be aware that the login they
+will choose on &alioth; will be followed by <quote>-guest</quote>. This has
+absolutely no meaning of any kind of <emphasis>second class
+citizens</emphasis> but is just an easy way for &alioth; system
+administrators to know who is an official Debian developer.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Installing <acronym>SVN</acronym>
+</title>
+
+<para>
+Translators and other &d-i; contributors need to install <acronym>SVN</acronym>
+(Subversion) on their system. For Debian <emphasis>sid</emphasis> or
+<emphasis>sarge</emphasis> users, just do <command>aptitude install
+subversion</command>. Users of Debian <emphasis>woody</emphasis>
+release may use backports from &backports;. The following entry to
+<filename>/etc/apt/sources.list</filename> may be used for this:
+</para>
+
+<informalexample>
+<screen>    
+    deb &url-backports;debian stable subversion
+</screen>
+</informalexample>
+
+<para>
+Alternatively, Adam Conrad's backports may be used:
+</para>
+
+<informalexample>
+<screen>
+    deb http://people.debian.org/~adconrad woody subversion
+</screen>
+</informalexample>
+
+<para>
+These backports are not officially supported by the Debian
+Project. Though their maintainers are well-known and respected Debian
+developers, they're the only people who can guarantee that these packages
+are well maintained and secured.
+</para>
+
+<para>
+Users of non-Debian Linux distributions will probably easily find
+installation sources for Subversion in their distribution packages
+list.
+</para>
+
+<para>
+For MS-Windows users, a good <acronym>SVN</acronym> client is <emphasis>TortoiseSVN</emphasis> which is free software. It can be downloaded from <ulink url="http://tortoisesvn.tigris.org/">http://tortoisesvn.tigris.org/</ulink>.
+</para>
+
+<para>
+Successful attempts of using <emphasis>TortoiseSVN</emphasis> for &d-i; commits have been reported. The only trick is to feed the checkout URL alone to the "svn import" command of <emphasis>TortoiseSVN</emphasis>, without the leading "svn co" part.
+</para>
+
+
+</sect1>
+
+<sect1>
+<title>
+Using <acronym>SVN</acronym> to get and commit files
+</title>
+
+<para>
+Once their account is allowed to write to the project, translators and
+developers can download the full project source tree using the
+checkout commands mentioned in <xref linkend="translators"/>.
+</para>
+
+<para>
+For doing <filename>svn+ssh</filename> connections (mandatory for
+being able to commit files later), users must have an account on
+&alioth; and be authorized for commit to the repository they want to
+checkout. Replace <emphasis>alioth_username</emphasis> by this login
+name before using the SVN pseudo-URLS.
+</para>
+
+<para>
+<filename>svn+ssh</filename> connections need that you use RSA key-based authentication to connect to &alioth;.
+</para>
+
+<para>
+If you don't have an existing SSH keypair on your local system, you must create one with the <command>ssh-keygen</command> command.
+</para>
+
+<informalexample>
+<screen>
+spongebob@mykerinos:~$ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/spongebob/.ssh/id_dsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/spongebob/.ssh/id_rsa.
+Your public key has been saved in /home/spongebob/.ssh/id_rsa.pub.
+The key fingerprint is:
+8d:6d:14:72:72:07:01:6a:85:de:97:d3:aa:b2:ee:4a spongebob@mykerinos
+</screen>
+</informalexample>
+
+<para>
+In the example below, the user <emphasis>spongebob</emphasis> creates a SSH RSA keypair, which is saved in a directory named <filename>.ssh</filename> in his/her home directory.
+</para>
+
+<para>
+This keypair is protected by a passphrase. The passphrase has to be entered each time the keypair will be used to connect to a remote host. Take care to choose a non trivial passphrase.
+</para>
+
+<para>
+After doing so, the public part of that keypair must be put in your account on &alioth;. For this, you need to output the contents of <filename>.ssh/id_rsa.pub</filename> and paste it in the relevant field of the account management page on &alioth; (&alioth-account-page;), in the section named <emphasis>Shell account informations</emphasis>, by clicking on <emphasis>Edit keys</emphasis>.
+</para>
+
+
+<para>
+In case users have problems with <acronym>SVN</acronym> checkouts/commits, they can ask
+for help, either on IRC, &irc-channel; or by mail with the
+&i18n-coords;.</para>
+
+<para>
+MS-Windows users who want to use TortoiseSVN to checkout or commit can go to the <ulink url="http://tortoisesvn.net/node/5">TortoiseSVN SSH HowTo</ulink> page to get information about setting up TortoiseSVN to do SVN+SSH connections.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Testing <acronym>SVN</acronym> commit access to &d-i; repository
+</title>
+
+<para>
+A <emphasis>sandbox</emphasis> directory has been setup for developers
+and translators to practice with <acronym>SVN</acronym> before doing
+real work.
+</para>
+
+The sequence for testing commit access should be similar to what
+follows. Please note that, depending whether your SSH keys have been
+added to your account on &svn-debian;, you can be prompted for a
+password up to three times. This is because of the special
+authentication setup on &svn-debian;.
+
+<informalexample>
+<screen>
+cd &lt;somedir&gt;
+svn co &svn-di-sandbox;
+Password:
+Password:
+Password:
+.../... (checkout should happen here)
+
+cd sandbox
+echo "Testcommit" >foo
+svn add foo
+svn ci -m "Testcommit of a file" foo
+.../...
+svn remove foo
+svn ci -m "Remove the test file"
+</screen>
+</informalexample>
+
+<para>
+As stated by the <filename>README.txt</filename> file in this
+directory, please avoid commiting large files for testing as this
+clutters up the SVN server history.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Core &d-i; and various levels packages repositories checkout command
+lines
+</title>
+
+<para>
+Typical non anonymous and anonymous checkout command lines for &d-i;
+and related packages are listed in <xref linkend="translators"/>.
+</para>
+
+<para>
+Below is an example of a typical checkout for the console-data package:
+</para>
+
+<informalexample>
+<screen>
+user@host:~> &svn-console-data;
+TODO
+user@host:~> 
+</screen>
+<para>
+After this the <filename>console-data</filename> directory contains all
+files from the package. Updating this directory later needs running the <command>svn update</command>:
+</para>
+<screen>
+user@host:~> cd console-data
+user@host:~/console-data> svn up
+TODO
+user@host:~>
+</screen>
+<para>
+Subdirectories of a full <acronym>SVN</acronym> directory can also be checked out in case one want to work on specific parts. This can be very useful for &d-i; core translations as &d-i; <acronym>SVN</acronym> repository is very big:
+</para>
+<screen>
+user@host:~> &svn-level1; level1-po
+TODO
+user@host:~> cd level1-po/
+user@host:~/level1-po> ls -l
+total 19112
+-rw-r--r--  1 user user 369598 2005-08-18 02:56 ar.po
+-rw-r--r--  1 user user 266462 2005-08-18 02:56 be.po
+.../...
+-rw-r--r--  1 user user   1120 2005-07-17 08:17 PROSPECTIVE
+.../...
+-rw-r--r--  1 user user   2027 2005-07-31 08:54 README
+-rw-r--r--  1 user user 353752 2005-08-18 02:56 ro.po
+-rw-r--r--  1 user user    324 2005-08-16 16:30 run-l10n-sync
+.../...
+-rw-r--r--  1 user user 237996 2005-08-18 02:56 template.pot
+.../...
+-rw-r--r--  1 user user 350181 2005-08-18 02:56 xh.po
+-rw-r--r--  1 user user 335898 2005-08-18 02:56 zh_CN.po
+-rw-r--r--  1 user user 335413 2005-08-18 02:56 zh_TW.po
+user@host:~/level1-po>
+</screen>
+<para>
+If the translation file already exists, then just update the local copy:
+</para>
+<screen>
+user@host:~/level1-po> lokalize fr.po
+.../...
+</screen>
+<para>
+(use Lokalize or any other gettext utility, see <xref linkend="gettext-tools"/> for details about gettext files handling, editing and maintenance tools)
+</para>
+<para>
+Once saved the modified version of the file, the status can be
+displayed with the <command>svn status</command> command:
+</para>
+<screen>
+user@host:~/level1-po> svn status
+M      fr.po
+user@host:~/level1-po>
+</screen>
+<para>
+The above means that <filename>fr.po</filename> includes uncommited
+modifications. These modifications can be committed by using the <command>svn commit</command> command:
+</para>
+<screen>
+user@host:~/level1-po> svn commit
+</screen>
+<para>
+The user will then be dropped in a file editor (either
+<command>vi</command> or any other file editor pointed by the EDITOR
+variable. The changelog message can be then filled in the
+editor. Saving it and exiting the editor will trigger the commit
+action to the <acronym>SVN</acronym> repository.
+</para>
+<para>
+A more targeted commit command is also possible, as well as giving the
+commit message on the command line:
+</para>
+<screen>
+user@host:~/level1-po> svn commit -m"French translation update" fr.po
+TODO
+user@host:~/level1-po>
+</screen>
+</informalexample>
+
+<para>
+In general, a few recommendations can be made to translators:
+</para>
+
+<itemizedlist>
+<listitem>
+<para>Always use the <command>svn update</command> before working on a
+file or directory. This will minimize <emphasis>conflicts</emphasis>
+in case a file is changed in the repository while they work on it;
+</para>
+</listitem>
+<listitem>
+<para>
+Always use the <command>svn status</command> command before committing
+changes, to be sure that only relevant changes are committed.
+</para>
+</listitem>
+</itemizedlist>
+
+</sect1>
+
+<sect1>
+<title>Changelog entries handling
+</title>
+<para>
+When committing translations directly to <acronym>SVN</acronym>
+repositories for Debian packages (except for level 1 translations),
+translators must update the <filename>debian/changelog</filename> file
+accordingly.
+</para>
+
+<para>
+This <emphasis>does not</emphasis> apply to level 1 translations, that
+is the &d-i; <emphasis>core</emphasis> packages translations. For
+these translations, no changelog updates are needed.
+</para>
+
+<para>
+Each change in Debian packages must be documented in the
+<filename>debian/changelog</filename> file.
+</para>
+
+<para>
+Below is an excerpt of the <filename>changelog</filename> file for
+&base-config;:
+</para>
+
+<informalexample>
+<screen>
+base-config (2.39) UNRELEASED; urgency=low
+
+  * Updated translations: 
+    - Croatian by Krunoslav Gernhard
+
+ -- Christian Perrier &lt;bubulle@debian.org&gt;  Sat, 24 Jul 2004 08:14:13 +0200
+
+base-config (2.38) unstable; urgency=high
+.../...
+</screen>
+</informalexample>
+
+<para>This gives the following information:
+</para>
+
+<itemizedlist>
+<listitem>
+<para>
+the last released version of the package is 2.38. The <acronym>SVN</acronym> repository
+  currently contains the future unpublished 2.39 release;
+</para>
+</listitem>
+<listitem>
+<para>
+the only change which occurred since 2.38 is the update of the Croatian
+  translation (made by Krunoslav Gernhard);
+</para>
+</listitem>
+<listitem>
+<para>
+the committer of this change was Christian Perrier.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+Different Debian packages may use slightly different methods and
+styles for <filename>changelog</filename> maintenance. When working
+with <acronym>SVN</acronym>/<acronym>CVS</acronym> repositories, using <emphasis>UNRELEASED</emphasis> for the last entry is highly recommended for new unpublished changes.
+</para>
+
+<para>
+Using the <command>debchange</command> utility from the
+<emphasis>devscripts</emphasis> Debian package for handling
+<filename>changelog</filename> entries maintenance is also highly
+recommended..
+</para>
+
+
+</sect1>
+
+
+</appendix>

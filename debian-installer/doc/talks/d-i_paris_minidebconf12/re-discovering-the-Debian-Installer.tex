@@ -1,0 +1,499 @@
+% HINT: Remove [handout] to see how slides were presented during the
+%       actual talk.
+\documentclass[handout]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\colorlet{structure}{red!65!black}
+
+\usepackage{listings,multicol}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{stmaryrd}
+\usepackage{ulem}
+
+\beamertemplatenavigationsymbolsempty
+
+\AtBeginSection[] {
+  \begin{frame}[plain]
+    \frametitle{}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\usecolortheme{beaver}
+
+\lstset{basicstyle=\footnotesize\tt}
+
+\title{(re)discovering the Debian Installer}
+\author[Cyril]{
+  Cyril Brulebois\\
+  \small{\url{kibi@debian.org}}
+}
+\date{Paris Mini-DebConf, november 2012}
+
+\logo{\includegraphics[viewport=274 335 360 440,width=1cm]{openlogo-nd.pdf}}
+
+
+\begin{document}
+
+\begin{frame}[fragile]
+  \titlepage
+\end{frame}
+
+\section*{Summary}
+
+\begin{frame}[fragile]
+  \frametitle{(re)discovering the Debian Installer}
+
+  \tableofcontents
+\end{frame}
+
+
+\section{Foreword}
+
+\begin{frame}[fragile]
+  \frametitle{Some terminology}
+
+  \begin{itemize}
+  \item d-i: Debian Installer
+  \item g-i: Graphical Installer (using X.org since squeeze)
+  \end{itemize}
+
+  \vspace{1em}
+  \pause
+
+  \begin{itemize}
+  \item udeb: $\mu$deb, with relaxed policy
+    \pause
+    \begin{itemize}
+    \item no copyright
+    \item maint scripts: postinst at most
+    \item config/templates
+    \item possibly built against  a limited number of libraries
+    \item heavily compressed (xz) by default, thanks to debhelper
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\section{Many options to install Debian!}
+
+\begin{frame}[fragile]
+  \frametitle{Supported architectures in \texttt{squeeze}}
+  \begin{itemize}
+  \item amd64
+  \item armel (+ armhf in \texttt{wheezy})
+  \item kfreebsd-i386
+  \item kfreebsd-amd64
+  \item i386
+  \item ia64
+  \item mips
+  \item mipsel
+  \item powerpc
+  \item s390 (+ s390x in \texttt{wheezy})
+  \item sparc
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Image media (1/2)}
+
+  Image type:
+  \begin{itemize}
+  \item netinst: small CD
+    \begin{itemize}
+    \item special case: \textit{multi-arch} (amd64/i386)
+    \item mini-CD (businesscard): dropped for \texttt{wheezy}
+    \end{itemize}
+  \pause
+  \item CD/DVD
+    \begin{itemize}
+    \item download: HTTP/FTP, jigdo, BitTorrent
+    \item alternate desktops for CD\#1: KDE, LXDE, Xfce
+    \end{itemize}
+  \pause
+  \item Blu-ray (jigdo only)
+  \pause
+  \item net\textbf{boot} / PXE
+    \begin{itemize}
+    \item for network-based boot
+    \item \textbf{not} the same as net\textbf{inst}
+    \item frequent kernel/module version mismatch during development!
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Image media (2/2)}
+
+  Options/availability depending on:
+  \begin{itemize}
+  \item image type
+  \item architecture (e.g. no CD for s390/s390x)
+  \item considered \textit{build}:
+    \begin{itemize}
+    \item stable (official releases, e.g. squeeze 6.0.6)
+    \item testing (official releases, e.g. wheezy beta 4)
+    \item testing (daily/weekly builds)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\section{Using the Debian Installer}
+
+\begin{frame}[fragile]
+  \frametitle{Modularity}
+
+  Installation interface:
+  \begin{itemize}
+  \item text-based install (terminal)
+  \item graphical install (X.org)
+  \item text-based install, with speech synthesis (\texttt{s, Enter})
+  \end{itemize}
+
+  \vspace{1em}
+  \pause
+
+  Advanced options:
+  \begin{itemize}
+  \item expert install
+  \item rescue mode
+  \item automated install: \textit{preseed}
+  \item desktop environment choice
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{What happens under the hood? (1/2)}
+
+  Contents of an installation image:
+  \begin{itemize}
+  \item a bootloader
+  \item documentation
+  \item kernel(s)
+  \item initramfs(es)
+  \item data: debs + udebs
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{What happens under the hood? (2/2)}
+
+  How does the installer work?
+  \begin{enumerate}
+  \pause
+  \item show a bootloader
+  \pause
+  \item user picks an interface, options, etc.
+  \pause
+  \item start a debconf frontend
+  \pause
+  \item user answers lots of questions
+  \pause
+  \item udebs are loaded on the fly, more questions are asked
+  \pause
+  \item famous question: which tasks to install?
+  \pause
+  \item install install install, eject, reboot, done
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Demonstration-time!}
+
+  Selected environment:
+  \begin{itemize}
+  \item virtualbox
+  \item netinst i386 image, official wheezy beta 4 build
+  \end{itemize}
+
+  \vspace{1em}
+  \pause
+
+  Two features:
+  \begin{enumerate}
+  \item graphical automated installation, started with:
+\begin{lstlisting}
+url=http://10.0.2.2/~kibi/preseed.cfg
+\end{lstlisting}
+  \pause
+  \item rescue mode, trying to save an encrypted LVM setup (removed/broken cryptsetup, oops!)
+  \end{enumerate}
+\end{frame}
+
+
+\section{How do we build it?}
+
+\begin{frame}[fragile]
+  \frametitle{Starting from the venerable svn…}
+
+\begin{lstlisting}
+$ svn ls svn://svn.debian.org/svn/d-i/trunk
+.mrconfig
+README
+manual/
+packages/
+scripts/
+\end{lstlisting}% $
+
+\begin{itemize}
+\item \texttt{manual/} $\rightarrow$ \texttt{installation-guide} source package
+\item \texttt{packages/} $\rightarrow$ translation efforts (only contains \texttt{po/})
+\item \texttt{.mrconfig} $\rightarrow$ helps keep all repositories up to date
+\end{itemize}
+
+\vspace{1em}
+
+Initial checkout:
+\begin{lstlisting}[basicstyle=\tiny]
+mr bootstrap http://anonscm.debian.org/viewvc/d-i/trunk/.mrconfig?view=co d-i
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{… to many git repositories}
+
+At the top-level:
+
+\begin{itemize}
+\item \texttt{di-autobuild/} $\rightarrow$ automation for d-i builds (on buildds) [git]
+\item \texttt{installer/} $\rightarrow$ \texttt{debian-installer} source package [git]
+\end{itemize}
+
+\vspace{1em}
+
+Under \texttt{packages/}:
+
+\begin{lstlisting}
+$ ls -d packages/*/
+packages/aboot-installer/
+packages/anna/
+packages/apt-setup/
+packages/arcboot-installer/
+packages/auto-install/
+...
+\end{lstlisting}% $
+
+$\rightarrow$ one repository per source package [git]\\
+$\rightarrow$ each can produce \texttt{deb} and/or \texttt{udeb} packages
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{udeb-producing packages (1/2)}
+
+  \begin{itemize}
+  \item packages maintained by debian-boot
+    \begin{itemize}
+    \item anna-udeb
+    \item cdebconf-udeb
+    \item grub-installer
+    \end{itemize}
+  \pause
+  \item Linux \& FreeBSD kernels: kernel-wedge
+    \begin{itemize}
+    \item input-modules-\textit{version}-di
+    \item usb-modules-\textit{version}-di
+    \end{itemize}
+  \pause
+  \item core packages:
+    \begin{itemize}
+    \item e2fsprogs-udeb
+    \item gnupg-udeb
+    \item util-linux-udeb
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{udeb-producing packages (2/2)}
+
+  \begin{itemize}
+  \item GTK+ stack:
+    \begin{itemize}
+    \item libcairo2-udeb
+    \item libpango1.0-udeb
+    \item libgtk2.0-0-udeb
+    \end{itemize}
+  \pause
+  \item X.org stack:
+    \begin{itemize}
+    \item many libx*-udeb packages
+    \item a generic input driver: evdev
+    \item a generic video driver: fbdev
+    \item a minimal X server
+    \end{itemize}
+  \pause
+  \item accessibility stack:
+    \begin{itemize}
+    \item brltty
+    \item espeakup
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{The debian-installer source package: layout}
+
+  \begin{itemize}
+  \item \texttt{build/} $\rightarrow$ heavy work
+    \begin{itemize}
+    \item \texttt{Makefile} $\rightarrow$ entry-point for building everything
+    \item \texttt{boot/} $\rightarrow$ arch-specific conf. for boot loaders
+    \item \texttt{config/} $\rightarrow$ arch-specific variables, calls to various utils, …
+    \item \texttt{localudebs/} $\rightarrow$ local dropzone!
+    \item \texttt{pkg-lists/} $\rightarrow$ what do we need for each arch and image?
+    \item \texttt{util/}
+    \end{itemize}
+  \pause
+  \item \texttt{debian/} $\rightarrow$ \textsl{almost} straightforward packaging
+    \begin{itemize}
+    \item \texttt{unstable} or \texttt{UNRELEASED} as target $\rightarrow$ small differences
+    \item \texttt{debian-installer-images\_20121114\_amd64\textbf{.tar.gz}}
+    \end{itemize}
+  \pause
+  \item \texttt{doc/} $\rightarrow$ development, i18n, talks
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{The debian-installer source package: machinery}
+
+  What happens in \texttt{build/}?
+  \begin{itemize}
+  \item Use \texttt{sources.list} for udebs:\\
+    \texttt{\small deb http://mirror/debian wheezy main/debian-installer}
+  \item Support for local udebs is present
+  \item \texttt{util/get-package} is used to:
+    \begin{itemize}
+    \item fetch udebs, resolving dependencies
+    \item install them into a rootfs
+    \end{itemize}
+  \item Call more tools to handle partitioning etc.
+  \end{itemize}
+\end{frame}
+
+
+\section{How do we release it?}
+
+\begin{frame}[fragile]
+  \frametitle{Many people to talk to/work with}
+  \begin{itemize}
+  \item individual package maintainers/packaging teams
+  \item debian-boot
+  \item debian-release
+  \item debian-cd
+  \item ftpmasters
+  \item debian-live
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Process outline}
+  \begin{enumerate}
+  \item upload of udeb-producing packages to unstable
+  \item test of daily builds
+  \item manual coordination with RT to migrate the udebs to testing
+  \pause
+  \item upload of debian-installer to unstable
+  \pause
+  \item ftpmasters: dak copy-installer
+  \item RT: urgent debian-installer
+  \item CD/DVD images built using debian-cd
+  \pause
+  \item cdimage.debian.org: last-minute checks
+  \item release announce: mail to dda@/dd@, and website update
+  \end{enumerate}
+
+  \pause
+  Timing:
+  \begin{itemize}
+  \item 3 weeks for development (before step 4 happens)
+  \item 1 week for releasing
+  \pause
+  \item 1 week for the unexpected
+
+  \end{itemize}
+\end{frame}
+
+
+\section{Future plans}
+
+\begin{frame}[fragile]
+  \frametitle{Future plans}
+
+  Release candidate 1
+  \begin{itemize}
+  \item Target: December/January
+  \item Support for Versatile Express (armhf in qemu)
+  \item Lots of small bug fixes in various areas
+  \item Possibly more EFI bug fixes
+  \end{itemize}
+
+  \vspace{1em}
+  \pause
+
+  Long term:
+  \begin{itemize}
+  \item What to do with Secure Boot?
+  \item Regression testing using VMs
+  \item What do \textbf{you} want to see implemented in d-i?
+  \end{itemize}
+\end{frame}
+
+
+\section*{Thanks!}
+\begin{frame}[fragile]
+  \frametitle{Thanks!}
+
+  In addition to everyone involved:
+  \begin{itemize}
+  \item Previous d-i release managers for their hard work
+  \item Christian Perrier, l10n coordinator
+  \item CD team: Steve McIntyre
+  \item All \texttt{installation-reports} submitters!
+  \end{itemize}
+
+  \vspace{1em}
+  \pause
+  On a personal note:
+  \begin{itemize}
+  \item Josselin Mouette, for his great \textit{Please save the graphical installer} blog post
+  \end{itemize}
+\end{frame}
+
+\section*{}
+
+\begin{frame}[fragile]
+  \frametitle{Appendix: \texttt{preseed.cfg}}
+
+  \begin{lstlisting}[basicstyle=\tiny]
+d-i keyboard-configuration/xkb-keymap select fr
+d-i debian-installer/locale string fr_FR
+d-i mirror/country string manual
+d-i mirror/http/hostname string 10.0.2.2:9999
+d-i mirror/http/directory string /debian
+d-i partman-auto/method string crypto
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+d-i partman-auto/choose_recipe select atomic
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+d-i cdrom-detect/eject boolean false
+d-i passwd/make-user boolean false
+d-i passwd/root-password password root
+d-i passwd/root-password-again password root
+d-i finish-install/reboot_in_progress note
+d-i partman-crypto/passphrase password rootroot
+d-i partman-crypto/passphrase-again password rootroot
+d-i partman-crypto/weak_passphrase boolean true
+  \end{lstlisting}
+\end{frame}
+
+\end{document}

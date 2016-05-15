@@ -1,0 +1,215 @@
+<appendix id="bug-reports"><title>Reporting bugs against Debian packages</title>
+
+<para>
+This section applies to translators who need to send their completed
+translations back to the package maintainers, especially for packages
+from levels above 2 for which no direct Subversion or <acronym>CVS</acronym> commit is
+possible (either because the translator cannot use <acronym>SVN</acronym> or <acronym>CVS</acronym> or
+because the package maintainer(s) do not encourage wide commit
+access).
+</para>
+
+<sect1>
+<title>
+Debian bug reports, severities and tags
+</title>
+
+<para>
+All interactions with Debian package maintainers should be made through the Debian Bug Tracking System (BTS). Other ways of interaction such as sending files to maintainers directly, or to the &i18n-coords; is to be prohibited as it makes things impossible to track down.
+</para>
+
+<para>
+The &i18n-coords; will not encourage direct interaction with either
+them or the package maintainers. The only exception are cases where
+translators have direct commit access to the package repositories such
+as &d-i; level 1 translations.
+</para>
+
+<para>
+A <emphasis>bug report</emphasis> is only a special way to send
+traceable information which is relevant for a given package. This may
+be a <quote>real</quote> bug report (i.e. something not working properly or as
+expected) as well as an enhancement suggestion or a feature request.
+</para>
+
+<para>
+Debian bug reports are handled through a web and email
+interface. Access to the bug reports can be made through the BTS web
+site: &url-bts;.
+</para>
+
+<para>
+Bug reports are sorted by <emphasis>severity</emphasis> and
+<emphasis>tags</emphasis>.
+</para>
+
+<para>
+Details about bug severities, tags and other information regarding bug
+reports may be found at <ulink url="&url-bts;">&url-bts;</ulink>.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Recommended bug formatting for translation bug reports
+</title>
+
+<para>
+For translation bug reports, the recommended severity to use is
+<emphasis>wishlist</emphasis>. 
+</para>
+
+<para>
+The recommended tags are <emphasis>l10n</emphasis> tag as well as the
+<emphasis>patch</emphasis> tag (because the bug report includes the
+needed "fix" by including the translation file).
+</para>
+
+<para>
+The <emphasis>d-i</emphasis> tag must be used for core D-I
+translations as well as base-config and tasksel.
+</para>
+
+<para>
+The subject of the bug report should begin by "[INTL:xx]". When the
+package has several translatable materials, the subject should mention
+which translation is sent.
+</para>
+
+<para>
+When translators want to send more than one translation file, they
+should send one bug report per file to send, in order to avoid
+confusion. The bug report must mention which type of translation is
+sent (debconf, programs, etc.).
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Generic method to send bug reports
+</title>
+
+<para>
+Reporting a bug to a Debian package is just sending a specially
+written mail to &email-bts;.
+</para>
+
+<para>
+The mail should include <emphasis>in the mail body</emphasis>, at the
+top, a few special pseudo-fields:
+</para>
+
+<informalexample>
+<screen>
+Package: &lt;package name&gt;
+Version: &lt;version of the package&gt;
+Severity: &lt;bug severity&gt;
+Tags: &lt;bug tags&gt;
+</screen>
+</informalexample>
+
+
+<para>
+As a consequence, the following is a typical manual bug report
+(Klingon translation for the shadow package sent by the translator
+named John Doe):
+</para>
+
+<informalexample>
+<screen>
+From: John Doe &lt;john.doe@johndoe.com&gt;
+To: &email-bts;
+Subject: [INTL:tlh] Klingon debconf templates translation
+
+Package: shadow
+Version: N/A
+Severity: wishlist
+Tags: l10n patch
+
+Please find attached the Klingon translation of the shadow package.
+
+(encoded tlh.po file follows)
+</screen>
+</informalexample>
+
+</sect1>
+
+<sect1>
+<title>
+Sending bug reports from a Debian system
+</title>
+
+<para>
+Translators are encouraged to use the Debian
+<command>reportbug</command> utility which will handle all these
+formatting details for them.
+</para>
+
+<para>
+An example command line follows. It will report a bug against the
+<emphasis>shadow</emphasis> package with the Klingon (code: tlh) translation:
+</para>
+
+<informalexample>
+<screen>
+reportbug --attach=tlh.po --offline \
+  -s "shadow: [INTL:tlh] Klingon debconf templates translation" \
+  --severity=wishlist --tag=patch --tag=l10n --no-config-files \
+  shadow
+</screen>
+</informalexample>
+
+<para>
+The <command>reportbug</command> utility must be configured for using
+correct originating address and real name. See <command>man
+reportbug</command> for details. An example ~/.reportbugrc is given
+below. Do not use it directly but adapt it to your own needs!
+</para>
+
+<informalexample>
+<screen>
+# reportbug preferences file
+# Version of reportbug this preferences file was written by
+reportbug_version "1.99.51"
+# default operating mode: one of: novice, standard, advanced, expert
+mode standard
+# default user interface
+ui text
+# offline setting - comment out to be online
+#offline
+# name and email setting (if non-default)
+realname "John Doe"
+email "johndoe@johndoe.com"
+# You can add other settings after this line.  See
+# /etc/reportbug.conf for a full listing of options.
+</screen>
+</informalexample>
+
+<para>
+It is also worth mentioning the <command>reportbug-ng</command>
+package which features a user-friendly bug reporting utility with full
+desktop integration.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Attaching files to bug reports
+</title>
+
+<para>
+Translation bug report usually need a file to be attached to the bug report.
+</para>
+
+<para>
+To avoid encoding problems, especially on package maintainers side,
+compressing the translation file with <command>gzip</command> is
+recommended.
+</para>
+
+</sect1>
+
+</appendix>

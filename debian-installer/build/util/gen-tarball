@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Helper script to generate a tarball from a directory, with
+# particular attention to giving reproducible output.
+#
+# Note: if output_file is not an absolute path, it will be assumed
+# relative to the current working directory, not source_directory.
+
+set -e
+
+SOURCE_DIR="$1"
+OUTPUT_FILE="$2"
+
+if [ -z "$SOURCE_DIR" ] || [ -z "$OUTPUT_FILE" ]; then
+	echo "usage: $0 source_directory output_file"
+	exit 1
+fi
+
+# Clamp timestamps to be no later than SOURCE_DATE_EPOCH, if defined in
+# the environment.  Typically it is the time of the most recent entry in
+# debian/changelog
+if [ -n "$SOURCE_DATE_EPOCH" ]; then
+	# See https://wiki.debian.org/ReproducibleBuilds/TimestampsInTarball
+	find "$SOURCE_DIR" -newermt "@$SOURCE_DATE_EPOCH" -print0 | xargs -0r touch --no-dereference --date="@$SOURCE_DATE_EPOCH"
+fi
+
+# Create tarball with files sorted in a stable order, see
+# https://wiki.debian.org/ReproducibleBuilds/FileOrderInTarballs
+# and without timestamp in the gzip header, see
+# https://wiki.debian.org/ReproducibleBuilds/TimestampsInGzipHeaders
+( cd "$SOURCE_DIR" && find . -print0 | LC_ALL=C sort -z | GZIP=-n tar --no-recursion --null -T - -czvf -) > "$OUTPUT_FILE"

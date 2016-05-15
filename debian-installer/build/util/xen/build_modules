@@ -1,0 +1,88 @@
+#!/bin/bash
+# Assemble several modules into one single Xen domU payload
+OUTPUT=$1
+shift
+NBMODS=$(($# / 2))
+if [ -z "$OUTPUT" -o "$#" = 0 -o $(($NBMODS * 2)) != "$#" ]
+then
+	echo "usage: $0 output mod1 \"arg1_0 arg1_1 arg1_2...\" mod2 \"arg2_0 arg2_1 arg2_2...\""
+	exit 1
+fi
+
+echo "$NBMODS modules"
+
+# each module header is 4*4 bytes
+HEAD=$(($NBMODS * 16))
+# default to align to 4K pages
+ALIGN=4096
+
+NEW=$OUTPUT.new
+
+DD="dd of=$NEW bs=1 status=noxfer"
+# start from empty file
+$DD if=/dev/zero count=0 2> /dev/null
+DD="$DD conv=notrunc"
+
+number32_le() {
+	N=$1
+
+	for i in `seq 1 4`; do
+		TOPRINT=$((N % 256))
+		echo -en '\0'`printf %o $TOPRINT`
+		N=$((N / 256))
+	done
+}
+
+CUR_HEAD=0
+CUR=$ALIGN
+while [ "$#" -gt 0 ]
+do
+	echo "$1 $2"
+
+	# Write module
+	MOD_LEN=`stat -L -c%s "$1"`
+	MOD_USED=$(( ( ( $MOD_LEN + $ALIGN - 1 ) / $ALIGN ) * $ALIGN ))
+	printf "%#010x(%#010x) at %#010x\n" $MOD_LEN $MOD_USED $CUR
+
+	$DD bs=$ALIGN if="$1" seek=$(($CUR / $ALIGN)) 2> /dev/null
+
+	# Module start
+	number32_le $CUR | $DD seek=$CUR_HEAD 2> /dev/null
+	CUR_HEAD=$((CUR_HEAD + 4))
+	# Module end
+	number32_le $((CUR + $MOD_LEN)) | $DD seek=$CUR_HEAD 2> /dev/null
+	CUR_HEAD=$((CUR_HEAD + 4))
+
+	CUR=$(($CUR + $MOD_USED))
+
+	# Write string
+	STR=`echo "$2"`
+	STR_LEN=${#STR}
+	STR_USED=$(( ( ( $STR_LEN + 1 + $ALIGN - 1 ) / $ALIGN ) * $ALIGN ))
+	printf "cmdline %#010x(%#010x) at %#010x\n" $STR_LEN $STR_USED $CUR
+
+	echo "$2" | $DD seek=$CUR 2> /dev/null
+
+	# String start
+	number32_le $CUR | $DD seek=$CUR_HEAD 2> /dev/null
+	CUR_HEAD=$((CUR_HEAD + 4))
+
+	CUR=$(($CUR + $STR_USED))
+
+	# Padding
+	CUR_HEAD=$((CUR_HEAD + 4))
+
+	shift
+	shift
+done
+
+# Make sure to have a NULL entry
+CUR_HEAD=$((CUR_HEAD + 4))
+
+if [ $CUR_HEAD -gt $ALIGN ]
+then
+	echo "$CUR_HEAD > $ALIGN: Too many modules or too big command lines"
+	exit 3
+fi
+
+mv "$NEW" "$OUTPUT"

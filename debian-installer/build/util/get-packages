@@ -1,0 +1,213 @@
+#!/bin/sh
+#
+# get-packages <type> <package> ... | <update> ...
+#
+# Download deb or udeb package with the help of apt-get
+# type : deb | udeb
+#
+# Files:
+#   sources.list.udeb / sources.list.udeb.local
+#   sources.list.deb  / sources.list.deb.local
+#   preferences.udeb.local
+#   preferences.deb.local
+#
+# Environment:
+#   APTDIR       - basename for the apt directory (default: apt.$TYPE)
+#   DEBUG        - build debug udebs from source (default: n)
+#   DEBUGUDEBDIR - directory for debug udebs (default: debugudebs)
+#   UDEBDIR      - directory for ready-to-use udebs (default: udebs)
+#   LOCALUDEBDIR - directory for locally provided udebs (default: localudebs)
+#   ONLINE       - update Packages files (default: y)
+
+set -e
+
+# parse parameters
+TYPE=$1
+shift
+PACKAGES=$*
+
+# Setup environment
+if [ ! $APTDIR ]; then
+	APTDIR="apt"
+fi
+if [ ! $DEBUGUDEBDIR ]; then
+	DEBUGUDEBDIR="debugudebs"
+fi
+if [ ! $UDEBDIR ]; then
+	UDEBDIR="udebs"
+fi
+if [ ! $LOCALUDEBDIR ]; then
+	LOCALUDEBDIR="localudebs"
+fi
+if [ ! $ONLINE ]; then
+	ONLINE="y"
+fi
+if [ ! $KEYRING ]; then
+	KEYRING=/etc/apt/trusted.gpg
+fi
+
+if [ ! -e "$LOCALUDEBDIR" ]; then
+	mkdir -p "$LOCALUDEBDIR"
+fi
+
+# Set APTDIR according to type
+# debs are kept in another apt cache so only the needed Packages files
+# are downloaded and autoclean doesnt run wild.
+APTDIR=$APTDIR.$TYPE
+
+# Set sources.list file
+if [ -f sources.list.$TYPE.local ]; then
+	LIST=sources.list.$TYPE.local
+else
+	LIST=sources.list.$TYPE
+	make sources.list.$TYPE
+fi
+
+# localudebs support
+apt-ftparchive packages $LOCALUDEBDIR > $LOCALUDEBDIR/Packages
+cat $LOCALUDEBDIR/Packages | gzip > $LOCALUDEBDIR/Packages.gz
+if [ -s $LOCALUDEBDIR/Packages ]; then
+	echo "*" >&2
+	echo "* Warning: Building with localudebs." >&2
+	echo "* This build should not be used for official purposes." >&2
+	echo "*" >&2
+fi
+
+# All these options make apt read the right sources list, and use APTDIR for
+# everything so it need not run as root.
+APT_GET="apt-get --assume-yes \
+	-o Dir::Etc::sourcelist=`pwd`/$LIST \
+	-o Dir::Etc::sourceparts=/dev/null \
+	-o Dir::Etc::Preferences=`pwd`/preferences.$TYPE.local \
+	-o Dir::State=`pwd`/$APTDIR/state \
+	-o Debug::NoLocking=true \
+	-o Debug::pkgDepCache::AutoInstall=true \
+	-o Dir::Cache=`pwd`/$APTDIR/cache \
+	-o Acquire::Retries=3 \
+	-o APT::Install-Recommends=false
+	-o Apt::Architecture=`dpkg-architecture -qDEB_HOST_ARCH` \
+	-o Dir::Etc::trusted="$KEYRING"
+	"
+
+# Prepare APTDIR
+mkdir -p $APTDIR/state/lists/partial
+mkdir -p $APTDIR/state/mirrors/partial
+mkdir -p $APTDIR/cache/archives/partial
+echo -n > $APTDIR/state/status
+if [ "$TYPE" = "deb" ]; then
+	APT_GET="$APT_GET -o Dir::State::Status=`pwd`/$APTDIR/state/status"
+else
+	# Prime status file with a few system libraries that don't
+	# currently have udebs, or which udebs still depend on for various
+	# reasons.
+	echo -n > $APTDIR/state/status
+	# dpkg -s needs to be passed arch-qualified package names to
+	# avoid ambiguity.
+	if dpkg --assert-multi-arch; then
+		arch_qualifier=:$DEB_HOST_ARCH
+	fi
+	# Some archs have libc6, others have libc6.1. libgcc1 is not used
+	# on all architectures.
+	# NOTE: Please keep the edos udeb checker in sync with this list:
+	for i in libc0.1 libc0.3 libc6 libc6.1 libnewt0.52 libgcc1; do
+		if dpkg -s $i$arch_qualifier >/dev/null 2>&1; then
+			dpkg -s $i$arch_qualifier | grep -v Depends: >> $APTDIR/state/status
+			echo >> $APTDIR/state/status
+		fi
+	done
+	APT_GET="$APT_GET -o Dir::State::Status=`pwd`/$APTDIR/state/status"
+fi
+
+# Update package lists and autoclean cache.
+if [ "$ONLINE" = "y" ]; then
+	$APT_GET update || {
+		echo "Failed to update the Packages file. This usually means either of:"
+		echo
+		echo "A) $LIST does not contain a valid repository."
+		echo "   You can override the generated sources.list.$TYPE"
+		echo "   with sources.list.$TYPE.local if you haven't done so yet."
+		echo
+		echo "B) The repository in $LIST is not reachable."
+		echo "   If you are not working online, use 'export ONLINE=n' to skip updating"
+		echo "   the Packages files. Beware that this can result in images with"
+		echo "   out-of-date packages and should be used for private development only."
+		exit 1
+	}
+	$APT_GET autoclean
+else
+	# A Release.gpg may not be cached, allow continuing w/o it in
+	# offline mode.
+	APT_GET="$APT_GET --allow-unauthenticated"
+	
+	$APT_GET --no-list-cleanup update || echo "Ignoring update failure in offline mode"
+fi
+
+if [ "$PACKAGES" = update ]; then
+	exit 0
+fi
+
+# We do Kernel-Version filtering in pkg-list as well, but for some reason
+# apt pulls in multiple providers of virtual packages unnecessarily which
+# causes problems.
+if [ "$KERNELVERSION" ]; then
+	for packages in `find $APTDIR/state -maxdepth 2 -type f -name \*_Packages ! -name \*_localudebs_Packages -print`; do
+		KV_COND=
+		for KV in $KERNELVERSION; do
+			KV_COND="${KV_COND:+$KV_COND }-o -XFKernel-Version $KV"
+		done
+		grep-dctrl -! -rFKernel-Version . $KV_COND "$packages" > "$packages.tmp" || true
+		ln "$packages" "$packages.orig"
+		mv "$packages.tmp" "$packages"
+	done
+
+	# Ensure the original Packages files get restored
+	cleanup () {
+		for file in `find $APTDIR/state -maxdepth 2 -type f -name \*_Packages.orig -print`; do
+			mv "$file" "${file%.orig}" || true
+		done
+	}
+	trap cleanup EXIT HUP INT QUIT TERM
+fi
+
+# Get udebs.
+if [ "$DEBUG" = y ]; then
+	mkdir -p $DEBUGUDEBDIR
+	cd $DEBUGUDEBDIR
+	export DEB_BUILD_OPTIONS="debug"
+	$APT_GET source --build --yes $PACKAGES
+	cd ..
+else
+	echo Need to download: $PACKAGES
+	if [ -n "$PACKAGES" ]; then
+		$APT_GET -dy install $PACKAGES
+	fi
+fi
+
+# Now the (u)debs are in APTDIR/cache/archives/ (and maybe DEBUGUDEBDIR)
+# but there may be other (u)debs there too besides those we asked for. So
+# link those we asked for to UDEBDIR, renaming them to more useful names.
+rm -rf $UDEBDIR
+mkdir -p $UDEBDIR
+
+lnpkg() {
+	local pkg=$1; local dir=$2 debdir=$3
+	local L LV l lv
+	for l in `find $dir -name "${pkg}_*" 2>/dev/null`; do
+		lv=$(dpkg -f "$l" Version); lv=${lv%"Version: "}
+		if dpkg --compare-versions "$lv" gt "$LV"; then
+			L=$l LV=$lv
+		fi
+	done
+	if [ -e "$L" ]; then
+		ln -f $L $debdir/$pkg.$TYPE
+	fi
+}
+
+for package in $PACKAGES; do
+	lnpkg $package $APTDIR/cache/archives $UDEBDIR
+	lnpkg $package $DEBUGUDEBDIR $UDEBDIR
+	if [ ! -e $UDEBDIR/$package.$TYPE ]; then
+		echo "Needed $package not found (looked in $APTDIR/cache/archives/, $DEBUGUDEBDIR/)";
+		exit 1
+	fi
+done

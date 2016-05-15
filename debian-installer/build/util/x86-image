@@ -1,0 +1,57 @@
+#! /bin/sh
+set -e
+
+# Copyright (C) 2010, 2011 Canonical Ltd.
+# Author: Colin Watson <cjwatson@ubuntu.com>
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+
+# Make an x86 boot image.
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+	echo "usage: $0 OUTPUT-DIRECTORY GRUB-PLATFORM EFI-NAME"
+	exit 1
+fi
+
+outdir="$1"
+platform="$2"
+efi_name="$3"
+
+memdisk_img=
+workdir=
+
+cleanup () {
+	[ -z "$memdisk_img" ] || rm -f "$memdisk_img"
+	[ -z "$workdir" ] || rm -rf "$workdir"
+}
+trap cleanup EXIT HUP INT QUIT TERM
+
+rm -rf "$outdir"
+mkdir -p "$outdir"
+
+memdisk_img="$(mktemp x86-image.XXXXXX)"
+workdir="$(mktemp -d x86-image.XXXXXX)"
+
+mkdir -p "$outdir/boot/grub/$platform"
+
+# Build the core image.
+grub-mkimage -O "$platform" -o "$workdir/core.img" iso9660 biosdisk
+
+cat "/usr/lib/grub/$platform/cdboot.img" "$workdir/core.img" > "$outdir/boot/grub/grub_eltorito"
+cat "/usr/lib/grub/$platform/boot.img" "$workdir/core.img" > "$outdir/boot/grub/grub_embed"
+
+grub-cpmodules "$outdir" "$platform"
+
+exit 0

@@ -1,0 +1,747 @@
+<chapter id="new-language"><title>The New Language Process: adding a new language to &d-i;</title>
+
+<para>
+Several actions are needed for a new language to be supported in
+&d-i;. The following process may be known as the <emphasis>New
+Language Process</emphasis>. It describes the minimum required actions
+and checks that have to be done before starting a new translation
+effort.
+</para>
+
+<para>
+Potential translators should be aware that involving themselves into
+&d-i; translation is not a <emphasis>one-time</emphasis> work. &d-i;
+is always work in progress and translations will require some
+attention or some new work from time to time even after they have been
+completed.
+</para>
+
+<para>
+After the initial translation effort, which may last for several weeks
+with 1 hour work per day, the maintenance work needs between 1 hour
+per week and a few hours per week, depending on the amount of extra
+translation work done by the new translator(s) for their language in
+the &debian; project.
+</para>
+
+<sect1>
+<title>
+First contact with &d-i; development team
+</title>
+
+<para>
+Translators or translation teams of a non supported language should contact the &d-i; i18n coordination team (see <xref linkend="coordination-team"/>). They should provide a real
+name (the Debian Project encourages the use of real names) and
+possibly a GPG key (this is not mandatory but could help in the
+future).
+</para>
+
+<para>
+Such initial contacts are often established by the i18n coordination
+team members themselves. However, recording the name and contact
+address of the person who will be the first contact point in initial
+steps is a very important step to quickly establish a strong relation with identified contacts for the new language.
+</para>
+
+<para>
+The &i18n-coords; must have
+the real name and a reliable email address of at least one translator
+who must be an individual. This individual will be called the
+<emphasis>language coordinator</emphasis> for the given language.
+</para>
+
+<para>
+The &i18n-coords; then register the new language in the supported
+languages list (<xref linkend="supported"/>).
+</para>
+
+<para>
+For this step to be considered complete, an entry for the future supported
+language, temporarily with its name as mentioned by the language
+coordinator, must have been added to the supported languages list XML file
+(see <xref linkend="supported"/>, with the
+<emphasis>initial</emphasis> value in the
+<userinput>nlp_step</userinput> field.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+New language identification
+</title>
+
+<para>
+For technical reasons, only languages listed in the ISO 639-3 standard
+can be supported directly in software translations. The official
+ISO 639-3 list can be found on <ulink url="http://www.sil.org/iso639-3/">the official ISO 639
+Maintenance Agency web site</ulink>. In case a translation effort is
+intended for a language not listed in ISO 639-3, the use of one of the
+<emphasis>reserved codes</emphasis> of ISO 639-3 will be needed.
+</para>
+
+<para>
+If needed, the &i18n-coords; will search for the ISO 639-3 code for your
+language if the new translator doesn't already know it, as well as the
+official English name for the language. Mutual agreement about these
+important parameters has to be reached at this point.
+</para>
+
+<para>
+The name and contact address of an existing translation team as well
+as a <emphasis>backup coordinator</emphasis> are very valuable information
+to record at this step, but are not considered mandatory. The &i18n-coords;
+must ask for these information to the language coordinator. 
+</para>
+
+<para>
+For this step to be considered complete, the entry for the future
+supported language must be completed by its ISO 639-3 code in the
+supported languages list XML file (see <xref linkend="supported"/>,
+with the <emphasis>identification</emphasis> value in the
+<userinput>nlp_step</userinput> field. The fields about the backup
+coordinator and the translation teams are also filled if this information
+can be provided.
+</para>
+
+<itemizedlist>
+<listitem>
+<para>
+<userinput>code</userinput>: language ISO 639-3 code
+</para>
+</listitem>
+<listitem>
+<para>
+<userinput>english_name</userinput>: language name in English
+</para>
+</listitem>
+<listitem>
+<para>
+<userinput>coord_name</userinput>: language coordinator name
+</para>
+</listitem>
+<listitem>
+<para>
+<userinput>coord_email</userinput>: language coordinator email
+</para>
+</listitem>
+<listitem>
+<para>
+<userinput>supported</userinput>: should be set to <quote>false</quote>
+</para>
+</listitem>
+</itemizedlist>
+
+
+</sect1>
+
+<sect1>
+<title>
+Locale checking/writing
+</title>
+
+<para>
+For a language to be supported completely in &d-i; and later in
+&debian;, one <emphasis>locale</emphasis> must exist for this
+language.
+</para>
+
+<para>
+This document is not aimed at describing locales and which information
+they should contain. In short, a locale describes specific properties
+of a language/country combination. For instance, the "de_AT" locale
+describes specifics of the German language in Austria.
+</para>
+
+<para>
+Informations included in a locale:
+</para>
+	    <itemizedlist>
+	      <listitem>
+		<para>
+		  names of week days (and abbreviations);
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		names of months (and abbreviations);
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  official symbol of the currency;
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  writing style for numbers;
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  writing style for dates;
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  writing style for telephone numbers;
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  usual paper size;
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  collation information for the given language (one of
+		  the most complicated parts of locales);
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  .../...
+		</para>
+	      </listitem>
+	    </itemizedlist>
+
+<para>
+The writer of a locale must use the locale files format. The contents
+of this file must be in UTF-8. Translators shouldn't be afraid by
+this: this part may be handled by a i18n specialist in Debian, most
+often one of the &i18n-coords;. The new translator(s) will only need
+to provide him/her the above informations when (s)he will need it.
+</para>
+
+<para>
+If the language coordinator is aware of it, (s)he should provide the
+name of the most used locale(s) for this language. The &i18n-coords;
+will check whether such locale already exists in Debian.
+</para>
+
+
+<para>
+If the new language has no locale, neither in Debian nor from other
+free sources, writing the new locale will need a lot of work and this
+step may become very long, especially if it has to be done by one of
+the &i18n-coords;.
+</para>
+
+<para>
+For this step to be considered complete, a new locale must either
+exist or be requested for addition (through a regular bug report) in
+the <classname>locales</classname> Debian package.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>locale</emphasis>.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Localized language name
+</title>
+
+<para>
+The <classname>localechooser</classname> entry will show both the
+English official name of the language as well as its translated name.
+</para>
+
+<para>
+The language coordinator must provide the translation of the new
+language name (with an initial capital letter if capital letters make
+sense in this language) and send it to the &i18n-coords; as a single
+UTF-8 file. <emphasis>UTF-8 is mandatory here</emphasis>. For
+instance, the French translator will send a file containing the single
+word: <emphasis>Français</emphasis>.
+</para>
+
+<para>
+For this step to be considered complete, the new name must be recorded
+in the appropriate place in the <classname>localechooser</classname>
+package.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>language_name</emphasis>.
+</para>
+
+</sect1>
+
+<sect1 id="localechooser-entry">
+<title>
+Localechooser entry
+</title>
+
+<para>
+First needed is having the new language added to
+<classname>localechooser</classname> (the package responsible for
+choosing language at the very beginning of the Debian Installer
+process) This will be handled by the &i18n-coords;.
+</para>
+
+<para>
+This entry should mention the &d-i; interfaces which this language is available on (text, latin-1 serial, dialog or graphical interface). This choice depends on the needed rendering mechanism for this language. 
+</para>
+
+<para>
+This defines five categories for languages:
+</para>
+
+<itemizedlist>
+
+<listitem>
+<para>
+<emphasis>Category 0</emphasis>: languages that can be rendered on any ASCII console. This only includes English by a design decision of &d-i;. In short, even if a language can be rendered using only ASCII characters, it will <emphasis>not</emphasis> be placed in category 0;
+</para>
+</listitem>
+
+<listitem>
+<para>
+<emphasis>Category 1</emphasis>: languages that can be rendered on any
+Latin-1 console (several serial terminals). This includes so-called <emphasis>Latin-1</emphasis> languages;
+</para>
+</listitem>
+
+<listitem>
+<para>
+<emphasis>Category 2</emphasis>: languages that can be rendered et the Linux text console, without needeing a framebuffer terminal. 
+</para>
+</listitem>
+
+<listitem>
+<para>
+<emphasis>Category 3</emphasis>: languages that can be rendered et the Linux text console, only by using a framebuffer terminal. The
+key point for these languages is the availability of their glyphs in
+the <classname>bterm-unifont</classname> package. These languages should
+also not need complex rendering mechanisms such as combination
+mechanisms. The difference with 2 is the possibility to display the language
+at the Linux console without framebuffer. 
+</para>
+</listitem>
+
+<listitem>
+<para>
+<emphasis>Category 4</emphasis>: all other languages. Those can only be
+displayed in a graphical environment.
+</para>
+</listitem>
+
+</itemizedlist>
+
+<para>
+The <classname>localechooser</classname> entry also mentions a default
+country choice for this language. This country is often the country
+where the language is the most spoken (or the official language) and
+must be covered by an existing locale. If several supported locales
+exist for this language, this has to be mentioned to the
+&i18n-coords;.
+</para>
+
+<para>
+A default locale is also mentioned in this entry. This will be the
+default choice in case this language is supported in several locales.
+In case a new locale has to be written in the former initial steps,
+this default locale can be this new locale, otherwise it must be an
+already existing locale.
+</para>
+
+<para>
+With all this information, the &i18n-coords; will write the new entry
+in <classname>localechooser</classname>. They will also add the
+language code to the <filename>packages/po/PROSPECTIVE</filename> file
+(see <xref linkend="prospective"/>).
+</para>
+
+<para>
+For this step to be completed, the new entry must exist in
+<classname>localechooser</classname>. It should be commented until the
+initial steps are completed.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>localechooser_entry</emphasis>.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Needed characters
+</title>
+
+<para>
+This step is optional for languages that can only be rendered with the
+graphical version of &d-i; (languages in category 4 at the previous step). 
+</para>
+
+<para>
+The language coordinator must provide a file containing all characters
+needed for properly displaying the language, not including characters
+which are part of the ASCII character set (characters in the 32-127
+range). This file will be used by the font reduction mechanism (the
+UTF-8 font used in &d-i; is reduced for size constraints) and is
+needed for all Latin languages and all non-Latin languages with
+reasonably sized alphabet.
+</para>
+
+<para>
+It is allowed to add characters that can be entered directly using a
+"standard" keyboard for the language and are printed on the tops of keys,
+for example as displayed on http://en.wikipedia.org/wiki/Keymap. This
+includes characters accessible through AltGr and characters that can be
+created using dead keys.
+</para>
+
+<para>
+Below is an example of the contents of this file for a Latin language,
+namely French:
+</para>
+
+<informalexample>
+<screen>
+àâéèëêïîôùûüÿÀÂÉÈËÊÔÙÛÜŸÇ°£§µ
+</screen>
+</informalexample>
+
+<para>
+For this step to be completed, the new file must have been committed in
+the <classname>installer/built/needed-characters</classname>
+directory. The file name must be the ISO 639-3 language code with <filename>.utf</filename> as extension.
+</para>
+
+<para>
+As long as the language remains a prospective language, that file
+should be named after the language's ISO 639-3 code and the <filename>.prospective</filename> file extension. The extension will be changed to <filename>.utf</filename> when the language is completely supported.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>needed_characters</emphasis>.
+</para>
+
+<para>
+For font switch support in the bare Linux console, the language coordinator must
+also provide which <classname>console-setup</classname> font should be used, to
+be recorded in its <classname>debian/font-switch</classname> script.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Font for the graphical version of &d-i;
+</title>
+
+<para>
+The graphical version of &d-i; will use several different font sets, depending on the language.
+</para>
+
+<para>
+For each new language, an OpenType font must be available in the main
+Debian archive. This font <emphasis>must</emphasis> respect the Debian
+Free Software Guidelines, in short it must be a free font.
+</para>
+
+
+<para>
+For this step to be completed, the name of the font and the relevant
+Debian package must have been recorded by the &i18n-coords; in the
+DebianInstallerGUIFonts wiki page (&wiki-fonts;).
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>ttf_font</emphasis>.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Default keymap
+</title>
+
+<para>
+This step is meant to decide about the default keymap to propose to
+users in the <classname>console-setup</classname> package. This keymap
+will also become the default keymap on the installed system, both at the
+console and in graphical environments.
+</para>
+
+<para>
+For this step to be completed, a bug report mentioning the requested
+default keyboard mapping for the new language must have been reported
+by the &i18n-coords; to the <classname>console-setup</classname> package.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>keymap</emphasis>.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Account creation in Alioth
+</title>
+
+<para>
+All &d-i; work is maintained in a centralized revision control system,
+using <acronym>SVN</acronym>. For translators not familiar with
+<acronym>SVN</acronym>, <xref linkend="svn-basics"/> will give them
+enough information for them to be able to commit their translations
+themselves.
+</para>
+
+<para>
+This chapter will also explain in details how to get an account on the
+Alioth server, the server used for centralized development of several
+co-maintained Debian packages and projects.
+</para>
+
+<para>
+After your account has been created, please check that you can login
+with it on &url-alioth; using the chosen password. Then, mention your
+account name to the &i18n-coords; who will grant you commit access to
+the needed repositories.
+</para>
+
+<para>
+For this step to be completed, the language coordinator must have a
+working &alioth; account and must have sent his/her account name to
+the &i18n-coords;.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>account</emphasis> and fill in the
+<userinput>account</userinput> field with the account name.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Granting and checking the translator commit access
+</title>
+
+<para>
+After the new translator is notified by the &i18n-coords; that (s)he
+has been granted commit access to the &d-i; <acronym>SVN</acronym>
+repositories, (s)he should check that (s)he's able to checkout the
+&d-i; repository, as well as the &tasksel; repository.
+</para>
+
+<para>
+For this, <xref linkend="svn-basics"/> will give him/her any needed
+details.
+</para>
+
+<para>
+For this step to be completed, the language coordinator must have been
+able to successfully checkout at least the
+<classname>packages/po</classname> directory and add a fake file
+there. This will be verified by the &i18n-coords;.
+</para>
+
+<para>
+&i18n-coords; must then add the language code to the packages/po/PROSPECTIVE file in order to avoid the translations to immediately spread out to individual packages. This is motivated by the will of activating languages only after they completed the first two sublevels of translations (<xref linkend="sublevels"/>).
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>commit</emphasis>. They will also check that the
+language has been added to the list of <emphasis>prospective
+languages</emphasis> (see <xref linkend="prospective"/>).
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Choosing the translator's working tools
+</title>
+
+<para>
+If the new translator is not used to GNU gettext files (PO files)
+handling and the use of dedicated PO files editors and tools, (s)he
+should refer to <xref linkend="gettext-tools"/>.
+</para>
+
+<para>
+At the very minimum, (s)he should choose a gettext file editor and
+practice with it enough to be familiar with its basic functions.
+</para>
+
+
+<para>
+In any case, translators should refer to <xref
+linkend="methods-advices"/> for information and guidelines about the
+way they should work.
+</para>
+
+<para>
+For this step to be completed, the language coordinator must be
+comfortable with the basics of gettext-based translation. Of course,
+there is no real way to measure this precisely, so deciding that this
+step is completed is in general up to the translator him/herself.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>tools</emphasis>.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Subscribe to the &email-debian-i18n-list; mailing list
+</title>
+
+<para>
+&d-i; translators must subscribe to the &email-debian-i18n-list; where
+all important announcements and discussions about &d-i; translations
+are sent. Subscription to this list and all other Debian mailing lists
+can be done on &url-debian-list-archives;.
+</para>
+
+<para>
+For this step to be completed, the language coordinator must be
+subscribed to the &email-debian-i18n-list; mailing list.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>mailing_list</emphasis>.
+</para>
+
+<para>
+Optionnally, translators may subscribe to the &email-debian-boot-list; which is the development mailing list for &d-i;. Topics there are more technical but will allow translators to participate more deeply in &d-i; development.
+</para>
+
+<para>
+Joining IRC channels is also a good communication method: Debian i18n contributors usually hang around on #debian-i18n on irc.debian.org while &d-i; developers join #debian-boot.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Announcement of the translation effort
+</title>
+
+<para>
+When a new translation effort is started, the language coordinator
+must announce it in the &email-debian-boot-list; mailing list so
+that all &d-i; developers are aware of the new translation effort. A
+short personal introduction will be appreciated, even if no
+mandatory. The &d-i; development team is a real team whose members
+appreciate working together in a friendly environment.
+</para>
+
+<para>
+For this step to be completed, the language coordinator must have
+announced the beginning of the new work to &email-debian-boot-list;.
+</para>
+
+<para>
+The &i18n-coords; will record this information in the supported
+languages list by changing the <userinput>nlp_step</userinput> field
+value to <emphasis>prospective</emphasis>. They will also add the
+language to the <command>/l10n/output-l10n-changes</command>.
+Finally, they renamed the <emphasis>needed characters</emphasis> and replace
+the <filename>.prospective</filename> file extension by a <filename>.utf</filename>
+</para>
+
+<para>
+Finally, a new entry will be added to the file used by the scripts which generate the translation status pages (&url-d-i-translation-status;).
+</para>
+
+<para>
+The new language process officially finishes here. The only work that's left to do is...translating.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Follow the &d-i; development
+</title>
+
+<para>
+Subscription to the &d-i; development list (&email-debian-boot-list;)
+is also encouraged though not mandatory. This list has a traffic of
+about 20-30 mails per day, including many administrivia mails
+(packages uploads or bugs reports), but is the best method for being
+involved in &d-i; development.
+</para>
+
+<para>
+Many &d-i; developers and translators also use the #debian-boot
+channel on irc.debian.org for instant communication. Translators are
+highly welcomed on this channel which is regularly monitored by the
+&i18n-coords;. A dedicated #debian-i18n channel also exists on
+irc.oftc.net. Feel free to join it and chat with your fellow
+colleagues who work on other languages.
+</para>
+
+<para>If translators, and especially language coordinators, happen to
+not be able anymore to work on the translation of &d-i;, they should
+notify the &i18n-coords;. When doing so, they should do their best for
+pointing them to other l10n resources who may be able to continue
+the work on the given language.
+</para>
+
+<para>
+Welcome on board: you are now a &d-i; team member! In &d-i;
+development process, translators are NOT a special kind of
+developers. I18n and l10n are full part of the development and
+translators are involved all along this development. Several &d-i;
+developers started by working on translations and later contributed to
+other pieces of code.
+</para>
+
+<para>
+If you didn't already read it, please go and read this documentation
+chapter for translators (<xref linkend="translators"/>). It contains
+all the needed information to answer questions such as "Where do I
+start and how do I work?"
+</para>
+
+<para>
+As soon as you will have commited your PO file for level 1, even with
+only a few strings translated, the new language is temporarily called
+a <emphasis>prospective language</emphasis>. It will be removed from
+the list of such languages when the level 1 translation (see <xref linkend="translators-level1"/>) 
+will be about 25% completed (except during the pre-release process), as long
+as these 25% cover the beginning of the file which contains the most used
+strings.
+</para>
+
+<para>
+Don't wait for level 1 to be complete before commiting
+something. Quick and frequent commits are a good sign for
+&i18n-coords; that you're really active.
+</para>
+
+</sect1>
+
+</chapter>
