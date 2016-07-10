@@ -341,7 +341,7 @@ case "${BUILDTYPE}" in
     dd 2>/dev/null if=/dev/zero bs=1k of="${TEMP_FS_IMAGEFILE}" seek=$((${TEMP_FS_IMAGESIZE}-1)) count=1
     case "${FSTYPE}" in
       fat16|fat32)
-        mkfs.msdos >/dev/null -F "${FATSIZE}" "${TEMP_FS_IMAGEFILE}" "${TEMP_FS_IMAGESIZE}"
+        mkfs.msdos -v -F "${FATSIZE}" "${TEMP_FS_IMAGEFILE}" "${TEMP_FS_IMAGESIZE}"
         mcopy -s -i "${TEMP_FS_IMAGEFILE}" ${SOURCEDIR}// ::
         # The trailing // is necessary to make mcopy copy the contents
         # of ${SOURCEDIR} but not ${SOURCEDIR} itself. Using ${SOURCEDIR}/*

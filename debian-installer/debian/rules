@@ -6,15 +6,15 @@ DATE=$(shell echo $(VERSION) | cut -d '.' -f 1)
 SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
 SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
 
-ifneq ($(filter stable testing,$(SUITE)),)
-# Special treatment for parrot stable/testing
+ifneq ($(filter parrot,testing,$(SUITE)),)
+# Special treatment for parrot
 SUITE=parrot
 USE_UDEBS_FROM=parrot
 USE_PROPOSED_UPDATES=0
 else
 # Other "normal" releases
 USE_UDEBS_FROM=$(SUITE)
-USE_PROPOSED_UPDATES=1
+USE_PROPOSED_UPDATES=0
 endif
 
 TRANSSTATUS=translation-status

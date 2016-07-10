@@ -1,6 +1,5 @@
 # These udebs will be needed on nearly every image. Include this file to
 # get them.
-multiarch-support
 busybox-udeb
 anna
 archdetect
@@ -11,7 +10,6 @@ di-utils-reboot
 di-utils-shell
 libdebconfclient0-udeb
 libdebian-installer4-udeb
-libnss-dns-udeb
 lowmemcheck
 main-menu
 rootskel
@@ -19,7 +17,7 @@ udpkg
 rescue-check
 env-preseed
 pciutils-udeb
-parrot-archive-keyring
+parrot-archive-keyring-udeb
 
 #include "udev"
 

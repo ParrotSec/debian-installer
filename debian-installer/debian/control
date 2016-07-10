@@ -1,9 +1,9 @@
 Source: debian-installer
 Section: devel
 Priority: optional
-Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org
-Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
-Standards-Version: 3.9.8
+Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
+Uploaders: Cyril Brulebois <kibi@debian.org>
+Standards-Version: 3.9.5
 Vcs-Git: https://anonscm.debian.org/git/d-i/debian-installer.git
 Vcs-Browser: https://anonscm.debian.org/cgit/d-i/debian-installer.git
 Build-Conflicts: libnewt-pic [mipsel]
@@ -36,8 +36,6 @@ Build-Depends:
 #		For bdftobogl used in font reduction.
 #	
 # Library build dependencies:
-	glibc-pic,
-#		For library reduction.
 	libslang2-pic (>= 2.0.6-4),
 #		Make dependency versioned temporarily to make sure we avoid #392942
 	libnewt-pic (>= 0.52.2-11.3) [!mipsel],

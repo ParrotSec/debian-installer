@@ -1,38 +1,16 @@
-debian-installer (20160514+parrot1) testing; urgency=medium
+debian-installer (20160706+parrot1) testing; urgency=medium
 
-  * Minor fixes
+  * Fix minor bugs
 
- -- Lorenzo "Palinuro" Faletra <eclipse@parrotsec.org>  Sat, 14 May 2016 14:13:04 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 06 Jul 2016 18:19:57 +0200
 
-debian-installer (20160514+parrot0) testing; urgency=medium
+debian-installer (20160706+parrot0) testing; urgency=medium
 
-  * Fix keyring
-  * Convert from testing to stable (parrot)
-  * Update for kernel linux 4.5
+  * Update for Parrot Security OS with linux 4.6
 
- -- Lorenzo "Palinuro" Faletra <eclipse@parrotsec.org>  Sat, 14 May 2016 13:13:15 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@frozenbox.org>  Wed, 06 Jul 2016 16:38:39 +0200
 
-debian-installer (20160321+parrot2) testing; urgency=medium
-
-  * Put parrot splash
-
- -- Lorenzo "Palinuro" Faletra <eclipse@frozenbox.org>  Mon, 18 Apr 2016 20:04:54 +0200
-
-debian-installer (20160321+parrot1) testing; urgency=medium
-
-  * Add linux 4.4.0-parrot di modules
-
- -- Lorenzo "Palinuro" Faletra <palinuro@frozenbox.org>  Sat, 16 Apr 2016 15:02:32 +0100
-
-debian-installer (20160321+parrot0) source; urgency=medium
-
-  * Fix FTBFS for armel boards.
-  * Update from debian tree to support linux 4.4.x
-
- -- Lorenzo "Palinuro" Faletra <palinuro@frozenbox.org>  Fri, 25 Mar 2016 21:01:12 +0100
-
-
-debian-installer (20160112) UNRELEASED; urgency=low
+debian-installer (20160516) unstable; urgency=low
 
   [ Martin Michlmayr ]
   * Provide u-boot images for OpenRD.
@@ -48,6 +26,8 @@ debian-installer (20160112) UNRELEASED; urgency=low
   * Provide kernel and ramdisk for kirkwood netboot.
   * Fix syntax error in doc internals build script.  Thanks to
     Josh Gadeken (Closes: #817073)
+  * Add kernel/initrd manifest information for armhf.
+  * Generate image for Seagate Personal Cloud and Seagate NAS.
 
   [ Samuel Thibault ]
   * config/hurd.cfg: Set ROOTCMD to fakeroot-tcp.
@@ -88,14 +68,36 @@ debian-installer (20160112) UNRELEASED; urgency=low
   [ Karsten Merker ]
   * ARM: sunxi: Add support for the Olimex A20-SOM-EVB.
 
- -- Martin Michlmayr <tbm@cyrius.com>  Tue, 12 Jan 2016 20:28:57 -0800
+  [ Adam Conrad ]
+  * Drop references to libnss-files-udeb and libnss-dns-udeb, they're now
+    provided by libc-udeb, as of glibc 2.22-5.
 
-debian-installer (20160106+kali1) kali-dev; urgency=medium
+  [ Aurelien Jarno ]
+  * Stop excluding libc{0.1,0.3,6,6.1} as we now use mklibs-copy for the
+    reduction pass. This avoids dropping libnss libraries and also avoids a
+    useless download of this udeb during the installation.
+  * Drop build-dependency on glibc-pic.
+  * armhf: drop the compat ld.so symlink, all binaries in testing now use the
+    correct one.
 
-  * Import new version from Debian.
-  * Rebuild against kernel fixed for Logitech Unified Receiver support.
+  [ Cyril Brulebois ]
+  * Bump Linux kernel version from 4.4.0-1 to 4.5.0-2
+  * efi-image: Make the mkfs.msdos call verbose; this might help track
+    regressions or strange behaviours with new dosfstools upstream
+    releases (See: #823881).
+  * gen-hd-image: Make the mkfs.msdos call verbose.
+  * x86.cfg: Make the mkfs.msdos call verbose.
+  * build/Makefile: Export MTOOLS_SKIP_CHECK=1 before running mmd and
+    mcopy commands to work around an apparent regression in dosfstools
+    4.0-1 (See: #823881). Confirmed by Steve to produce an image that
+    boots OK.
+  * Update translation-status for the release.
 
- -- Raphaël Hertzog <hertzog@debian.org>  Thu, 14 Jan 2016 10:57:41 +0100
+  [ Steven Chamberlain ]
+  * Handle error creating initramfs (Closes: #821249)
+  * Increase kfreebsd-amd64 MFSROOT to 72 MiB to allow for larger udebs
+
+ -- Cyril Brulebois <kibi@debian.org>  Mon, 16 May 2016 15:00:21 +0200
 
 debian-installer (20160106) unstable; urgency=medium
 
@@ -120,14 +122,6 @@ debian-installer (20160106) unstable; urgency=medium
     makefs to version (>= 20100306-5+kbsd8u1~).
 
  -- Cyril Brulebois <kibi@debian.org>  Wed, 06 Jan 2016 06:00:19 +0100
-
-debian-installer (20160101+kali1) kali-dev; urgency=medium
-
-  * Import new version from Debian.
-  * Drop security.kali.org from the default APT sources.
-  * Use 2016.1 as current version name.
-
- -- Raphaël Hertzog <hertzog@debian.org>  Tue, 05 Jan 2016 15:59:35 +0100
 
 debian-installer (20160101) unstable; urgency=medium
 
@@ -208,12 +202,6 @@ debian-installer (20160101) unstable; urgency=medium
 
  -- Cyril Brulebois <kibi@debian.org>  Fri, 01 Jan 2016 18:46:41 +0100
 
-debian-installer (20151023+kali1) kali-dev; urgency=medium
-
-  * Import new version from debian
-
- -- Sophie Brun <sophie@freexian.com>  Mon, 02 Nov 2015 16:28:01 +0100
-
 debian-installer (20151023) unstable; urgency=medium
 
   [ Samuel Thibault ]
@@ -234,13 +222,6 @@ debian-installer (20150911) unstable; urgency=medium
   * Update translation-status for the release.
 
  -- Cyril Brulebois <kibi@debian.org>  Fri, 11 Sep 2015 00:58:26 +0200
-
-debian-installer (20150828+kali1) kali-dev; urgency=medium
-
-  * Import new version from debian
-  * Rebuild for 4.1.0-kali1
-
- -- Sophie Brun <sophie@freexian.com>  Wed, 09 Sep 2015 12:02:09 +0200
 
 debian-installer (20150828) unstable; urgency=medium
 

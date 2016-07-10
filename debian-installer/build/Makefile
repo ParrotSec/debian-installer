@@ -53,6 +53,9 @@
 #     `-- vmlinuz
 #
 
+# Temporary workaround for #823881:
+export MTOOLS_SKIP_CHECK=1
+
 # Add to PATH so dpkg will always work, and so local programs will be found.
 PATH := util:$(PATH):/usr/sbin:/sbin
 EATMYDATA = $(shell which eatmydata 2>/dev/null)
@@ -146,7 +149,7 @@ ifeq ($(DEB_HOST_ARCH),kfreebsd-i386)
 MFSROOT_LIMIT := 42m
 else ifeq ($(DEB_HOST_ARCH),kfreebsd-amd64)
 # See Bug#783773 for derivation.
-MFSROOT_LIMIT := 68m
+MFSROOT_LIMIT := 72m
 endif
 
 define mkfs.ufs1
@@ -524,12 +527,6 @@ ifndef ONLY_KLIBC
 		`find $(TEMP) -type f -a \( -perm /0111 -o -name '*.so' -o -name '*.so.*' \) | \
 		 grep -v udeblibs | grep -v 'usr/lib/xorg/modules/.*\.so'`
 
-ifeq ($(DEB_HOST_ARCH),armhf)
-	# armhf has two linkers for now, while the world gets sorted
-	mkdir -p $(TREE)/lib/arm-linux-gnueabihf
-	ln -s /lib/ld-linux-armhf.so.3 $(TREE)/lib/arm-linux-gnueabihf/ld-linux.so.3
-endif
-
 ifeq ($(DEB_HOST_ARCH_OS),hurd)
 	# On Hurd the SONAME for the dynamic linker is ld.so.1, but binaries
 	# have the ld.so symlink as the interpreter. Ideally mklibs should
@@ -720,6 +717,7 @@ endif
 
 	install -d $(TEMP)
 
+	set -e; \
 	case $(INITRD_FS) in \
 	ext2) \
 		$(genext2fs) $(TEMP)/initrd; \

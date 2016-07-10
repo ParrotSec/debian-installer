@@ -1,5 +1,4 @@
 # udebs needed for graphical installer
-libnss-files-udeb
 rootskel-gtk
 cdebconf-gtk-udeb
 cdebconf-gtk-terminal
