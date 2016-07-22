@@ -1,3 +1,9 @@
+debian-installer (20160718+parrot3) parrot; urgency=medium
+
+  * Rebuild with the new tasksel
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 22 Jul 2016 20:11:09 +0200
+
 debian-installer (20160718+parrot2) parrot; urgency=medium
 
   * Update to Linux 4.6.3
