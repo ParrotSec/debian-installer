@@ -1,3 +1,9 @@
+debian-installer (20160718+parrot2) parrot; urgency=medium
+
+  * Update to Linux 4.6.3
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 18 Jul 2016 19:38:05 +0200
+
 debian-installer (20160706+parrot1) testing; urgency=medium
 
   * Fix minor bugs

@@ -2,7 +2,7 @@ Format: 1.0
 Source: debian-installer
 Binary: debian-installer
 Architecture: any
-Version: 20160706+parrot1
+Version: 20160718+parrot2
 Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
 Uploaders: Cyril Brulebois <kibi@debian.org>
 Standards-Version: 3.9.5
@@ -13,8 +13,8 @@ Build-Conflicts: libnewt-pic [mipsel]
 Package-List:
  debian-installer deb devel optional arch=any
 Checksums-Sha1:
- 7ee623ac7e8658863a87a13b2991b2f74e557156 1450109 debian-installer_20160706+parrot1.tar.gz
+ 9db63159ca3e7b7dbe5ba5b682958b79d184f0af 1450370 debian-installer_20160718+parrot2.tar.gz
 Checksums-Sha256:
- e5579cd33b7afa8c0a3241755ba8d79d6bf74e75147596f061b247676e707b3a 1450109 debian-installer_20160706+parrot1.tar.gz
+ b22e48a80d35dbeb9e111266120238f7ec597fbf1266847313dcfed68093cc0c 1450370 debian-installer_20160718+parrot2.tar.gz
 Files:
- 22ab7eedc815ebe77be10029a9da8011 1450109 debian-installer_20160706+parrot1.tar.gz
+ 438c60b6fa3779d28dddd01392d41bcf 1450370 debian-installer_20160718+parrot2.tar.gz
