@@ -17,9 +17,13 @@ udpkg
 rescue-check
 env-preseed
 pciutils-udeb
-parrot-archive-keyring-udeb
+screen-udeb
+wget-udeb
 
 #include "udev"
 
 libkmod2-udeb [linux]
 kldutils-udeb [kfreebsd]
+
+#include archive keyring
+parrot-archive-keyring-udeb

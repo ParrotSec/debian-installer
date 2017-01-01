@@ -6,6 +6,12 @@ unpacked and concatenated together to build a complete installer image.
 The device-specific part is named firmware.<board_name>.img.gz
 and the device-independent part is named partition.img.gz.
 
+In addition to providing several firmware.<board_name>.img.gz files for
+a number of devices with device-specific system firmware, we also
+provide a firmware.none.img.gz file (containing the partition table but
+without any system firmware) to provide generic installer images for
+devices for which no firmware.<board_name>.img.gz file is provided.
+
 To create a complete image from the two parts on Linux systems, you can
 use zcat as follows:
 

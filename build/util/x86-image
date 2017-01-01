@@ -47,7 +47,7 @@ workdir="$(mktemp -d x86-image.XXXXXX)"
 mkdir -p "$outdir/boot/grub/$platform"
 
 # Build the core image.
-grub-mkimage -O "$platform" -o "$workdir/core.img" iso9660 biosdisk
+grub-mkimage -p '/boot/grub' -O "$platform" -o "$workdir/core.img" iso9660 biosdisk
 
 cat "/usr/lib/grub/$platform/cdboot.img" "$workdir/core.img" > "$outdir/boot/grub/grub_eltorito"
 cat "/usr/lib/grub/$platform/boot.img" "$workdir/core.img" > "$outdir/boot/grub/grub_embed"

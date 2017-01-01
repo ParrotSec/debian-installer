@@ -18,7 +18,7 @@ Build-Depends:
 	gnupg,
 #		New versions of apt need gnupg for security checks.
 	debian-archive-keyring (>= 2006.11.22),
-	parrot-archive-keyring,
+	kali-archive-keyring,
 #		To provide the archive key for security checks.
 	dctrl-tools,
 #		Various manipulations of the udeb Packages files.
@@ -34,6 +34,8 @@ Build-Depends:
 #		The d-i internals manual is in DocBook XML.
 	libbogl-dev,
 #		For bdftobogl used in font reduction.
+	ca-certificates,
+#		To embed CA certificates to verify https connections
 #	
 # Library build dependencies:
 	libslang2-pic (>= 2.0.6-4),
@@ -81,7 +83,7 @@ Build-Depends:
 #		kernels and add nslu2 boot magic.
 	slugimage (>= 0.10+r58-6) [armeb armel],
 #		For building nslu2 firmware images.
-	dns323-firmware-tools (>= 0.7.3-1) [armel],
+	dns323-firmware-tools (>= 0.7.3-1~) [armel],
 #		For building firmware images for the D-Link DNS-32(0|3).
 	u-boot-tools [armel armhf],
 #		For creating u-boot images
@@ -126,11 +128,11 @@ Build-Depends:
 	grub-ieee1275-bin [ppc64el],
 #		IEEE1275 bootloader support.
 	u-boot-imx [armhf],
-	u-boot-omap [armhf],
+	u-boot-omap (>= 2016.09~rc1) [armhf],
 	u-boot-sunxi [armhf],
-	u-boot-rockchip [armhf],
+	u-boot-rockchip (>= 2016.09~rc1) [armhf],
 #		U-boot binaries for armhf systems without u-boot in flash memory
-	u-boot (>= 2016.01+dfsg1-1) [armel],
+	u-boot (>= 2016.01+dfsg1-1~) [armel],
 #		U-boot binaries for armel systems
 # 
 # Architecture specific build dependencies:

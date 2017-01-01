@@ -1,3 +1,17 @@
+debian-installer (20170101+parrot0) parrot; urgency=medium
+
+  * Import debian changes
+  * Reconfigure package
+  * Rebuild for the latest kernel
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 01 Jan 2017 20:10:46 +0100
+
+debian-installer (20161229+parrot0) testing; urgency=medium
+
+  * Rebuild with linux 4.8.15
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 29 Dec 2016 15:47:23 +0100
+
 debian-installer (20161218+parrot0) testing; urgency=medium
 
   * Rebuild with linux 4.8

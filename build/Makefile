@@ -149,7 +149,7 @@ ifeq ($(DEB_HOST_ARCH),kfreebsd-i386)
 MFSROOT_LIMIT := 42m
 else ifeq ($(DEB_HOST_ARCH),kfreebsd-amd64)
 # See Bug#783773 for derivation.
-MFSROOT_LIMIT := 72m
+MFSROOT_LIMIT := 74m
 endif
 
 define mkfs.ufs1
@@ -365,13 +365,20 @@ endif
 			usedsize=`echo $$newsize - $$oldsize | bc`; \
 			usedblocks=`echo $$newblocks - $$oldblocks | bc`; \
 			usedcount=`echo $$newcount - $$oldcount | bc`; \
-			version=`dpkg-deb --info $$udeb | awk '/ Version: / { print $$2 }' | sed 's/+b[0-9]*$$//g'` ; \
-			source=`dpkg-deb --info $$udeb | awk '/ Source: / { print $$2 }'` ; \
+			version=`dpkg-deb --info $$udeb | sed -n 's/^ Version: //p' | sed 's/+b[0-9]*$$//g'` ; \
+			source=`dpkg-deb --info $$udeb | sed -n 's/^ Source: //p'` ; \
 			if [ -z "$$source" ]; then \
 				source=`dpkg-deb --info $$udeb | awk '/ Package: / { print $$2 }'` ; \
+				source_version="$$source (= $$version)" ; \
+			elif echo "$$source" | grep -qs '^linux-signed'; then \
+				source_version="linux (= $$version)" ; \
+			elif echo "$$source" | grep -qs '(.*)'; then \
+				source_version=`echo $$source|sed 's/(/(= /'`; \
+			else \
+				source_version="$$source (= $$version)" ; \
 			fi ; \
 			echo " $$usedsize B - $$usedblocks blocks - $$usedcount files from $$pkg (version $$version)" >>$(TEMP)/diskusage.txt;\
-			echo "$$source (= $$version)" >>$(TEMP)/built-using.txt;\
+			echo "$$source_version" >>$(TEMP)/built-using.txt;\
 			oldsize=$$newsize ; \
 			oldblocks=$$newblocks ; \
 			oldcount=$$newcount ; \
@@ -602,12 +609,6 @@ endif
 		zcat $(TREE)/usr/share/localechooser/languagelist.data.gz >> $(TEMP)/all.utf; \
 	fi
 
-
-	# Strip all kernel modules, just in case they haven't already been
-	set -e; \
-	for module in `find $(TREE)/lib/modules/ -name '*.o' -or -name '*.ko'`; do \
-	    strip -R .comment -R .note -g $$module || true; \
-	done
 
 	# Remove some unnecessary dpkg files.
 	set -e; \

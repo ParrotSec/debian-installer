@@ -1,1 +1,4 @@
 console-setup-pc-ekmap
+
+# Exclude screen support
+screen-udeb -

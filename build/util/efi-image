@@ -70,10 +70,10 @@ grub-mkimage -O "$platform" \
 	-o "$outdir/bootnet$efi_name.efi" -p "$netboot_prefix/grub" \
 	search configfile normal efinet tftp net
 
-# Stuff it into a FAT filesystem, making it as small as possible.  24KiB
+# Stuff it into a FAT filesystem, making it as small as possible.  32KiB
 # headroom seems to be enough; (x+31)/32*32 rounds up to multiple of 32.
 mkfs.msdos -v -C "$outdir/efi.img" \
-	$(( ($(stat -c %s "$workdir/boot$efi_name.efi") / 1024 + 55) \
+	$(( ($(stat -c %s "$workdir/boot$efi_name.efi") / 1024 + 1 + 32 + 31) \
 	    / 32 * 32 ))
 mmd -i "$outdir/efi.img" ::efi
 mmd -i "$outdir/efi.img" ::efi/boot

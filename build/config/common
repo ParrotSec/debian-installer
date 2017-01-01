@@ -36,7 +36,7 @@ MKLIBS = mklibs-copy
 # Normally the sources.list for building d-i will be derived from your
 # "normal" sources.list. However, you can specify a mirror here to override
 # this. You can use copy:/ to use a local mirror
-MIRROR = http://archive.parrotsec.org/parrot
+MIRROR = http://mirrordirector.archive.parrotsec.org/parrot
 
 # Options to pass to dpkg when it is unpacking the udebs to create the
 # image. None should be needed, but --force-overwrite might need to be
@@ -44,12 +44,12 @@ MIRROR = http://archive.parrotsec.org/parrot
 DPKG_UNPACK_OPTIONS = --force-overwrite
 
 # The codename of the Debian release that should be installed by default.
-DEBIAN_RELEASE = $(USE_UDEBS_FROM)
+DEBIAN_RELEASE = stable
 
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 3.0
+DEBIAN_VERSION = parrot
 DEBIAN_VERSION ?= stable
 
 # Define here from what release (codename!) components (udebs) should be taken
