@@ -1,3 +1,9 @@
+debian-installer (20170102+parrot0) parrot; urgency=medium
+
+  * Specify hostname
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 02 Jan 2017 14:19:12 +0100
+
 debian-installer (20170101+parrot0) parrot; urgency=medium
 
   * Import debian changes
