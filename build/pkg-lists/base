@@ -19,11 +19,10 @@ env-preseed
 pciutils-udeb
 screen-udeb
 wget-udeb
+ca-certificates-udeb
+parrot-archive-keyring-udeb
 
 #include "udev"
 
 libkmod2-udeb [linux]
 kldutils-udeb [kfreebsd]
-
-#include archive keyring
-parrot-archive-keyring-udeb

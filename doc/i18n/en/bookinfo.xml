@@ -10,6 +10,12 @@ This document describes how &d-i; internationalisation (i18n) and localisation (
 It is aimed at being used as a reference for all &d-i; translators and
 developers when i18n/l10n topics are involved.
 </para>
+
+<para>
+The source code of this document can be found in the
+<ulink url="https://anonscm.debian.org/cgit/d-i/debian-installer.git/tree/doc/i18n/">d-i
+git repository</ulink>.
+</para>
 </abstract>
 
 <copyright>

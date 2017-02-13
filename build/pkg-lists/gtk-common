@@ -11,7 +11,7 @@ fonts-android-udeb
 ttf-freefont-udeb
 fonts-farsiweb-udeb
 fonts-tibetan-machine-udeb
-ttf-dejavu-udeb
+fonts-dejavu-udeb
 fonts-khmeros-udeb
 fonts-thai-tlwg-udeb
 fonts-taml-udeb
@@ -19,7 +19,8 @@ fonts-mlym-udeb
 fonts-knda-udeb
 fonts-telu-udeb
 fonts-sil-abyssinica-udeb
-fonts-lklug-sinhala-udeb
+# For Sinhala
+fonts-noto-hinted-udeb
 fonts-lao-udeb
 fonts-ukij-uyghur-udeb
 fonts-sil-padauk-udeb

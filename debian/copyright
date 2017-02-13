@@ -34,6 +34,13 @@ layout.
     build/boot/kfreebsd/pics/lines-kbsd.svg
     build/boot/x86/pics/lines.svg
 
+The Soft Waves theme images (list of files below) are © 2016 Juliette Taka
+BELIN, GPLv2+.
+
+    build/boot/hurd/pics/softwaves-hurd.svg
+    build/boot/kfreebsd/pics/softwaves-kbsd.svg
+    build/boot/x86/pics/softwaves.svg
+
 The gen-hd-image tool, used to build bootable partitioned disk images, is
 Copyright 2014,2015 Karsten Merker <merker@debian.org> and is dual-licensed.
 It is provided under the terms of the GNU GPL version 2 or any later

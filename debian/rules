@@ -6,16 +6,9 @@ DATE=$(shell echo $(VERSION) | cut -d '.' -f 1)
 SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
 SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
 
-ifneq ($(filter parrot testing,$(SUITE)),)
-# Special treatment for parrot
 SUITE=parrot
-USE_UDEBS_FROM=parrot
+USE_UDEBS_FROM=stable
 USE_PROPOSED_UPDATES=0
-else
-# Other "normal" releases
-USE_UDEBS_FROM=$(SUITE)
-USE_PROPOSED_UPDATES=0
-endif
 
 # Don't integrate SSL certs in armel, the size limits will be missed
 ifeq ($(ARCH),armel)
@@ -76,7 +69,7 @@ install: build
 	cp -a build/dest/* $(IMAGEDIR)
 	ln -s $(DATE) $(ARCHIVEDIR)/current
 
-binary-arch: install  
+binary-arch: install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
@@ -95,5 +88,5 @@ binary-arch: install
 
 binary-indep:
 
-binary: binary-indep binary-arch 
-.PHONY: build build-images clean binary-indep binary-arch binary install 
+binary: binary-indep binary-arch
+.PHONY: build build-images clean binary-indep binary-arch binary install

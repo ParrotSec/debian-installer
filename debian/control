@@ -18,7 +18,7 @@ Build-Depends:
 	gnupg,
 #		New versions of apt need gnupg for security checks.
 	debian-archive-keyring (>= 2006.11.22),
-	parrot-archive-keyring,
+	kali-archive-keyring,
 #		To provide the archive key for security checks.
 	dctrl-tools,
 #		Various manipulations of the udeb Packages files.

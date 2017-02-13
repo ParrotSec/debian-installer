@@ -1,3 +1,72 @@
+debian-installer (20170127+parrot0) parrot; urgency=medium
+
+  * Import new Debian release
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 13 Feb 2017 17:57:28 +0100
+
+debian-installer (20170127) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel version from 4.8.0-2 to 4.9.0-1.
+  * Update translation-status for the release.
+
+  [ Martin Michlmayr ]
+  * Drop armel/versatile flavour since kernel support was removed.
+
+  [ Aurelien Jarno ]
+  * Also copy *.so files in udeblibs (Closes: #851790).
+  * mips*: install all NIC modules in the netbood initrd.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 27 Jan 2017 23:23:37 +0100
+
+debian-installer (20170112) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel version from 4.7.0-1 to 4.8.0-1.
+  * Add “set -e;” before while loops in a few arm* config files
+    to make sure errors are reported (Closes: #843916).
+  * Revert the following workaround after changes in grub2 2.02~beta3:
+    config/kfreebsd.cfg: Put xorriso's -J flag after “--” to work around
+    grub-mkrescue's change in option handling (See: #741656).
+  * Exclude libssl1.1-udeb as well for qnap, wget will likely depend on
+    it later on.
+  * Update translation-status for the release.
+
+  [ Adam Conrad ]
+  * build/util/efi-image: Fix up FAT filesystem size calculation:
+    - We appear to need 32k headroom, not 24k; this was masked
+      by rounding errors and blind luck until grub grew 1.5kB.
+    - Break out the magic headroom number into 32+31 to match
+      the comment and make the arithmetic more obvious to read.
+    - Round file sizes up, not down, so we don't break in future.
+
+  [ Martin Michlmayr ]
+  * Disable u-boot images for OpenRD because they've been removed
+    (see #837629).
+  * Exclude wpasupplicant-udeb on orion5x-qnap because it brings in
+    libcrypto1.1-udeb.
+
+  [ Aurélien COUDERC ]
+  * Update theme to Soft Waves by Juliette Belin.
+
+  [ Christian Perrier ]
+  * Replace fonts-lklug-sinhala by fonts-noto-hinted-udeb for Sinhala.
+    Closes: #837926
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel version from 4.8.0-1 to 4.8.0-2.
+
+  [ Philipp Kern ]
+  * Add https support to the installer. (Closes: #842040)
+
+  [ Philip Hands ]
+  * pkg-lists/gtk-common: ttf-dejavu-udeb is now called fonts-dejavu-udeb
+
+  [ Samuel Thibault ]
+  * Bump gnumach kernel version.
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 12 Jan 2017 11:08:53 +0100
+
 debian-installer (20170102+parrot0) parrot; urgency=medium
 
   * Specify hostname
@@ -1354,7 +1423,7 @@ debian-installer (20120327) unstable; urgency=low
 
   [ Christian Perrier ]
   * Add needed characters for Uyghur
-  * Add needed characters for Ossetian 
+  * Add needed characters for Ossetian
   * Add needed characters for Sindhi
   * No longer Build-Depend on palo (no longer used and
     will allow removing palo from unstable)
@@ -1583,7 +1652,7 @@ debian-installer (20101020) unstable; urgency=low
 
   [ Joey Hess ]
   * Run isohybrid on i386 and amd64 miniiso, which allows it to be written
-    directly to and booted from a USB stick. 
+    directly to and booted from a USB stick.
 
   [ Samuel Thibault ]
   * Explicitly set timeout to -1 in grub configurations, to make it easy to
@@ -1626,10 +1695,10 @@ debian-installer (20100911) unstable; urgency=low
   [ Aurelien Jarno ]
   * Build-depends on debian-ports-archive-keyring on architectures
     hosted on debian-ports.org (sh4, sparc64).
-  * Build-depends on module-init-tools on sh4 and sparc64 as on other 
+  * Build-depends on module-init-tools on sh4 and sparc64 as on other
     Linux architectures.
   * Switch kfreebsd-amd64 and kfreebsd-i386 to 8.1 kernel.
-  * Don't try to build unifont.bdf on GNU/kFreeBSD as the console already 
+  * Don't try to build unifont.bdf on GNU/kFreeBSD as the console already
     has basic font support for level 1 and bogl-bterm is not available.
   * Build-depends on xorriso on kfreebsd-amd64, kfreebsd-i386 and hurd-i386.
   * Add support to generate cdrom images on GNU/kFreeBSD.
@@ -1661,7 +1730,7 @@ debian-installer (20100911) unstable; urgency=low
     Closes: #593208
 
   [ Joey Hess ]
-  * Use Dir::Etc::trusted rather than Apt::GPGV::TrustedKeyring, 
+  * Use Dir::Etc::trusted rather than Apt::GPGV::TrustedKeyring,
     to work with apt 0.8.0.
 
  -- Otavio Salvador <otavio@debian.org>  Sat, 11 Sep 2010 11:15:37 -0300
@@ -1800,7 +1869,7 @@ debian-installer (20100122) unstable; urgency=low
   * Drop no longer needed versioned build dependency on dpkg.
 
   [ Aurelien Jarno ]
-  * Build GNU/kFreeBSD images using grub-mkrescue instead of grub-image, 
+  * Build GNU/kFreeBSD images using grub-mkrescue instead of grub-image,
     using patch from Robert Millan.
 
   [ Samuel Thibault ]
@@ -2110,7 +2179,7 @@ debian-installer (20081027) unstable; urgency=low
 
   [ Bastian Blank ]
   * Move s390 to 2.6.26-1.
-  
+
   [ Stephen R. Marenka ]
   * Move m68k to 2.6.26-1.
   * Add modules to cdrom.
@@ -4157,9 +4226,9 @@ debian-installer (20040424) unstable; urgency=low
 debian-installer (20040422) unstable; urgency=low
 
   * Bdale Garbee
-    - add a new MISC target to the build Makefile, which makes it easy to 
-      deliver a set of additional files to the target directory.  use it to 
-      deliver the bootloader and config file (elilo.efi and elilo.conf) for 
+    - add a new MISC target to the build Makefile, which makes it easy to
+      deliver a set of additional files to the target directory.  use it to
+      deliver the bootloader and config file (elilo.efi and elilo.conf) for
       ia64 netboot.
     - add ia64 netboot instructions to the manual
   * Martin Michlmayr
@@ -4312,7 +4381,7 @@ debian-installer (20040403) unstable; urgency=low
     - Enable autobuilding on arm.
   * Joey Hess
     - Fix alpha netboot to use discover1-udeb, to avoid build failure.
- 
+
  -- Joey Hess <joeyh@debian.org>  Wed, 31 Mar 2004 16:43:13 -0500
 
 debian-installer (20040402) unstable; urgency=low
@@ -4415,7 +4484,7 @@ debian-installer (20040325) unstable; urgency=low
   * Joey Hess
     - Try to add manifest info for hppa.
   * Vincent Sanders
-    - Add support for pkg-lists to have kernel module packages on selected 
+    - Add support for pkg-lists to have kernel module packages on selected
       targets.
     - change ARM netboot target to use this functionality
     - add several more ARM configurations
@@ -4530,7 +4599,7 @@ debian-installer (20040313) unstable; urgency=low
     - sparc: rearrange some of the kernel handling.
   * Bastian Blank
     - Add cdebconf-text-udeb on s390.
-    - Move hw-detect and bogl-bterm-udeb from common to i386, m68k, mips for 
+    - Move hw-detect and bogl-bterm-udeb from common to i386, m68k, mips for
       demo.
   * Several updated translations in udebs.
 
@@ -4635,7 +4704,7 @@ debian-installer (20040301) unstable; urgency=low
     - Removed the xfs flavoured cdrom, since 2.4.25 will have xfs standard.
     - Add m68k as an arch in the control file.
   * Joshua Kwan
-    - Fixed broken sparc32_netboot build. Same fix as the one for 
+    - Fixed broken sparc32_netboot build. Same fix as the one for
       sparc64_netboot.
 
  -- Joey Hess <joeyh@debian.org>  Sat, 28 Feb 2004 14:56:38 -0500
@@ -4745,7 +4814,7 @@ debian-installer (20040209) unstable; urgency=low
     - Make all the syslinux help screens leave graphics mode when displayed.
     - Hack syslinux.txt so it all fits on one line, the same line as the boot:
       prompt.
-    - Add ${BOOTPROMPT} expansion to bootscreen-subst, to make it easy 
+    - Add ${BOOTPROMPT} expansion to bootscreen-subst, to make it easy
       to make the last line in a syslinux screen not have a newline at EOF
       on the image, while still being easily editable.
     - Switch cdroms from load-installer to load-cdrom. This is to work around
@@ -4843,7 +4912,7 @@ debian-installer (20031223) unstable; urgency=low
       via -F and delete it when done. This is to support building on systems
       running 2.6.
     - Remove ide modules stuff from net drivers floppy. I don't know why it
-      was there, but its deps were not met and this could cause ugly messages 
+      was there, but its deps were not met and this could cause ugly messages
       during install.
     - Remove the same ide modules from i386 netboot.
     - Document the bootkbd boot parameter in syslinux f7.txt.

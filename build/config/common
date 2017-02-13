@@ -5,13 +5,13 @@
 # local setting such as EXTRAFILES. That way you won't accidentially commit
 # your local changes.
 
-# set DEBUG to y if you want to get the source for and compile 
+# set DEBUG to y if you want to get the source for and compile
 # debug versions of the needed udebs
 #DEBUG = y
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.8.0-parrot
+LINUX_KERNEL_ABI ?= 4.9.0-parrot
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -44,12 +44,12 @@ MIRROR = http://mirrordirector.archive.parrotsec.org/parrot
 DPKG_UNPACK_OPTIONS = --force-overwrite
 
 # The codename of the Debian release that should be installed by default.
-DEBIAN_RELEASE = stable
+DEBIAN_RELEASE = $(USE_UDEBS_FROM)
 
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = parrot
+DEBIAN_VERSION = 3.5 (stable)
 DEBIAN_VERSION ?= stable
 
 # Define here from what release (codename!) components (udebs) should be taken
@@ -71,7 +71,7 @@ BOOTMENU_BEEP ?= n
 
 # Filesystem type for the initrd, currently valid values are ext2, cramfs,
 # and initramfs.
-# NOTE: Your kernel must support this filesystem, not just a module. 
+# NOTE: Your kernel must support this filesystem, not just a module.
 INITRD_FS = initramfs
 
 # What device to write floppies on
@@ -89,7 +89,7 @@ WRITE_MEDIA = floppy
 TYPE = $(MEDIUM)
 
 # Used to write a /etc/lsb-release file in the installer initrd.
-LSB_DISTRIB_ID=Parrot
+LSB_DISTRIB_ID=Debian
 LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) installer"
 # Inlude the build date of the installer in here.
 LSB_DISTRIB_RELEASE="$(DEBIAN_VERSION) - installer build $(BUILD_DATE)"

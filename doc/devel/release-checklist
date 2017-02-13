@@ -169,8 +169,6 @@ alpha
 	desktop task install			
 
 armel
-	NSLU2					
-	IOP32x					
 	QNAP TS-109/TS-209			
 	QNAP TS-409				
 	Kurobox Pro				

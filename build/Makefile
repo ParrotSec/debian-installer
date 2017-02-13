@@ -520,9 +520,9 @@ endif
 	rm -rf $(TEMP)/udeblibs
 ifndef ONLY_KLIBC
 	mkdir -p $(TEMP)/udeblibs
-	find $(EXTRAUDEBSDIR)/lib -name '*.so.*' -print0 | \
+	find $(EXTRAUDEBSDIR)/lib \( -name '*.so.*' -o -name '*.so' \) -print0 | \
 		xargs -0r cp -a -t $(TEMP)/udeblibs
-	find $(TREE)/lib -name '*.so.*' -print0 | \
+	find $(TREE)/lib \( -name '*.so.*' -o -name '*.so' \) -print0 | \
 		xargs -0r cp -a -t $(TEMP)/udeblibs
 	mkdir -p $(TREE)/lib
 	# HACK ALERT: X.Org modules are excluded from the scan as mklibs

@@ -47,18 +47,23 @@ fi
 
 # Overridable environment variables for building.
 if [ -z "$ROOTCMD" ]; then
-	ROOTCMD="fakeroot"
+	_ROOTCMD="fakeroot"
+else
+	_ROOTCMD=$ROOTCMD
+	unset ROOTCMD
 fi
 
 # Internal environment variables to keep file attributes between targets
 # when fakeroot is used.
 # As we start with an empty file, we can use -i also on first invocation.
 ROOTCMDOPTS=""
-if [ "$ROOTCMD" = fakeroot ]; then
+case "$_ROOTCMD" in
+    *fakeroot*)
 	FRSAVE="$(mktemp -t d-i_daily-build.XXXXXX)"
 	trap 'rm -f $FRSAVE' 0 HUP INT QUIT TERM
 	ROOTCMDOPTS="-i $FRSAVE -s $FRSAVE"
-fi
+	;;
+esac
 
 LOG_TO_STDOUT=${LOG_TO_STDOUT:-0}
 
@@ -82,7 +87,7 @@ do_build_helper () {
 		githead=$(cat ../.git/refs/heads/master) || true
 		echo "debian-installer git tree head: $githead"
 	fi
-	$ROOTCMD $ROOTCMDOPTS make $t 2>&1
+	$_ROOTCMD $ROOTCMDOPTS make $t 2>&1
 }
 
 do_build () {
@@ -103,10 +108,10 @@ do_build () {
 build () {
 	# Override $TARGETS with custom makefile targets.
 	if [ -z "$TARGETS" ]; then
-		TARGETS="$($ROOTCMD make all_list | grep '^build')"
+		TARGETS="$($_ROOTCMD make all_list | grep '^build')"
 	fi
 
-	$ROOTCMD make reallyclean > /dev/null
+	$_ROOTCMD make reallyclean > /dev/null
 	mkdir dest
 	touch dest/overview.log
 
@@ -119,7 +124,7 @@ build () {
 			echo "building $t failed, see log file dest/$t.log for details" >&2
 		fi
 	done
-	$ROOTCMD make stats > dest/stats.txt 2>&1 || true
+	$_ROOTCMD make stats > dest/stats.txt 2>&1 || true
 	make release > /dev/null
 }
 
