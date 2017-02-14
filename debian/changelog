@@ -1,3 +1,9 @@
+debian-installer (20170127+parrot2) parrot; urgency=medium
+
+  * Rebuild to import parrot-archive-keyring 2017.2+parrot0
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 14 Feb 2017 01:20:28 +0100
+
 debian-installer (20170127+parrot1) parrot; urgency=medium
 
   * Add parrot-archive-keyring dependency
