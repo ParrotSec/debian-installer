@@ -7,7 +7,7 @@ SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
 SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
 
 SUITE=parrot
-USE_UDEBS_FROM=stable
+USE_UDEBS_FROM=parrot
 USE_PROPOSED_UPDATES=0
 
 # Don't integrate SSL certs in armel, the size limits will be missed
@@ -69,7 +69,7 @@ install: build
 	cp -a build/dest/* $(IMAGEDIR)
 	ln -s $(DATE) $(ARCHIVEDIR)/current
 
-binary-arch: install
+binary-arch: install  
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
@@ -88,5 +88,5 @@ binary-arch: install
 
 binary-indep:
 
-binary: binary-indep binary-arch
-.PHONY: build build-images clean binary-indep binary-arch binary install
+binary: binary-indep binary-arch 
+.PHONY: build build-images clean binary-indep binary-arch binary install 

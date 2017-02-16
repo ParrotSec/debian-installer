@@ -1,3 +1,15 @@
+debian-installer (20170127+parrot4) parrot; urgency=medium
+
+  * Fix minor bugs with netboot images
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 16 Feb 2017 14:48:34 +0100
+
+debian-installer (20170127+parrot3) parrot; urgency=medium
+
+  * Rebuild package to include debootstrap 1.0.87+parrot1
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 14 Feb 2017 03:47:39 +0100
+
 debian-installer (20170127+parrot2) parrot; urgency=medium
 
   * Rebuild to import parrot-archive-keyring 2017.2+parrot0
