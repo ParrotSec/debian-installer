@@ -1,3 +1,9 @@
+debian-installer (20170127+parrot5) parrot; urgency=medium
+
+  * remove parrot-core as base system dependency in preseed (tasksel will install it)
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 16 Feb 2017 16:46:37 +0100
+
 debian-installer (20170127+parrot4) parrot; urgency=medium
 
   * Fix minor bugs with netboot images

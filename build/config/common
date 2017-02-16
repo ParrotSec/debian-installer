@@ -50,12 +50,12 @@ DEBIAN_RELEASE = $(USE_UDEBS_FROM)
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
 DEBIAN_VERSION = 3.5 (CyberGalleon)
-DEBIAN_VERSION ?= stable
+DEBIAN_VERSION ?= parrot
 
 # Define here from what release (codename!) components (udebs) should be taken
 # to build debian-installer. By default this is set to 'unstable' for building
 # daily images. For official builds this is overruled in debian/rules.
-USE_UDEBS_FROM ?= stable
+USE_UDEBS_FROM ?= parrot
 
 # Archive components from which to fetch debian-installer modules.
 UDEB_COMPONENTS ?= main/debian-installer
