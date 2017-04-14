@@ -11,7 +11,7 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.9.0-parrot
+LINUX_KERNEL_ABI ?= 4.9.0-parrot16
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di

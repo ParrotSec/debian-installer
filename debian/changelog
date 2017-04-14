@@ -1,3 +1,21 @@
+debian-installer (20170127+parrot8) testing; urgency=medium
+
+  * Rebuild with linux 4.9.16
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 14 Apr 2017 18:53:41 +0200
+
+debian-installer (20170127+parrot7) testing; urgency=medium
+
+  * Rebuild with linux 4.9.13
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 03 Mar 2017 14:05:24 +0100
+
+debian-installer (20170127+parrot6) testing; urgency=medium
+
+  * Rebuild with linux 4.9.10
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 24 Feb 2017 00:56:17 +0100
+
 debian-installer (20170127+parrot5) parrot; urgency=medium
 
   * remove parrot-core as base system dependency in preseed (tasksel will install it)
