@@ -1,3 +1,9 @@
+debian-installer (20170508+parrot0) parrot; urgency=medium
+
+  * Rebuild with linux 4.9.25
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 08 May 2017 00:27:43 +0200
+
 debian-installer (20170127+parrot8) testing; urgency=medium
 
   * Rebuild with linux 4.9.16
