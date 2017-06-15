@@ -1,3 +1,54 @@
+debian-installer (20170608+parrot0) parrot; urgency=medium
+
+  * Import new Debian release.
+  * Update parrot wrappers.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 15 Jun 2017 16:12:08 +0200
+
+debian-installer (20170608) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Add “set -e” statement to build/util/gen-hd-image so as to catch any
+    issues. In particular, the “Disk full” emitted for some images like
+    A10-OLinuXino-Lime (See: #864260).
+  * Adapt clean_tempfiles accordingly, since the previous compound
+    statements would fail under “set -e” with an undefined/empty variable.
+
+  [ Karsten Merker ]
+  * armhf: Increase the armhf SD card image sizes due to an
+    increased d-i binary size. (Closes: #864260).
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 08 Jun 2017 12:56:57 +0000
+
+debian-installer (20170525) unstable; urgency=medium
+
+  [ Samuel Thibault ]
+  * Fix showing the advanced speech entries.
+  * Move the advanced speech entries into a submenu, so that text entries have
+    shortcuts too, for people with a Braille device for instance.
+  * Fix spurious 32bit speech entry on multiarch.
+  * Rename IS_GTK to IS_PURE_GTK to make it clearer.
+  * Add missing speech entries on a gtk-only cdrom image
+
+  [ John Paul Adrian Glaubitz ]
+  * m68k: Change configuration to use the common m68k kernel image.
+  * m68k: Change KERNELMAJOR to 2.6.
+  * m68k: Clean up formatting of all configuration files.
+
+  [ Roger Shimizu ]
+  * armel/orion5x: Use DTB instead of legacy devio device ID for
+    Buffalo Linkstation LiveV3 (LS-CHL). DTB for this device is
+    supported since debian kernel 4.9.10-1.
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel version from 4.9.0-2 to 4.9.0-3.
+  * Update translation-status for the release.
+
+  [ Martin Michlmayr ]
+  * Re-enable u-boot images for OpenRD.
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 25 May 2017 12:21:30 +0200
+
 debian-installer (20170508+parrot0) parrot; urgency=medium
 
   * Rebuild with linux 4.9.25

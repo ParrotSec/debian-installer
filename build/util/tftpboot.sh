@@ -59,7 +59,7 @@ gzip -cdq $sysmap > $tmp || true
 
 # append rootimage to the kernel
 case "$arch" in
-    sparc)
+    sparc | sparc64)
 	elftoaout -o $tftpimage $tftpimage.tmp
 	# Piggyback appends the ramdisk to the a.out image in-place
 	piggyback64 $tftpimage $tmp $rootimage

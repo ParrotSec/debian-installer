@@ -53,6 +53,8 @@
 #   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 #   OTHER DEALINGS IN THE SOFTWARE.
 
+set -e
+
 PATH="${PATH}:/bin:/sbin:/usr/bin:/usr/sbin"
 export PATH
 
@@ -84,8 +86,9 @@ error()
 
 clean_tempfiles()
 {
-  [ -f "${TEMP_FS_IMAGEFILE}" ] && rm -f "${TEMP_FS_IMAGEFILE}"
-  [ -f "${TEMP_HD_IMAGEFILE}" ] && rm -f "${TEMP_HD_IMAGEFILE}"
+  # Only try to delete what was worked on:
+  if [ -n "${TEMP_FS_IMAGEFILE}" ]; then rm -f "${TEMP_FS_IMAGEFILE}"; fi
+  if [ -n "${TEMP_HD_IMAGEFILE}" ]; then rm -f "${TEMP_HD_IMAGEFILE}"; fi
 }
 
 check_prerequisites()

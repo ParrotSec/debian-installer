@@ -89,11 +89,17 @@ sub print_set_theme ($)
     print_indented("set theme=$VARS{THEME_PATH}$theme\n");
 }
 
-sub start_submenu ($)
+sub start_submenu ($;%)
 {
-    my ($title) = @_;
+    my ($title,%xattr) = @_;
 
-    print_indented("submenu '$title' {\n");
+    $xattr{Hotkey} ||= 0;
+
+    my $hotkey = "";
+    $hotkey = " --hotkey=".$xattr{Hotkey}
+        if $xattr{Hotkey};
+
+    print_indented("submenu$hotkey '$title' {\n");
 
     my $theme = menu_theme();
     push @menu_number, 1;
@@ -121,7 +127,7 @@ sub menuentry ($;%)
     $xattr{Expert} ||= 0;
     $xattr{Auto} ||= 0;
     $xattr{Rescue} ||= 0;
-    $xattr{Speach} ||= 0;
+    $xattr{Speech} ||= 0;
 
     $xattr{Quiet} = !$xattr{Expert} unless defined $xattr{Quiet};
 
@@ -145,7 +151,7 @@ sub menuentry ($;%)
     push @cmdline, ("auto=true", "priority=critical") if $xattr{Auto};
     push @cmdline, @OPTS;
     push @cmdline, "rescue/enable=true" if $xattr{Rescue};
-    push @cmdline, "speakup.synth=soft" if $xattr{Speach};
+    push @cmdline, "speakup.synth=soft" if $xattr{Speech};
     push @cmdline, "---";
     push @cmdline, "quiet" if $xattr{Quiet};
 
@@ -177,13 +183,16 @@ push @menu_number, 1;
 menuentry("Install");
 menuentry("Graphical install", Graphical => 1);
 
-start_submenu("Advanced options ..."); {
-    menuentry("... Expert install", Expert => 1);
-    menuentry("... Rescue mode", Rescue => 1);
-    menuentry("... Automated install", Auto => 1);
+start_submenu("Advanced options ...", Hotkey => 'a'); {
     menuentry("... Graphical expert install", Graphical => 1, Expert => 1);
     menuentry("... Graphical rescue mode", Graphical => 1, Rescue => 1);
     menuentry("... Graphical automated install", Graphical => 1, Auto => 1);
+    menuentry("... Expert install", Expert => 1);
+    menuentry("... Rescue mode", Rescue => 1);
+    menuentry("... Automated install", Auto => 1);
+    menuentry("... Expert install with speech synthesis", Expert => 1, Speech => 1, Hotkey => 'x');
+    menuentry("... Rescue mode with speech synthesis", Rescue => 1, Speech => 1, Hotkey => 'r');
+    menuentry("... Automated install with speech synthesis", Auto => 1, Speech => 1, Hotkey => 'a');
 
     start_submenu("... Desktop environment menu ..."); {
 
@@ -199,17 +208,19 @@ start_submenu("Advanced options ..."); {
                 $one->("... Graphical install", Graphical => 1);
 
                 start_submenu("... $desktop advanced options ..."); {
-                    $one->("... Expert install", Expert => 1);
-                    $one->("... Automated install", Auto => 1);
                     $one->("... Graphical expert install", Graphical => 1, Expert => 1);
                     $one->("... Graphical automated install", Graphical => 1, Auto => 1);
+                    $one->("... Expert install", Expert => 1);
+                    $one->("... Automated install", Auto => 1);
+                    $one->("... Expert install with speech synthesis", Expert => 1, Speech => 1, Hotkey => 'x');
+                    $one->("... Automated install with speech synthesis", Auto => 1, Speech => 1, Hotkey => 'a');
                 } end_submenu(); # $desktop advanced
 
-                $one->("... Install with speech synthesis", Graphical => 1, Speach => 1, Hotkey => 's');
-                $one->("... 32 bit speech install", ThirtyTwo => 1, Graphical => 1, Speach => 1)
+                $one->("... Install with speech synthesis", Graphical => 1, Speech => 1, Hotkey => 's');
+                $one->("... 32 bit speech install", ThirtyTwo => 1, Graphical => 1, Speech => 1)
                     if $thirtytwo;
             } end_submenu(); # $desktop submenu
         } # Desktop loop
     } end_submenu(); # Desktop submenu
 } end_submenu(); # Advanced
-menuentry('Install with speech synthesis', Graphical => $graphical, Speach => 1, Hotkey => 's')
+menuentry('Install with speech synthesis', Graphical => $graphical, Speech => 1, Hotkey => 's')

@@ -5,6 +5,6 @@ dreamplug /usr/lib/u-boot/dreamplug/u-boot.kwb
 guruplug /usr/lib/u-boot/guruplug/u-boot.kwb
 sheevaplug /usr/lib/u-boot/sheevaplug/u-boot.kwb
 # OpenRD
-#openrd-base /usr/lib/u-boot/openrd_base/u-boot.kwb
-#openrd-client /usr/lib/u-boot/openrd_client/u-boot.kwb
-#openrd-ultimate /usr/lib/u-boot/openrd_ultimate/u-boot.kwb
+openrd-base /usr/lib/u-boot/openrd_base/u-boot.kwb
+openrd-client /usr/lib/u-boot/openrd_client/u-boot.kwb
+openrd-ultimate /usr/lib/u-boot/openrd_ultimate/u-boot.kwb

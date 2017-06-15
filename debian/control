@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
 Uploaders: Cyril Brulebois <kibi@debian.org>
-Standards-Version: 3.9.5
+Standards-Version: 3.9.8
 Vcs-Git: https://anonscm.debian.org/git/d-i/debian-installer.git
 Vcs-Browser: https://anonscm.debian.org/cgit/d-i/debian-installer.git
 Build-Conflicts: libnewt-pic [mipsel]
@@ -18,7 +18,6 @@ Build-Depends:
 	gnupg,
 #		New versions of apt need gnupg for security checks.
 	debian-archive-keyring (>= 2006.11.22),
-	parrot-archive-keyring,
 #		To provide the archive key for security checks.
 	dctrl-tools,
 #		Various manipulations of the udeb Packages files.
@@ -34,8 +33,6 @@ Build-Depends:
 #		The d-i internals manual is in DocBook XML.
 	libbogl-dev,
 #		For bdftobogl used in font reduction.
-	ca-certificates,
-#		To embed CA certificates to verify https connections
 #	
 # Library build dependencies:
 	libslang2-pic (>= 2.0.6-4),
@@ -98,10 +95,12 @@ Build-Depends:
 	pxelinux [i386 amd64],
 	syslinux-common (>= 3:6) [i386 amd64],
 #		With isohybrid.
-	yaboot [powerpc],
+	yaboot [powerpc ppc64],
 #		For all our powerpc boot needs. Well, not really.
 	aboot (>= 0.9b-2) [alpha],
 #		A previous version didn't have netabootwrap.
+	palo [hppa],
+#		Bootloader for hppa machines, to make netboot images.
 	silo [sparc sparc64],
 #		Using silo is problematic since it needs to run as root,
 #		so images that need it are not built by default, but we
@@ -149,7 +148,7 @@ Build-Depends:
 	bf-utf-source [!s390 !s390x],
 #		Contains the unicode font we use. Not a udeb since we
 #		perform font reduction at build time.
-	mkvmlinuz [powerpc],
+	mkvmlinuz [powerpc ppc64],
 #		Used to make powerpc images that can boot direct from
 #		firmware w/o using a boot loader.
 	openssl,

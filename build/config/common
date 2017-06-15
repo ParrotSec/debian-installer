@@ -11,7 +11,7 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.9.0-parrot25
+LINUX_KERNEL_ABI ?= 4.9.0-parrot30
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -44,12 +44,12 @@ MIRROR = http://mirrordirector.archive.parrotsec.org/parrot
 DPKG_UNPACK_OPTIONS = --force-overwrite
 
 # The codename of the Debian release that should be installed by default.
-DEBIAN_RELEASE = $(USE_UDEBS_FROM)
+DEBIAN_RELEASE = parrot
 
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 3.5 (CyberGalleon)
+DEBIAN_VERSION = 3.7 (CyberGalleon)
 DEBIAN_VERSION ?= parrot
 
 # Define here from what release (codename!) components (udebs) should be taken
@@ -90,7 +90,7 @@ TYPE = $(MEDIUM)
 
 # Used to write a /etc/lsb-release file in the installer initrd.
 LSB_DISTRIB_ID=Parrot
-LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) installer"
+LSB_DISTRIB_DESCRIPTION="Parrot GNU/Linux installer"
 # Inlude the build date of the installer in here.
 LSB_DISTRIB_RELEASE="$(DEBIAN_VERSION) - installer build $(BUILD_DATE)"
 

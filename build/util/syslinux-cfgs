@@ -21,11 +21,11 @@ if [ -z "$DST" ]; then
 	cd "$SRC"
 	# spk.cfg is only meant for the netboot-gtk image which has the gtk
 	# initrd at the root instead of gtk/
-	if [ "$IS_GTK" = 1 ]
+	if [ "$IS_PURE_GTK" = 1 ]
 	then
 		FILTER=
 	else
-		FILTER="! -name spk.cfg"
+		FILTER="! -name spk.cfg ! -name adspk.cfg ! -name rqspk.cfg"
 	fi
 	find . -type f $FILTER | sed "s:\./::"
 	exit 0
@@ -39,11 +39,10 @@ create_standard_config() {
 	   "$SRC"/prompt.cfg "$SRC"/exithelp.cfg "$DST"/
 	cp "$SRC"/{,ad,rq}txt.cfg "$DST"/
 	if [ -n "$INCLUDE_GTK" ]; then
-		cp "$SRC"/{ad,rq,}gtk.cfg "$DST"/
-		cp "$SRC"/spkgtk.cfg "$DST"/
+		cp "$SRC"/{ad,rq,}{,spk}gtk.cfg "$DST"/
 	fi
-	if [ "$IS_GTK" = 1 ]; then
-		cp "$SRC"/spk.cfg "$DST"/
+	if [ "$IS_PURE_GTK" = 1 ]; then
+		cp "$SRC"/{,ad,rq}spk.cfg "$DST"/
 	fi
 }
 
@@ -53,8 +52,9 @@ case $TYPE in
 	if [ -z "$INCLUDE_GTK" ]; then
 		rm -f "$DST"/*gtk.cfg
 		rm -f "$DST"/*spkgtk.cfg
+		rm -f "$DST"/*spgtk.cfg
 	fi
-	if [ "$IS_GTK" = 1 ]; then
+	if [ "$IS_PURE_GTK" != 1 ]; then
 		rm -f "$DST"/*spk.cfg
 	fi
 	exit 0
@@ -63,8 +63,8 @@ case $TYPE in
 	cp "$SRC"/prompt.cfg "$DST"/syslinux.cfg
 	cp "$SRC"/menu.cfg "$DST"/
 	cp "$SRC"/{,ad,rq}txt.cfg "$DST"/
-	if [ "$IS_GTK" = 1 ]; then
-		cp "$SRC"/spk.cfg "$DST"/
+	if [ "$IS_PURE_GTK" = 1 ]; then
+		cp "$SRC"/{,ad,rq}spk.cfg "$DST"/
 	fi
 	;;
     standard)

@@ -3,7 +3,7 @@
 You must have at least 105 megabytes of RAM to use this Debian installer.
 
 You should have space on your hard disk to create a new disk partition
-of at least 680 megabytes to install the base system. You'll need more
+of at least 780 megabytes to install the base system. You'll need more
 disk space to install additional packages, depending on what you wish
 to do with your new Debian system.
 
