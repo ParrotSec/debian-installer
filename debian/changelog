@@ -1,3 +1,9 @@
+debian-installer (20170608+parrot1) testing; urgency=medium
+
+  * Rebuild package with new kernel version (4.11.6).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 29 Jun 2017 16:27:55 +0200
+
 debian-installer (20170608+parrot0) parrot; urgency=medium
 
   * Import new Debian release.
