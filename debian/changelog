@@ -1,3 +1,23 @@
+debian-installer (20170608+parrot4) testing; urgency=medium
+
+  * Rebuild with debootstrap 1.0.90+parrot0.
+  * Rebuild with cryptsetup 1.7.3-4parrot0.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 05 Jul 2017 14:41:25 +0200
+
+debian-installer (20170608+parrot3) parrot; urgency=medium
+
+  * Fix release configuration in preseed.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 04 Jul 2017 19:34:32 +0200
+
+debian-installer (20170608+parrot2) parrot; urgency=medium
+
+  * Rebuild with updated udebs.
+  * Minor fixes.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 04 Jul 2017 13:18:18 +0200
+
 debian-installer (20170608+parrot1) testing; urgency=medium
 
   * Rebuild package with new kernel version (4.11.6).
