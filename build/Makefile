@@ -462,7 +462,11 @@ endif
 
 ifdef PRESEED
 	# Copy in preseed file.
-	cp -a $(PRESEED) $(TREE)/preseed.cfg
+	sed -e 's/@DEBIAN_RELEASE@/$(DEBIAN_RELEASE)/g' \
+	    -e 's/@USE_UDEBS_FROM@/$(USE_UDEBS_FROM)/g' \
+	    -e 's/@DEBIAN_VERSION@/$(DEBIAN_VERSION)/g' \
+	    -e 's/@LINUX_KERNEL_ABI@/$(LINUX_KERNEL_ABI)/g' \
+	    $(PRESEED) >$(TREE)/preseed.cfg
 endif
 
 ifndef OMIT_LSB
@@ -643,6 +647,9 @@ sources.list.udeb:
 	echo "deb [trusted=yes] copy:$(shell pwd)/ $(LOCALUDEBDIR)/"; \
 	if [ "$(MIRROR)x" != "x" ]; then \
 		echo "deb $(MIRROR) $(USE_UDEBS_FROM) $(UDEB_COMPONENTS)"; \
+		if [ "$(USE_PROPOSED_UPDATES)" = 1 ]; then  \
+			echo "deb $(MIRROR) $(USE_UDEBS_FROM)-proposed-updates $(UDEB_COMPONENTS)"; \
+		fi; \
 		if [ "$(USE_UNRELEASED)" = 1 ]; then \
 			echo "deb $(MIRROR) unreleased $(UDEB_COMPONENTS)"; \
 		fi \

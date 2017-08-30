@@ -3,10 +3,9 @@ Section: devel
 Priority: optional
 Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
 Uploaders: Cyril Brulebois <kibi@debian.org>
-Standards-Version: 3.9.8
+Standards-Version: 3.9.5
 Vcs-Git: https://anonscm.debian.org/git/d-i/debian-installer.git
 Vcs-Browser: https://anonscm.debian.org/cgit/d-i/debian-installer.git
-Build-Conflicts: libnewt-pic [mipsel]
 Build-Depends:
 # Base build dependencies:
 	debhelper (>= 7.0.0),
@@ -18,6 +17,7 @@ Build-Depends:
 	gnupg,
 #		New versions of apt need gnupg for security checks.
 	debian-archive-keyring (>= 2006.11.22),
+	parrot-archive-keyring,
 #		To provide the archive key for security checks.
 	dctrl-tools,
 #		Various manipulations of the udeb Packages files.
@@ -33,16 +33,13 @@ Build-Depends:
 #		The d-i internals manual is in DocBook XML.
 	libbogl-dev,
 #		For bdftobogl used in font reduction.
+	ca-certificates,
+#		To embed CA certificates to verify https connections
 #	
 # Library build dependencies:
-	libslang2-pic (>= 2.0.6-4),
-#		Make dependency versioned temporarily to make sure we avoid #392942
-	libnewt-pic (>= 0.52.2-11.3) [!mipsel],
-#		Rather than use slang and newt udebs, reduced versions of
-#		the libraries are put onto images to save space.
-	libnewt-dev (>= 0.52.2-11.3) [mipsel],
-#		On mipsel, we can't use libnewt-pic right now due to bug
-#		#329733. See also Build-Conflicts above.
+	libnewt0.52,
+#		libnewt0.52 does not have a udeb, mklibs-copy will copy the
+#		the library from the debian package.
 	libgcc1 [i386 amd64],
 #		On x86 we need to include /lib/libgcc_s.so.1 in g-i initrds to
 #		work around #373253 until upstream can remove pthread_cancel()
@@ -78,8 +75,6 @@ Build-Depends:
 	devio [armeb armel],
 #		Tool to read and write from block devices, used to byteswap
 #		kernels and add nslu2 boot magic.
-	slugimage (>= 0.10+r58-6) [armeb armel],
-#		For building nslu2 firmware images.
 	dns323-firmware-tools (>= 0.7.3-1~) [armel],
 #		For building firmware images for the D-Link DNS-32(0|3).
 	u-boot-tools [armel armhf],
@@ -119,8 +114,6 @@ Build-Depends:
 	emile [m68k],
 	emile-bootblocks [m68k],
 #		Bootloader for m68k/mac machines.
-	apex-nslu2 [armeb armel],
-#		2nd stage bootloader for Linksys NSLU2.
 	grub-efi-amd64-bin [amd64], grub-efi-arm64-bin [arm64], grub-efi-ia32-bin [i386],
 	grub-common [amd64 arm64 i386], xorriso,
 #		Used to make EFI bootable images
@@ -129,7 +122,7 @@ Build-Depends:
 	u-boot-imx [armhf],
 	u-boot-omap (>= 2016.09~rc1) [armhf],
 	u-boot-sunxi [armhf],
-	u-boot-rockchip (>= 2016.09~rc1) [armhf],
+	u-boot-rockchip (>= 2017.07+dfsg1-3) [armhf],
 #		U-boot binaries for armhf systems without u-boot in flash memory
 	u-boot (>= 2016.01+dfsg1-1~) [armel],
 #		U-boot binaries for armel systems
@@ -167,6 +160,12 @@ Build-Depends:
 #		Used for architectures hosted on debian-ports.org
 	librsvg2-bin [any-amd64 any-i386],
 #		Used to convert splash SVG to splash PNG during build
+	fdisk [armhf] | util-linux (<< 2.29.2-3~) [armhf],
+#		sfdisk is used by util/gen-hd-image when creating SD card
+#		images for armhf systems. Starting with buster, it is no longer
+#		part of util-linux but split out into a separate, non-essential
+#		"fdisk" package. For more information, please cf.
+#		https://lists.debian.org/debian-devel-announce/2017/08/msg00005.html
 
 Package: debian-installer
 Architecture: any

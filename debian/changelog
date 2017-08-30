@@ -1,3 +1,45 @@
+debian-installer (20170831+parrot0) testing; urgency=medium
+
+  * Bump Linux Kernel ABI to 4.12.0-parrot6.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 31 Aug 2017 01:49:32 +0200
+
+debian-installer (201707XX) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel ABI from 4.9.0-3 to 4.11.0-2.
+
+  [ Martin Michlmayr ]
+  * Drop orion5x-qnap image.
+  * Remove NSLU2 related build dependencies.
+
+  [ Vagrant Cascadian ]
+  * [armhf] Fix build of Firefly-RK3288 images with recent u-boot
+    versions. (Closes: #8706150)
+
+  [ Aurelien Jarno ]
+  * debian/control: do not build-depends on -pic libraries, that is not
+    needed anymore since the switch to mklibs-copy.
+
+  [ Karsten Merker ]
+  * Add a build-dependency on "fdisk | util-linux (<< 2.29.2-3~)" for armhf.
+    util/gen-hd-image uses sfdisk when creating SD card images for
+    armhf systems, and starting with util-linux 2.29.2-3 it is split out
+    from util-linux into a separate, non-essential "fdisk" package:
+    https://lists.debian.org/debian-devel-announce/2017/08/msg00005.html
+    (Closes: #872091)
+  * Bump the Linux kernel ABI from 4.11.0-2 to 4.12.0-1.
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 22 Jun 2017 06:48:30 +0200
+
+debian-installer (20170615) unstable; urgency=medium
+
+  [ Karsten Merker ]
+  * Include the i2c-modules udeb in the armhf netboot and hd-media builds.
+    (Closes: #864536, #864457, #856111)
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 15 Jun 2017 10:34:17 +0200
+
 debian-installer (20170608+parrot4) testing; urgency=medium
 
   * Rebuild with debootstrap 1.0.90+parrot0.
