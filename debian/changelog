@@ -1,3 +1,15 @@
+debian-installer (20171010+parrot1) parrot; urgency=medium
+
+  * Bump Linux Kernel ABI o 4.13.0-parrot4.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 10 Oct 2017 17:20:39 +0200
+
+debian-installer (20170901+parrot0) parrot; urgency=medium
+
+  * Minor fixes to preseed.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 01 Sep 2017 11:43:38 +0200
+
 debian-installer (20170831+parrot0) testing; urgency=medium
 
   * Bump Linux Kernel ABI to 4.12.0-parrot6.
