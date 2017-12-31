@@ -11,14 +11,14 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.13.0-parrot13
+LINUX_KERNEL_ABI ?= 4.14.0-parrot7
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
 
 # List here any extra udebs that are not in the list file but that
 # should still be included on the system.
-EXTRAS ?=
+EXTRAS ?= ca-certificates-udeb
 
 # This variable can be used to copy in additional files from the system
 # that is doing the build. Useful if you need to include strace, or gdb,
@@ -49,7 +49,7 @@ DEBIAN_RELEASE = $(USE_UDEBS_FROM)
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 3.8 (parrot)
+DEBIAN_VERSION = 3.10 (parrot)
 DEBIAN_VERSION ?= buster
 
 # Define here from what release (codename!) components (udebs) should be taken

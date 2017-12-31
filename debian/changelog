@@ -1,3 +1,15 @@
+debian-installer (20171231+parrot1) parrot; urgency=medium
+
+  * Bump Linux kernel version 4.14.0parrot7 (4.14.7).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 31 Dec 2017 14:53:11 +0100
+
+debian-installer (20171207+parrot0) parrot; urgency=medium
+
+  * Bump Linux kernel version 4.14.0-parrot2 (4.14.2).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 07 Dec 2017 21:28:18 +0100
+
 debian-installer (20171127+parrot0) parrot; urgency=medium
 
   * Bump Linux kernel version 4.13.0-parrot13 (4.13.13).
