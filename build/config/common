@@ -11,7 +11,7 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.14.0-parrot7
+LINUX_KERNEL_ABI ?= 4.14.0-parrot12
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -49,7 +49,7 @@ DEBIAN_RELEASE = $(USE_UDEBS_FROM)
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 3.10 (parrot)
+DEBIAN_VERSION = 3.11 (parrot)
 DEBIAN_VERSION ?= buster
 
 # Define here from what release (codename!) components (udebs) should be taken
