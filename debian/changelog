@@ -1,3 +1,9 @@
+debian-installer (20180122+parrot2) testing; urgency=medium
+
+  * Rebuild with choose-mirror 2.88+parrot1.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 23 Jan 2018 21:29:39 +0100
+
 debian-installer (20180122+parrot1) testing; urgency=medium
 
   * Bump linux kernel version 4.14.0-parrot13 (4.14.13).
