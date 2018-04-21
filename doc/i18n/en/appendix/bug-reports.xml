@@ -3,8 +3,8 @@
 <para>
 This section applies to translators who need to send their completed
 translations back to the package maintainers, especially for packages
-from levels above 2 for which no direct Subversion or <acronym>CVS</acronym> commit is
-possible (either because the translator cannot use <acronym>SVN</acronym> or <acronym>CVS</acronym> or
+from levels above 2 for which no direct Subversion commit is
+possible (either because the translator cannot use <acronym>SVN</acronym> or
 because the package maintainer(s) do not encourage wide commit
 access).
 </para>
@@ -33,7 +33,7 @@ expected) as well as an enhancement suggestion or a feature request.
 </para>
 
 <para>
-Debian bug reports are handled through a web and email
+Debian bug reports are handled through a web and e-mail
 interface. Access to the bug reports can be made through the BTS web
 site: &url-bts;.
 </para>
@@ -72,7 +72,7 @@ translations as well as base-config and tasksel.
 </para>
 
 <para>
-The subject of the bug report should begin by "[INTL:xx]". When the
+The subject of the bug report should start with "[INTL:xx]". When the
 package has several translatable materials, the subject should mention
 which translation is sent.
 </para>
@@ -93,7 +93,7 @@ Generic method to send bug reports
 
 <para>
 Reporting a bug to a Debian package is just sending a specially
-written mail to &email-bts;.
+formatted mail to &email-bts;.
 </para>
 
 <para>
@@ -179,7 +179,7 @@ mode standard
 ui text
 # offline setting - comment out to be online
 #offline
-# name and email setting (if non-default)
+# name and e-mail setting (if non-default)
 realname "John Doe"
 email "johndoe@johndoe.com"
 # You can add other settings after this line.  See

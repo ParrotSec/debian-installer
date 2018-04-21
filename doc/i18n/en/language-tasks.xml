@@ -27,7 +27,7 @@ be automatically installed.
 </para>
 
 <para>
-<emphasis>Language tasks</emphasis> are separated in two type of tasks: the <emphasis>&language;</emphasis> task and the  <emphasis>&language;-desktop</emphasis> task. The former is installed for every standard system install while the latter is only installed if the <emphasis>desktop</emphasis> tasks is selected by the user (the <emphasis>desktop</emphasis> task installs a basic graphical environment, which can be completed with the <emphasis>Gnome</emphasis> or <emphasis>KDE</emphasis> tasks.
+<emphasis>Language tasks</emphasis> are separated in two types of tasks: the <emphasis>&language;</emphasis> task and the  <emphasis>&language;-desktop</emphasis> task. The former is installed for every standard system install while the latter is only installed if the <emphasis>desktop</emphasis> tasks is selected by the user (the <emphasis>desktop</emphasis> task installs a basic graphical environment, which can be completed with the <emphasis>Gnome</emphasis> or <emphasis>KDE</emphasis> tasks).
 </para>
 
 </sect1>
@@ -57,22 +57,22 @@ Documentation about using Linux or &debian; in &language;;
 </listitem>
 <listitem>
 <para>
-Dictionaries or word lists for &language;
+Dictionaries or word lists for &language;;
 </para>
 </listitem>
 <listitem>
 <para>
-Set of manual pages translated in &language;
+Set of manual pages translated in &language;;
 </para>
 </listitem>
 <listitem>
 <para>
-Console input methods for &language;
+Console input methods for &language;;
 </para>
 </listitem>
 <listitem>
 <para>
-Console fonts for &language;
+Console fonts for &language;;
 </para>
 </listitem>
 <listitem>
@@ -111,7 +111,7 @@ Appropriate choices for such task are:
 <listitem>
 <para>
 Localization packages for packages which are included in the
-<emphasis>desktop</emphasis> task
+<emphasis>desktop</emphasis> task;
 </para>
 </listitem>
 <listitem>
@@ -121,7 +121,7 @@ Fonts useful for the display of &language;;
 </listitem>
 <listitem>
 <para>
-Special input methods for &language; in a graphical environment
+Special input methods for &language; in a graphical environment;
 </para>
 </listitem>
 <listitem>

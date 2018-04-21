@@ -115,7 +115,7 @@ is the following:
 - "strings for this file"
 </screen>
 
-if the word is easy to find you won't need any help from me to locate
+If the word is easy to find you won't need any help from me to locate
 it and you just need to see which po file it belongs to. Emacs has a
 very handy function "forward-paragraph" (ctrl-up on my system) that
 takes you directly to the line containing the path. Otherwise you can
@@ -128,11 +128,11 @@ search. Here follow a few practical examples that can help you; refer
 to some documentation about regexp to find out more.
 
 If you use emacs you can match an exact word by using
-isearch-forward-regexp and "\&lt;word\&gt;"
+isearch-forward-regexp and "\&lt;word\&gt;".
 
 From the shell you can run 'grep -nw "word" lang_all.txt'
-(the <quote>n</quote> parameter will tell grep to print the line number where match
-occurs)
+(the <quote>n</quote> parameter will tell grep to print the line number where the match
+occurs).
 
 Sometimes you may have to look for something like "a word composed
 by two letters: the first is "p" the second is not a printable char";

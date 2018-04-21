@@ -78,7 +78,7 @@ or in some conditions).
 </para>
 
 <para>
-Translators should translate these files in the same order that they appear
+Translators should translate these files in the same order as they appear
 in this section.
 </para>
 
@@ -195,7 +195,7 @@ Access to these files:
 
 <sect3>
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -318,11 +318,15 @@ Anonymous GIT checkout command: <command>&git-iso-codes-anon;</command>
   </listitem>
 </itemizedlist>
 
+<para>
+Hmm, iso-codes is missing in the level2 POT directory. What's wrong here? 26.10.2017
+</para>
+
 </sect3>
 
 <sect3>
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -390,10 +394,10 @@ every Debian system as it is part of what is called the
 </para>
 
 <para>
-This package installs scripts which periodically send to Debian
-Developers statistics about installed packages on the local
-system. These statistics are used when building releases, for
-instances for getting informations about the most used architecture
+This package installs scripts which periodically sends statistics about
+installed packages on the local system to Debian Developers.
+These statistics are used when building releases, for
+instances for getting information about the most used architecture
 ports as well as the most used packages.
 </para>
 
@@ -438,7 +442,7 @@ Anonymous SVN checkout command: <command>&svn-popcon;</command>
 
 <sect3>
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -521,7 +525,7 @@ it.
 
 <sect3>
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -593,7 +597,7 @@ it.
 
 <sect3>
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -657,7 +661,7 @@ Anonymous BZR checkout command: <command>&bzr-grub2;</command>
 
 <sect3>
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>

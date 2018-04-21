@@ -1,9 +1,5 @@
 <appendix id="checkouts"><title>Checkout commands</title>
 
-<sect1>
-<title>Translation checkout commands for d-i</title>
-</sect1>
-
 <para>
 First said, translators don't need to checkout the repositories by
 hand to translate the po files. They can get all files here:
@@ -142,5 +138,21 @@ Anonymous: <command>&svn-win32-loader-anon;</command>
 
 </sect3>
 
+<sect3>
+<title>Checkout commands for developers</title>
+
+<para>
+Developers need the following commands to checkout the whole source tree:
+</para>
+
+<informalexample>
+  <screen>
+svn co svn+ssh://svn.debian.org/svn/d-i/trunk debian-installer
+cd debian-installer
+scripts/git-setup
+mr -p checkout
+  </screen>
+</informalexample>
+</sect3>
 
 </appendix>

@@ -65,13 +65,13 @@ In order for translators to better prioritize their work, this master file has b
   </listitem>
   <listitem>
     <para>
-      Sublevel 4: specific to less-popular arches (powerpc, mips, sparc) or used in experimental features
+      Sublevel 4: specific to less-popular arches (such as powerpc, mips or sparc) or used in experimental features
     </para>
   </listitem>
   <listitem>
     <para>
-      Sublevel 5: same for high-end (hppa, ia64, s390, s390x) and hobby (m68k) arches and old stuff (partconf,
-+partitioner, that are replaced by partman for a while)
+      Sublevel 5: same for high-end (such as hppa, ia64 or s390x) and hobby (m68k) arches and old stuff (partconf,
+partitioner, that are replaced by partman for a while)
     </para>
   </listitem>
 </itemizedlist>
@@ -166,7 +166,7 @@ linkend="language-codes"/>) and complete this file. The same stands for other su
 
 <sect2>
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -222,7 +222,7 @@ This constraint may be checked by the <filename>scripts/l10n/choices-check.pl</f
 </para>
 
 <para>
-<command>scripts/l10n/choices-check.pl &lt; packages/po/&language;.po</command>
+<command>scripts/l10n/choices-check.pl &lt; packages/po/&lt;sublevelX&gt;/&language;.po</command>
 </para>
 
 <para>

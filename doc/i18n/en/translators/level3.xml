@@ -114,7 +114,7 @@ The debconf translation lies in the <filename>debian/po</filename> directory, wh
 
 <sect3 id="level3_debconf_updates">
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -194,11 +194,15 @@ No public revision control repository is available for this package so access th
   </listitem>
 </itemizedlist>
 
+<para>
+Hmm, newt is missing in the level3 POT directory. What's wrong here? 26.10.2017
+</para>
+
 </sect3>
 
 <sect3 id="level3_newt_updates">
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -213,7 +217,7 @@ Specific recommendations
 </title>
 
 <para>
-N/A
+none
 </para>
 
 </sect3>
@@ -231,14 +235,14 @@ Package description
 </title>
 
 <para>
-The &win32-loader; package, is a utility that can be run from the Windows environment and which, with a few questions, prepares a system for booting a &d-i; installation process. This utility is included on Debian installation media to allow an easier startup of a Debian installation.
+The &win32-loader; package contains is a utility that can be run from the Windows environment and which, with a few questions, prepares a system for booting a &d-i; installation process. This utility is included on Debian installation media to allow an easier startup of a Debian installation.
 </para>
 
 <para>
 This package is, technically speaking, a <quote>regular</quote>
 Debian package. However, the package maintainer is the &d-i; team and
 the package is managed and developed the same way core &d-i; packages
-are managed. The package is part of the core &d-i; development repository in the <filename>packages/arch/i386/win32-loader</filename>.
+are managed. The package is part of the core &d-i; development repository under <filename>packages/arch/i386/win32-loader</filename>.
 </para>
 
 </sect3>
@@ -270,7 +274,7 @@ Access to these files:
 <itemizedlist>
   <listitem>
 <para>
-SVN Checkout commands:
+GIT Clone commands:
 </para>
 <itemizedlist>
 <listitem>
@@ -292,7 +296,7 @@ Non-anonymous: <command>&git-win32-loader;</command>
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="&url-level3-pot;/newt_newt_po.pot">&url-level3-pot;/win32-loader_l10n_po.pot</ulink>
+          <ulink url="&url-level3-pot;/win32-loader_l10n_po.pot">&url-level3-pot;/win32-loader_l10n_po.pot</ulink>
         </para>
       </listitem>
       <listitem>
@@ -309,7 +313,7 @@ Non-anonymous: <command>&git-win32-loader;</command>
 
 <sect3>
 <title>
-Updating/Adding translations
+Updating/adding translations
 </title>
 
 <para>
@@ -335,7 +339,7 @@ Specific recommendations
 </title>
 
 <para>
-N/A
+none
 </para>
 
 </sect3>

@@ -2,10 +2,6 @@
 # they are currently provided not in udeb form but by the library
 # reduction step.
 
-# slang is also reduced
-libslang2-udeb -
-# and newt
-libnewt0.52 -
 # some arches and versions of glibc link against libgcc1,
 # it will be pulled in via library reduction
 libgcc1 -

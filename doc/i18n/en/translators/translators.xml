@@ -31,7 +31,7 @@ Debian translations.
 <para>
 Due to the granularity of Debian work and more specifically the
 packages system, translators may find differences between the various packages
-a bit annoying (some use <acronym>SVN</acronym>, some others <acronym>CVS</acronym>, some other no
+a bit annoying (some use <acronym>SVN</acronym>, some others <acronym>git</acronym>, some other no
 repository at all...). This is a consequence of the current work organization
 in Debian. 
 </para>
@@ -57,7 +57,8 @@ level contents.
 	        This level is split in five "sublevels" by order of strings
 		priority (sublevel 1 groups together the strings used in all
 		default installs while sublevel 5 groups together very rare
-		strings used only for uncommon architectures).
+		strings used only for uncommon architectures; sublevel 2 - 4
+		are placed somewhere in between).
 	      </para>
 	    </listitem>
 	    <listitem>

@@ -29,8 +29,8 @@ If a translation team exists for a language, translators should
 <emphasis>work with them</emphasis>. They should first check the
 <email>debian-l10n-&lt;language&gt;</email> mailing list where
 &lt;language&gt; is the language name in English
-(e.g. <email>debian-l10n-polish</email>,
-<email>debian-l10n-portuguese</email>, etc.)
+(e.g. <email>debian-l10n-polish@lists.debian.org</email>,
+<email>debian-l10n-portuguese@lists.debian.org</email>, etc.)
 </para>
 
 <para>

@@ -74,6 +74,11 @@ for mirror in $MIRRORS; do
 	# We should also check that d-i is available, but that's more complex.
 	# Settle for just checking the suite/codename for now.
 	if echo "$mirror" | grep -Eq "^deb (f|ht)tp"; then
+		# Switch to snapshot.debian.org if requested:
+		if [ -n "$SNAPSHOT_TS" ]; then
+			mirror="deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/$SNAPSHOT_TS/"
+			echo "INFO: using snapshot.debian.org with timestamp: $SNAPSHOT_TS" >&2
+		fi
 		if test_url $tmirror/dists/$SUITE/Release; then
 			echo "$mirror $SUITE $UDEB_COMPONENTS"
 		else

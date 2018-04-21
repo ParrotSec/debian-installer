@@ -39,7 +39,7 @@ Activate language in localechooser
 </title>
 
 <para>
-The language should be activated in the <classname>localechooser</classname> package. For this, the language entry in the <filename>languagelist</filename> shoul be uncommented and the  <classname>localechooser</classname> must be rebuilt and uploaded.
+The language should be activated in the <classname>localechooser</classname> package. For this, the language entry in the <filename>languagelist</filename> should be uncommented and the  <classname>localechooser</classname> must be rebuilt and uploaded.
 </para>
 </sect2>
 
@@ -63,7 +63,7 @@ Tasks related to the new language should be considered for addition in tasksel (
 </para>
 
 <para>
-These tasks should also be added in the <filename>tasks.list</filename> file of the <classname>debian-cd</classname> package so that CD or DVD prioritize the task's components for inclusion on first CDs or DVDs</para>
+These tasks should also be added in the <filename>tasks.list</filename> file of the <classname>debian-cd</classname> package so that CD or DVD prioritize the task's components for inclusion on first CDs or DVDs.</para>
 
 </sect2>
 

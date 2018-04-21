@@ -11,7 +11,7 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.14.0-parrot13
+LINUX_KERNEL_ABI ?= 4.15.0-parrot11
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -49,7 +49,7 @@ DEBIAN_RELEASE = $(USE_UDEBS_FROM)
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 3.11 (parrot)
+DEBIAN_VERSION = 4.0 (stable)
 DEBIAN_VERSION ?= buster
 
 # Define here from what release (codename!) components (udebs) should be taken
@@ -90,7 +90,7 @@ TYPE = $(MEDIUM)
 
 # Used to write a /etc/lsb-release file in the installer initrd.
 LSB_DISTRIB_ID=Debian
-LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) installer"
+LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) network installer"
 # Inlude the build date of the installer in here.
 LSB_DISTRIB_RELEASE="$(DEBIAN_VERSION) - installer build $(BUILD_DATE)"
 

@@ -1,3 +1,28 @@
+debian-installer (20180421+parrot1) testing; urgency=medium
+
+  [ Lorenzo "Palinuro" Faletra]
+  * Import new version from Debian.
+  * Update preseed.
+  * Minor fixes.
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel ABI from 4.13.0-1 to 4.15.0-2
+
+  [ Paul Tagliamonte ]
+  * Add support for the NanoPiNeo
+
+  [ Aurelien Jarno ]
+  * Drop the build-depends on libnewt0.52, the library now provides an udeb.
+
+  [ Vagrant Cascadian ]
+  * [arm64] Generate u-boot media for pine64_plus:
+    - Add Build-Depends on u-boot-sunxi, atf-allwinner, u-boot-tools and
+      device-tree-compiler.
+    - Add atf-allwinner to Built-Using.
+  * [armhf] netboot: Enable grub-efi mini.iso.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 21 Apr 2018 22:56:39 +0200
+
 debian-installer (20180122+parrot2) testing; urgency=medium
 
   * Rebuild with choose-mirror 2.88+parrot1.

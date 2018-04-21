@@ -609,6 +609,15 @@ endif
 		zcat $(TREE)/usr/share/localechooser/languagelist.data.gz >> $(TEMP)/all.utf; \
 	fi
 
+	# Keep the original rendering for the graphical installer, reverting
+	# changes in defaults for fontconfig and freetype, until they have
+	# been further discussed/analysed, see #873462:
+	if [ -L "$(TREE)/etc/fonts/conf.d/10-hinting-slight.conf" ]; then \
+		ln -sf /usr/share/fontconfig/conf.avail/10-hinting-full.conf \
+			"$(TREE)/etc/fonts/conf.d/10-hinting-slight.conf"; \
+		echo 'export FREETYPE_PROPERTIES="truetype:interpreter-version=35"' \
+			> "$(TREE)/lib/debian-installer.d/S63freetype-workaround"; \
+	fi
 
 	# Remove some unnecessary dpkg files.
 	set -e; \

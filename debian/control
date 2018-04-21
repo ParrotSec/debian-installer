@@ -37,9 +37,6 @@ Build-Depends:
 #		To embed CA certificates to verify https connections
 #	
 # Library build dependencies:
-	libnewt0.52,
-#		libnewt0.52 does not have a udeb, mklibs-copy will copy the
-#		the library from the debian package.
 	libgcc1 [i386 amd64],
 #		On x86 we need to include /lib/libgcc_s.so.1 in g-i initrds to
 #		work around #373253 until upstream can remove pthread_cancel()
@@ -77,7 +74,7 @@ Build-Depends:
 #		kernels and add nslu2 boot magic.
 	dns323-firmware-tools (>= 0.7.3-1~) [armel],
 #		For building firmware images for the D-Link DNS-32(0|3).
-	u-boot-tools [armel armhf],
+	u-boot-tools [armel armhf arm64],
 #		For creating u-boot images
 # 
 # Boot loaders:
@@ -115,6 +112,7 @@ Build-Depends:
 	emile-bootblocks [m68k],
 #		Bootloader for m68k/mac machines.
 	grub-efi-amd64-bin [amd64], grub-efi-arm64-bin [arm64], grub-efi-ia32-bin [i386],
+	grub-efi-arm-bin [armhf],
 	grub-common [amd64 arm64 i386], xorriso,
 #		Used to make EFI bootable images
 	grub-ieee1275-bin [ppc64el],
@@ -122,8 +120,13 @@ Build-Depends:
 	u-boot-imx [armhf],
 	u-boot-omap (>= 2016.09~rc1) [armhf],
 	u-boot-sunxi [armhf],
+	u-boot-sunxi (>= 2018.03) [arm64],
 	u-boot-rockchip (>= 2017.07+dfsg1-3) [armhf],
 #		U-boot binaries for armhf systems without u-boot in flash memory
+	atf-allwinner [arm64],
+	device-tree-compiler [arm64],
+#		arm-trusted-firmware for allwinner, used in combination with
+#		u-boot-sunxi to produce bootable arm64 images.
 	u-boot (>= 2016.01+dfsg1-1~) [armel],
 #		U-boot binaries for armel systems
 # 

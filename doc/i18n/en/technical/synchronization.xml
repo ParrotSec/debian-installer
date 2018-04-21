@@ -8,7 +8,7 @@ The need for a synchronization process
 
 <para>
 The files which are really used for building &d-i; packages are hosted
-in the <acronym>SVN</acronym> (Subversion) repository used for the development of &d-i;
+in the <acronym>git</acronym> (Subversion) repository used for the development of &d-i;
 packages. Each &d-i; package sources is hosted in a subdirectory of
 the <filename>packages/</filename> directory, with a very classical
 Debian package source tree organization, including the

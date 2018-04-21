@@ -10,7 +10,7 @@
   -->
 
 <!ENTITY alioth "alioth.debian.org">
-<!ENTITY url-alioth "http://&alioth;/">
+<!ENTITY url-alioth "https://&alioth;/">
 <!ENTITY alioth-account-page '<ulink url="https://alioth.debian.org/account">https://alioth.debian.org/account</ulink>'>
 
 <!ENTITY svn-debian-auth "&lt;alioth_username&gt;@svn.debian.org">
@@ -23,7 +23,7 @@
 <!ENTITY irc-channel "#debian-boot on &irc-server;">
 
 <!ENTITY backports "backports.debian.org">
-<!ENTITY url-backports "http://&backports;/">
+<!ENTITY url-backports "https://&backports;/">
 
 <!ENTITY url-status "https://d-i.debian.org/l10n-stats">
 
@@ -92,22 +92,22 @@
 <!ENTITY git-espeakup "git clone ssh://&git-debian;/git/pkg-a11y/espeakup.git">
 
 <!-- Wiki page for fonts -->
-<!ENTITY wiki-fonts "http://wiki.debian.org/DebianInstaller/GUIFonts">
+<!ENTITY wiki-fonts "https://wiki.debian.org/DebianInstaller/GUIFonts">
 
 
 
 
-<!ENTITY url-bts "http://bugs.debian.org/">
+<!ENTITY url-bts "https://bugs.debian.org/">
 <!ENTITY email-bts " <email>submit@bugs.debian.org</email>">
 
 <!ENTITY email-debian-boot-list "<email>debian-boot@lists.debian.org</email>">
 <!ENTITY email-debian-i18n-list "<email>debian-i18n@lists.debian.org</email>">
 
-<!ENTITY url-debian-list-archives "http://lists.debian.org/">
+<!ENTITY url-debian-list-archives "https://lists.debian.org/">
 
-<!ENTITY url-debian-l10n "http://www.debian.org/intl/l10n/">
+<!ENTITY url-debian-l10n "https://www.debian.org/intl/l10n/">
 
-<!ENTITY url-tp "http://www.translationproject.org/">
+<!ENTITY url-tp "https://www.translationproject.org/">
 
 <!-- Keep this comment at the end of the file
 Local variables:

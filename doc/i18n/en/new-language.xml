@@ -30,7 +30,7 @@ First contact with &d-i; development team
 </title>
 
 <para>
-Translators or translation teams of a non supported language should contact the &d-i; i18n coordination team (see <xref linkend="coordination-team"/>). They should provide a real
+Translators or translation teams of a not supported language should contact the &d-i; i18n coordination team (see <xref linkend="coordination-team"/>). They should provide a real
 name (the Debian Project encourages the use of real names) and
 possibly a GPG key (this is not mandatory but could help in the
 future).
@@ -45,7 +45,7 @@ steps is a very important step to quickly establish a strong relation with ident
 
 <para>
 The &i18n-coords; must have
-the real name and a reliable email address of at least one translator
+the real name and a reliable e-mail address of at least one translator
 who must be an individual. This individual will be called the
 <emphasis>language coordinator</emphasis> for the given language.
 </para>
@@ -122,7 +122,7 @@ can be provided.
 </listitem>
 <listitem>
 <para>
-<userinput>coord_email</userinput>: language coordinator email
+<userinput>coord_email</userinput>: language coordinator e-mail
 </para>
 </listitem>
 <listitem>
@@ -154,7 +154,7 @@ describes specifics of the German language in Austria.
 </para>
 
 <para>
-Informations included in a locale:
+Information included in a locale:
 </para>
 	    <itemizedlist>
 	      <listitem>
@@ -210,7 +210,7 @@ The writer of a locale must use the locale files format. The contents
 of this file must be in UTF-8. Translators shouldn't be afraid by
 this: this part may be handled by a i18n specialist in Debian, most
 often one of the &i18n-coords;. The new translator(s) will only need
-to provide him/her the above informations when (s)he will need it.
+to provide him/her the above information when (s)he asks for it.
 </para>
 
 <para>
@@ -282,8 +282,8 @@ Localechooser entry
 <para>
 First needed is having the new language added to
 <classname>localechooser</classname> (the package responsible for
-choosing language at the very beginning of the Debian Installer
-process) This will be handled by the &i18n-coords;.
+choosing language at the very beginning of a Debian installation).
+This will be handled by the &i18n-coords;.
 </para>
 
 <para>
@@ -311,17 +311,17 @@ Latin-1 console (several serial terminals). This includes so-called <emphasis>La
 
 <listitem>
 <para>
-<emphasis>Category 2</emphasis>: languages that can be rendered et the Linux text console, without needeing a framebuffer terminal. 
+<emphasis>Category 2</emphasis>: languages that can be rendered at the Linux text console, without the need of a framebuffer terminal. 
 </para>
 </listitem>
 
 <listitem>
 <para>
-<emphasis>Category 3</emphasis>: languages that can be rendered et the Linux text console, only by using a framebuffer terminal. The
+<emphasis>Category 3</emphasis>: languages that can be rendered at the Linux text console only by using a framebuffer terminal. The
 key point for these languages is the availability of their glyphs in
 the <classname>bterm-unifont</classname> package. These languages should
 also not need complex rendering mechanisms such as combination
-mechanisms. The difference with 2 is the possibility to display the language
+mechanisms. The difference against Category 2 is the possibility to display the language
 at the Linux console without framebuffer. 
 </para>
 </listitem>
@@ -395,7 +395,7 @@ reasonably sized alphabet.
 
 <para>
 It is allowed to add characters that can be entered directly using a
-"standard" keyboard for the language and are printed on the tops of keys,
+"standard" keyboard for the language and are printed on the keys,
 for example as displayed on http://en.wikipedia.org/wiki/Keymap. This
 includes characters accessible through AltGr and characters that can be
 created using dead keys.
@@ -430,7 +430,7 @@ value to <emphasis>needed_characters</emphasis>.
 </para>
 
 <para>
-For font switch support in the bare Linux console, the language coordinator must
+For font switching support in the bare Linux console, the language coordinator must
 also provide which <classname>console-setup</classname> font should be used, to
 be recorded in its <classname>debian/font-switch</classname> script.
 </para>
@@ -495,15 +495,16 @@ value to <emphasis>keymap</emphasis>.
 
 <sect1>
 <title>
-Account creation in Alioth
+Account creation on Alioth
 </title>
 
 <para>
 All &d-i; work is maintained in a centralized revision control system,
-using <acronym>SVN</acronym>. For translators not familiar with
+using <acronym>SVN</acronym> and <acronym>git</acronym>. For translators not familiar with
 <acronym>SVN</acronym>, <xref linkend="svn-basics"/> will give them
-enough information for them to be able to commit their translations
-themselves.
+enough information to be able to commit their translations
+themselves. (The use of <acronym>git</acronym> is only required for developers
+working on the code of &d-i;, not for translators!)
 </para>
 
 <para>
@@ -634,7 +635,7 @@ value to <emphasis>mailing_list</emphasis>.
 </para>
 
 <para>
-Optionnally, translators may subscribe to the &email-debian-boot-list; which is the development mailing list for &d-i;. Topics there are more technical but will allow translators to participate more deeply in &d-i; development.
+Optionally, translators may subscribe to the &email-debian-boot-list; which is the development mailing list for &d-i;. Topics there are more technical but will allow translators to participate more deeply in &d-i; development.
 </para>
 
 <para>
@@ -652,7 +653,7 @@ Announcement of the translation effort
 When a new translation effort is started, the language coordinator
 must announce it in the &email-debian-boot-list; mailing list so
 that all &d-i; developers are aware of the new translation effort. A
-short personal introduction will be appreciated, even if no
+short personal introduction will be appreciated, even if not
 mandatory. The &d-i; development team is a real team whose members
 appreciate working together in a friendly environment.
 </para>
@@ -676,7 +677,7 @@ Finally, a new entry will be added to the file used by the scripts which generat
 </para>
 
 <para>
-The new language process officially finishes here. The only work that's left to do is...translating.
+The new language process officially finishes here. The only work that's left to do is ... translating.
 </para>
 
 </sect1>
@@ -690,7 +691,7 @@ Follow the &d-i; development
 Subscription to the &d-i; development list (&email-debian-boot-list;)
 is also encouraged though not mandatory. This list has a traffic of
 about 20-30 mails per day, including many administrivia mails
-(packages uploads or bugs reports), but is the best method for being
+(packages uploads or bug reports), but is the best method for being
 involved in &d-i; development.
 </para>
 

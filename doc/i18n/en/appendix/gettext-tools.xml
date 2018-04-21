@@ -35,7 +35,7 @@ running <command>apt-get install &lt;package&gt;</command>.
       message catalogs editor and its use is recommended by the
       &i18n-coords;. Its support for non-Latin languages is very
       complete, including correct Right-To-Left (RTL) and BiDi support
-      For Arabic/Hebrew and other RTL languages as well as support for
+      for Arabic/Hebrew and other RTL languages as well as support for
       combined languages such as languages using the Devanagari script.
     </para>
     <para>
@@ -145,7 +145,7 @@ idea on how their translation will look like, particularly the screens
 length (use this utility on a usual 80x25 terminal).  But as cdebconf
 and debconf displays slightly differ, and as some scripts do heavy use
 of text substitution, one should not fully rely on this program. Running
-debian-installer is the only solution to test translations.
+debian-installer is the only reliable solution to test your translation.
 </para>
 
 <para>

@@ -84,7 +84,7 @@ access to the repository, please send a mail to that list.
 
 Additional development oriented documentation can be found on the <ulink
 url="http://wiki.debian.org/DebianInstaller">Debian Installer Wiki</ulink>,
-in the SVN repository under <filename>installer/doc/devel</filename> or
+in the repository under <filename>installer/doc/devel</filename> or
 in <filename>README</filename> files included with the source for various
 components.
 

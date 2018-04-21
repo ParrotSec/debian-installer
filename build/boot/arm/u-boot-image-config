@@ -28,6 +28,7 @@ Lamobo_R1 /usr/lib/u-boot/Lamobo_R1/u-boot-sunxi-with-spl.bin 16
 orangepi_plus /usr/lib/u-boot/orangepi_plus/u-boot-sunxi-with-spl.bin 16
 pcDuino /usr/lib/u-boot/Linksprite_pcDuino/u-boot-sunxi-with-spl.bin 16
 pcDuino3 /usr/lib/u-boot/Linksprite_pcDuino3/u-boot-sunxi-with-spl.bin 16
+NanoPiNeo /usr/lib/u-boot/nanopi_neo/u-boot-sunxi-with-spl.bin 16
 #
 # Images from u-boot-rockchip
 Firefly-RK3288 /usr/lib/u-boot/firefly-rk3288/u-boot.rksd 64
