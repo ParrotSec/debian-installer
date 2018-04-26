@@ -1,3 +1,9 @@
+debian-installer (20180426+parrot1) testing; urgency=medium
+
+  * Bump linux kernel version 4.15.0-parrot17 (4.15.17).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 26 Apr 2018 12:24:46 +0200
+
 debian-installer (20180421+parrot1) testing; urgency=medium
 
   [ Lorenzo "Palinuro" Faletra]
