@@ -1,3 +1,15 @@
+debian-installer (20180809+parrot1) testing; urgency=medium
+
+  * Bump linux kernel version 4.16.0-parrot16 (4.16.16).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 09 Aug 2018 15:02:55 +0200
+
+debian-installer (20180530+parrot1) testing; urgency=medium
+
+  * Bump linux kernel version 4.16.0-parrot12 (4.16.12).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 30 May 2018 17:35:43 +0200
+
 debian-installer (20180507+parrot1) testing; urgency=medium
 
   * Bump linux kernel version 4.16.0-parrot5 (4.16.5).
