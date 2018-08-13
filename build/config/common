@@ -5,13 +5,13 @@
 # local setting such as EXTRAFILES. That way you won't accidentially commit
 # your local changes.
 
-# set DEBUG to y if you want to get the source for and compile 
+# set DEBUG to y if you want to get the source for and compile
 # debug versions of the needed udebs
 #DEBUG = y
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.16.0-parrot16
+LINUX_KERNEL_ABI ?= 4.17.0-parrot8
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -71,7 +71,7 @@ BOOTMENU_BEEP ?= n
 
 # Filesystem type for the initrd, currently valid values are ext2, cramfs,
 # and initramfs.
-# NOTE: Your kernel must support this filesystem, not just a module. 
+# NOTE: Your kernel must support this filesystem, not just a module.
 INITRD_FS = initramfs
 
 # What device to write floppies on
