@@ -1,3 +1,9 @@
+debian-installer (20180813+parrot4) parrot; urgency=medium
+
+  * Bump linux kernel version 4.17.0-parrot17 (4.17.17),
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 28 Aug 2018 20:15:41 +0200
+
 debian-installer (20180813+parrot3) testing; urgency=medium
 
   * Add default user to dialout group.
