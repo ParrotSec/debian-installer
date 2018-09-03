@@ -1,3 +1,9 @@
+debian-installer (20180813+parrot5) parrot; urgency=medium
+
+  * Rebuild to include latest live-installer udebs.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 03 Sep 2018 13:11:54 +0200
+
 debian-installer (20180813+parrot4) parrot; urgency=medium
 
   * Bump linux kernel version 4.17.0-parrot17 (4.17.17),
