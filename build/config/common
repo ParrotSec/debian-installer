@@ -55,7 +55,7 @@ DEBIAN_VERSION ?= buster
 # Define here from what release (codename!) components (udebs) should be taken
 # to build debian-installer. By default this is set to 'unstable' for building
 # daily images. For official builds this is overruled in debian/rules.
-USE_UDEBS_FROM ?= parrot
+USE_UDEBS_FROM ?= testing
 
 # Archive components from which to fetch debian-installer modules.
 UDEB_COMPONENTS ?= main/debian-installer
@@ -89,10 +89,10 @@ WRITE_MEDIA = floppy
 TYPE = $(MEDIUM)
 
 # Used to write a /etc/lsb-release file in the installer initrd.
-LSB_DISTRIB_ID=Debian
-LSB_DISTRIB_DESCRIPTION="Kali $(shell uname -o) installer"
+LSB_DISTRIB_ID=Parrot
+LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) installer"
 # Inlude the build date of the installer in here.
-LSB_DISTRIB_RELEASE="$(DEBIAN_VERSION) - installer build $(BUILD_DATE)"
+LSB_DISTRIB_RELEASE="Parrot - installer build $(BUILD_DATE)"
 
 # This keyring is only used to verify udeb downloads using apt. Since the
 # build process does not run as root, apt cannot read /etc/apt/trusted.gpg.
