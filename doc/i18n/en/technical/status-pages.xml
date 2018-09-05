@@ -9,8 +9,8 @@
 The &d-i; team and the &i18n-coords; maintain web pages giving the
 statistics of translations for each language, level by level. The
 scripts that generate these statistics may be found in the
-<filename>scripts/l10n/statistics</filename> directory of &d-i;
-<acronym>SVN</acronym> repository.
+<filename>scripts/l10n/l10n-stats</filename> directory of &d-i;
+<acronym>GIT</acronym> repository.
 </para>
 
 <para>
@@ -45,7 +45,9 @@ Status pages generation scripts
 </title>
 
 <para>
-FIXME: Here should come details about the status pages generation scripts: how the script work, how are determined packages and how information about packages locations is kept, status pages template file, etc.
+FIXME: Here should come details about the status pages generation scripts:
+how the script work, how are determined packages and how information about
+packages locations is kept, status pages template file, etc.
 </para>
 
 </sect2>
@@ -62,7 +64,9 @@ status pages and learn about changes in packages listed in the various
 </para>
 
 <para>
-For this, Peter Mann wrote a monitoring script named <classname>websec-txt</classname>. This script is available in the <classname>scripts/l10n</classname> directory in &d-i; SVN repository.
+For this, Peter Mann wrote a monitoring script named <classname>websec-txt</classname>.
+This script is available in the <classname>scripts/l10n</classname> directory in
+&d-i; SVN repository.
 </para>
 
 <para>
@@ -74,7 +78,8 @@ contain the contents of the monitored files.
 </para>
 
 <para>
-Below is the suggested contents for monitoring &d-i; translation status pages (assuming &lt;code&gt; being the translators language ISO-639 code):</para>
+Below is the suggested contents for monitoring &d-i; translation status pages
+(assuming &lt;code&gt; being the translators language ISO-639 code):</para>
 
 <informalexample>
 <screen>

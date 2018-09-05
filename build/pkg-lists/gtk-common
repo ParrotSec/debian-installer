@@ -8,7 +8,7 @@ gtk2-engines-udeb
 
 # Fonts: see http://wiki.debian.org/DebianInstaller/GUIFonts
 fonts-android-udeb
-ttf-freefont-udeb
+fonts-freefont-udeb
 fonts-farsiweb-udeb
 fonts-tibetan-machine-udeb
 fonts-dejavu-udeb

@@ -24,6 +24,7 @@ BananaPro /usr/lib/u-boot/Bananapro/u-boot-sunxi-with-spl.bin 16
 Cubieboard /usr/lib/u-boot/Cubieboard/u-boot-sunxi-with-spl.bin 16
 Cubieboard2 /usr/lib/u-boot/Cubieboard2/u-boot-sunxi-with-spl.bin 16
 Cubietruck /usr/lib/u-boot/Cubietruck/u-boot-sunxi-with-spl.bin 16
+Cubietruck_plus /usr/lib/u-boot/Cubietruck_plus/u-boot-sunxi-with-spl.bin 16
 Lamobo_R1 /usr/lib/u-boot/Lamobo_R1/u-boot-sunxi-with-spl.bin 16
 orangepi_plus /usr/lib/u-boot/orangepi_plus/u-boot-sunxi-with-spl.bin 16
 pcDuino /usr/lib/u-boot/Linksprite_pcDuino/u-boot-sunxi-with-spl.bin 16

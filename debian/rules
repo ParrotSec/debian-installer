@@ -99,7 +99,7 @@ install: build
 	cp -a build/dest/* $(IMAGEDIR)
 	ln -s $(DATE) $(ARCHIVEDIR)/current
 
-binary-arch: install  
+binary-arch: install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
@@ -118,5 +118,5 @@ binary-arch: install
 
 binary-indep:
 
-binary: binary-indep binary-arch 
-.PHONY: build build-images clean binary-indep binary-arch binary install 
+binary: binary-indep binary-arch
+.PHONY: build build-images clean binary-indep binary-arch binary install

@@ -3,6 +3,7 @@
 
 
 <para>
+<!-- chapter 1 -->
 <xref linkend="translators"/> is aimed at registered translators and explains
 how they should organize their work in order to have the whole
 &debian; installation process localized in their own language. The
@@ -11,36 +12,51 @@ chapter with details about the specifics of each packages that is
 to be translated.
 </para>
 
-<para><xref linkend="maintainers"/> of this document explains
+<para>
+<!-- chapter 2 -->
+<xref linkend="maintainers"/> of this document explains
 how &d-i; packages maintainers should handle i18n in the packages they
 maintain.
 </para>
 
 <para> 
+<!-- chapter 3 -->
 <xref linkend="new-language"/> details the addition of a new language to &d-i;
 supported languages list, with a step-by-step process to be followed
 by the new translator and the &d-i; i18n coordination team.
 </para>
 
+<para> 
+<!-- chapter 4 -->
+<xref linkend="manual"/> describes the translation of the Installation guide.
+</para>
+
 <para>
+<!-- chapter 5 -->
+<xref linkend="coordination"/> explains the internal
+organisation of the &d-i; development team for i18n/l10n handling. The
+role of the i18n coordinators is explained in this chapter.
+</para>
+
+<para>
+<!-- chapter 6 -->
 <xref linkend="technical"/> explains how translations are
 handled, particularly for <emphasis>level 1</emphasis> as part of the
 <emphasis>core</emphasis> &d-i; packages.
 </para>
 
-<para><xref linkend="coordination"/> explains the internal
-organisation of the &d-i; development team for i18n/l10n handling. The
-role of the i18n coordinators is explained in this chapter.
+<para>
+<!-- chapter 7 -->
+<xref linkend="spellchecking"/> explains mechanisms involved in the automated spellchecking processes for &d-i; related translations.
 </para>
 
-<para><xref linkend="spellchecking"/> explains mechanisms involved in the automated spellchecking processes for &d-i; related translations.
-</para>
-
-<para><xref linkend="language-tasks"/> explains how the so-called "language" tasks in &tasksel; are handled in &d-i;
+<para>
+<!-- chapter 8 -->
+<xref linkend="language-tasks"/> explains how the so-called "language" tasks in &tasksel; are handled in &d-i;
 </para>
 
 <para>Several appendices give more details about topics not directly
-related to &d-i; such as <acronym>SVN</acronym>/<acronym>git</acronym> basics, methods for translation work,
+related to &d-i; such as <acronym>git</acronym> basics, methods for translation work,
 gettext message catalogs tools, Debian bug reports and language codes.
 </para>
 

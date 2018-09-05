@@ -16,7 +16,7 @@ of dedicated tools will save translators a lot of time.
 This document does not intend to be a reference document about these
 tools. Most tools have been packaged for the Debian GNU/Linux
 distribution and thus installing them on a Debian system is as easy as
-running <command>apt-get install &lt;package&gt;</command>.
+running <command>apt install &lt;package&gt;</command>.
 </para>
 
 <para>Short list of PO editing tools:
@@ -146,6 +146,8 @@ length (use this utility on a usual 80x25 terminal).  But as cdebconf
 and debconf displays slightly differ, and as some scripts do heavy use
 of text substitution, one should not fully rely on this program. Running
 debian-installer is the only reliable solution to test your translation.
+(Note: this does not work for the po files from level 1 under
+<emphasis>sublevelX</emphasis>!)
 </para>
 
 <para>

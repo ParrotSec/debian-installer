@@ -1,9 +1,0 @@
-http://nibbles.it/debian/
-by Alessandro Polverini and Andrea Mottola, license same as open use logo
-
-To create polverini_b.rle:
-
-  1. convert polverini_b.gif polverini_b.bmp
-  2. bmptoppm < polverini_b.bmp | ppmtolss16 #CCCCCC=7 > polverini_b.rle
-
-     (CCCCCC is the color used in the grey background at top)

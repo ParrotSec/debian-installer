@@ -13,7 +13,7 @@ developers when i18n/l10n topics are involved.
 
 <para>
 The source code of this document can be found in the
-<ulink url="https://anonscm.debian.org/cgit/d-i/debian-installer.git/tree/doc/i18n/">d-i
+<ulink url="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/i18n">debian-installer
 git repository</ulink>.
 </para>
 </abstract>

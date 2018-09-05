@@ -17,8 +17,8 @@ translatable material in the &d-i; development tree.
 
 <para>
 Most parts of the translatable material is spread over core &d-i;
-packages. The package development is handled in the main &d-i;
-Subversion (<acronym>SVN</acronym>) repository.
+packages. The package development is handled in the 
+<ulink url="https://salsa.debian.org/installer-team/d-i">main &d-i; GIT repository</ulink>.
 </para>
 
 <para>
@@ -29,7 +29,8 @@ translations.
 
 <para>
 Level 1 is the key for a language being fully integrated in &d-i;.
-A language will be <emphasis>activated</emphasis> by &i18n-coords; only when the first two sublevels are completely translated.
+A language will be <emphasis>activated</emphasis> by &i18n-coords; only when the
+first two sublevels are completely translated.
 </para>
 
 </sect2>
@@ -40,11 +41,15 @@ Sublevels
 </title>
 
 <para>
-In the past, all &d-i; level 1 strings were gathered into a single <quote>master</quote> file. While that was easy to manage, it had the inconvenience of grouping very important and often used strings with very obscure strings that are relevant for some architectures only, or some special (and rarely used) features.
+In the past, all &d-i; level 1 strings were gathered into a single <quote>master</quote>
+file. While that was easy to manage, it had the inconvenience of grouping very important
+and often used strings with very obscure strings that are relevant for some architectures
+only, or some special (and rarely used) features.
 </para>
 
 <para>
-In order for translators to better prioritize their work, this master file has been split into five <quote>sublevel</quote> files:
+In order for translators to better prioritize their work, this master file has been split
+into five <quote>sublevel</quote> files:
 </para>
 
 <itemizedlist>
@@ -55,23 +60,26 @@ In order for translators to better prioritize their work, this master file has b
   </listitem>
   <listitem>
     <para>
-      Sublevel 2: general strings not used during default installs. Includes error messages and dialogs
+      Sublevel 2: general strings not used during default installs. Includes error messages
+and dialogs
     </para>
   </listitem>
   <listitem>
     <para>
-      Sublevel 3: expert strings (some low priority features such as RAID, encrypted partitions, etc.)
+      Sublevel 3: expert strings (some low priority features such as RAID, encrypted partitions,
+etc.)
     </para>
   </listitem>
   <listitem>
     <para>
-      Sublevel 4: specific to less-popular arches (such as powerpc, mips or sparc) or used in experimental features
+      Sublevel 4: specific to less-popular arches (such as powerpc, mips or sparc) or used in
+experimental features
     </para>
   </listitem>
   <listitem>
     <para>
-      Sublevel 5: same for high-end (such as hppa, ia64 or s390x) and hobby (m68k) arches and old stuff (partconf,
-partitioner, that are replaced by partman for a while)
+      Sublevel 5: same for high-end (such as hppa, ia64 or s390x) and hobby (m68k) arches and
+old stuff (partconf, partitioner, that are replaced by partman for a while)
     </para>
   </listitem>
 </itemizedlist>
@@ -84,14 +92,22 @@ Files location and access methods
 </title>
 
 <para>
-Translators should remember that using <acronym>SVN</acronym> is strongly encouraged as
-this is the only way for them to commit their own translations.
+Translators should remember that using <acronym>GIT</acronym> is encouraged.
+</para>
+
+<para>
+However, there is another possibility to contribute translations for &d-i;:
+via a Hosted Weblate project under 
+<ulink url="&hosted-weblate;">&hosted-weblate;</ulink>.
+(If you would like to use Weblate and your language is not listed there, sent
+a mail to &email-debian-boot-list;.)
 </para>
 
 <itemizedlist>
   <listitem>
     <para>
-      <acronym>SVN</acronym> access: &svn-level1;. Sublevel files are in directories named <filename>sublevelX</filename>
+      <acronym>GIT</acronym> access: &git-level1;. Sublevel files are in directories named
+<filename>sublevelX</filename>
     </para>
   </listitem>
   <listitem>
@@ -106,7 +122,7 @@ this is the only way for them to commit their own translations.
       </listitem>
       <listitem>
         <para>
-          &url-sublevel1-po-link;
+          &url-sublevel1-po;
         </para>
       </listitem>
       <listitem>
@@ -116,7 +132,7 @@ this is the only way for them to commit their own translations.
       </listitem>
       <listitem>
         <para>
-          &url-sublevel2-po-link;
+          &url-sublevel2-po;
         </para>
       </listitem>
       <listitem>
@@ -126,7 +142,7 @@ this is the only way for them to commit their own translations.
       </listitem>
       <listitem>
         <para>
-          &url-sublevel3-po-link;
+          &url-sublevel3-po;
         </para>
       </listitem>
       <listitem>
@@ -136,7 +152,7 @@ this is the only way for them to commit their own translations.
       </listitem>
       <listitem>
         <para>
-          &url-sublevel4-po-link;
+          &url-sublevel4-po;
         </para>
       </listitem>
       <listitem>
@@ -146,16 +162,22 @@ this is the only way for them to commit their own translations.
       </listitem>
       <listitem>
         <para>
-          &url-sublevel5-po-link;
+          &url-sublevel5-po;
         </para>
       </listitem>
     </itemizedlist>
   </listitem>
 </itemizedlist>
 
+</sect2>
+
+<sect2>
+<title>
+Beginning a new translation
+</title>
 
 <para>
-To begin the translation work for sublevel 1, translators should copy the
+To begin a new translation for sublevel 1, translators should copy the
 <filename>packages/po/sublevel1/template.pot</filename> to
 <filename>&language;.po</filename> (where &language; is
 the ISO-639 code of the language, see <xref
@@ -170,10 +192,10 @@ Updating/adding translations
 </title>
 
 <para>
-Translation updates should be done by direct commits to the &d-i; <acronym>SVN</acronym>
-repository (see <xref linkend="svn-basics"/> for details about <acronym>SVN</acronym>
-use). In case this is absolutely impossible, these updates can be sent
-as bug reports against the <classname>debian-installer</classname>
+Translation updates should be done by direct commits to the &d-i; <acronym>GIT</acronym>
+repository (see <xref linkend="git-basics"/> for details about <acronym>GIT</acronym>
+use) or via <ulink url="&hosted-weblate;">Weblate</ulink>. In case either of this is absolutely
+impossible, updates can be sent as bug reports against the <classname>debian-installer</classname>
 package (see <xref linkend="bug-reports"/> for details).
 </para>
 
@@ -218,7 +240,8 @@ and 32 characters for double-width character languages such as CJK
 </para>
 
 <para>
-This constraint may be checked by the <filename>scripts/l10n/choices-check.pl</filename> script from the &d-i; development tree:
+This constraint may be checked by the <filename>scripts/l10n/choices-check.pl</filename>
+script from the &d-i; development tree:
 </para>
 
 <para>
@@ -226,7 +249,8 @@ This constraint may be checked by the <filename>scripts/l10n/choices-check.pl</f
 </para>
 
 <para>
-This script will output the offending line(s) number(s) as well as the number of characters in this/these line(s).
+This script will output the offending line(s) number(s) as well as the number of characters
+in this/these line(s).
 </para>
 </sect3>
 
@@ -258,7 +282,8 @@ in the &d-i; main menu to allow users to select the corresponding action.
 <para>
 The length of this main menu entry is limited to 58 columns, i.e. 58 characters
 for single-width languages and only 29 characters for double-width languages.
-These main menu entries all have a comment with <quote>Main menu item</quote> in the PO and POT files.
+These main menu entries all have a comment with <quote>Main menu item</quote> in the
+PO and POT files.
 </para>
 
 </sect3>
@@ -269,7 +294,7 @@ Variable names
 </title>
 
 <para>
-Many places in &d-i; use variables (e.g. <quote>${LOCALE} is currently not
+Many places in &d-i; use variables (e.g. like in <quote>${LOCALE} is currently not
 supported in Debian</quote>). The variable names should <emphasis>not be
 translated</emphasis> and be kept inside braces prepended by the
 dollar sign in the translation.
@@ -282,8 +307,8 @@ details about the spell checking scripts).
 </para>
 
 <para>
-Advanced translation software such as <command>lokalize</command> are able to visually display such
-errors and warn about them before saving files.
+Advanced translation software such as <command>lokalize</command> are able to
+visually display such errors and warn about them before saving files.
 </para>
 
 </sect3>

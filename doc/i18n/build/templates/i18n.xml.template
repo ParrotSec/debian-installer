@@ -41,7 +41,7 @@
 <!-- coming soon to a cvs site near you -->
 <!-- &tech-info.xml; -->
 &methods-advices.xml;
-&svn-basics.xml;
+&git-basics.xml;
 &checkouts.xml;
 &bug-reports.xml;
 &gettext-tools.xml;

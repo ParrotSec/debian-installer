@@ -231,7 +231,7 @@ The general process is:
     <orderedlist>
       <listitem>
         <para>
-          synchronize the local copy with the &d-i; <acronym>SVN</acronym>;
+          synchronize the local copy with the &d-i; <acronym>GIT</acronym>;
         </para>
       </listitem>
       <listitem>
@@ -275,12 +275,14 @@ The general process is:
     <orderedlist>
       <listitem>
         <para>
-          synchronize with &d-i; <acronym>SVN</acronym>;
+          synchronize with &d-i; <acronym>GIT</acronym>;
         </para>
       </listitem>
       <listitem>
         <para>
-          if the script is run with the <userinput>--merge</userinput> option, merge translations from the reference PO file (the reference file is given priority for identical strings);
+          if the script is run with the <userinput>--merge</userinput> option,
+          merge translations from the reference PO file (the reference file is
+          given priority for identical strings);
         </para>
       </listitem>
       <listitem>
@@ -297,7 +299,7 @@ The general process is:
       </listitem>
       <listitem>
         <para>
-          commit back the changed file to &d-i; <acronym>SVN</acronym>.
+          commit back the changed file to &d-i; <acronym>GIT</acronym>.
         </para>
       </listitem>
     </orderedlist>
@@ -310,7 +312,7 @@ The general process is:
     <orderedlist>
       <listitem>
         <para>
-          synchronize the local copy with the &d-i; <acronym>SVN</acronym> (in case some
+          synchronize the local copy with the &d-i; <acronym>GIT</acronym> (in case some
           update occurred in the meantime);
         </para>
       </listitem>
@@ -322,7 +324,7 @@ The general process is:
       </listitem>
       <listitem>
         <para>
-          commit back the changes to &d-i; <acronym>SVN</acronym>;
+          commit back the changes to &d-i; <acronym>GIT</acronym>;
         </para>
       </listitem>
     </orderedlist>
@@ -341,7 +343,7 @@ as they are modified (except by using the
 <userinput>--atomic-commits</userinput> switch which slows down the
 whole process a lot and triggers a lot of commit actions). So, the
 script is sometimes likely to trigger conflicts. For that reason, it
-will stop working on a <acronym>SVN</acronym> copy where <acronym>SVN</acronym> conflict files are
+will stop working on a <acronym>GIT</acronym> copy where <acronym>GIT</acronym> conflict files are
 present. This explains why this script must always be monitored even
 when it is scheduled to execute periodically.
 </para>
@@ -365,7 +367,9 @@ skilled shell programmer cleans it out).
 </para>
 
 <para>
-The script uses some command-line switches which may affect its behaviour. Some of these switches are mostly present for historical reasons and are kept because they may have some new use in the future:
+The script uses some command-line switches which may affect its behaviour.
+Some of these switches are mostly present for historical reasons and are kept
+because they may have some new use in the future:
 </para>
 
 
@@ -374,7 +378,7 @@ The script uses some command-line switches which may affect its behaviour. Some 
     <para>
         <userinput>--debug</userinput> will trigger more output by the
         script. Otherwise, the script reports about its actions but
-        commands output (such as <command>svn</command>,
+        commands output (such as <command>git</command>,
         <command>debconf-updatepo</command>,
         <command>msgmerge</command>) will be redirected to
         <filename>/dev/null</filename>;
@@ -382,8 +386,8 @@ The script uses some command-line switches which may affect its behaviour. Some 
   </listitem>
   <listitem>
     <para>
-        <userinput>--online</userinput> triggers <command>svn
-        update</command> commands before working on files. Except for
+        <userinput>--online</userinput> triggers <command>git
+        pull</command> commands before working on files. Except for
         testing, there is no reason for <emphasis>not</emphasis> using
         this switch.
     </para>
@@ -393,7 +397,7 @@ The script uses some command-line switches which may affect its behaviour. Some 
         <userinput>--commit</userinput> allows the script to
         <emphasis>commit</emphasis> files back to the &d-i;
         repository. Otherwise, the modified files are kept in the
-        local <acronym>SVN</acronym> copy. Of course, this switch should be used in
+        local <acronym>GIT</acronym> copy. Of course, this switch should be used in
         production. Omitting it is useful only for testing.
     </para>
   </listitem>
@@ -411,7 +415,7 @@ The script uses some command-line switches which may affect its behaviour. Some 
   <listitem>
     <para>
         the <userinput>--atomic-updates</userinput> switch instructs
-        l10n-sync to issue a <command>svn update</command> command
+        l10n-sync to issue a <command>git pull</command> command
         before working on each package. This may be very CPU, network-
         and time-consuming and should only be used when there is some
         need to limit possible conflicts;
@@ -427,13 +431,6 @@ The script uses some command-line switches which may affect its behaviour. Some 
         languages to the master file (see <xref
         linkend="switch-language"/>. It should
         <emphasis>not</emphasis> be used in other occasions;
-    </para>
-  </listitem>
-  <listitem>
-    <para>
-        the <userinput>--svn</userinput> switch defines the command for
-        calling the <command>svn</command> utility. It may be used in
-        case some special behaviour is needed;
     </para>
   </listitem>
   <listitem>
@@ -468,14 +465,13 @@ The script uses some command-line switches which may affect its behaviour. Some 
 <para>
 The script needs the location of the local copy of the &d-i;
 repository as an argument. It makes some simple checks about the
-copy. A partial <acronym>SVN</acronym> checkout may be used, with only
-the <filename>packages/</filename> directory.
+copy.
 </para>
 
 <para>
 When using this script with commits, the &d-i; copy must be as clean as
 possible. It should not be used for development tasks. The script
-checks for possible <acronym>SVN</acronym> conflict files and aborts if it finds some.
+checks for possible <acronym>GIT</acronym> conflict files and aborts if it finds some.
 </para>
 
 <para>
@@ -491,12 +487,16 @@ are not copied in the individual packages directories.
 The PROSPECTIVE list
 </title>
 
-<para>When languages are on early stages of translation after they have been added through the new language process (<xref linkend="new-language"/>), they are temporarily listed in a file named <filename>packages/po/PROSPECTIVE</filename>.
+<para>When languages are on early stages of translation after they have been added
+through the new language process (<xref linkend="new-language"/>), they are
+temporarily listed in a file named <filename>packages/po/PROSPECTIVE</filename>.
 </para>
 
 <para>
 Languages listed in that file are excluded from synchronization, and,
-therefore, PO files are not created in individual packages. As a consequence, <emphasis>activating</emphasis> a language means that the language code is <emphasis>removed</emphasis> from the <filename>PROSPECTUVE</filename> file.
+therefore, PO files are not created in individual packages. As a consequence,
+<emphasis>activating</emphasis> a language means that the language code is
+<emphasis>removed</emphasis> from the <filename>PROSPECTUVE</filename> file.
 </para>
 
 </sect3>
@@ -537,11 +537,12 @@ interaction.
 First of all, when run from a cron job, the script has to be able to
 commit files. This means that the account it is run from should use a
 <acronym>SSH</acronym> key with an empty passphrase and add this key
-to the account it commits to on &svn-debian;.
+to the account it commits to on &git-debian;.
 </para>
 
 <para>
-First, create a <acronym>SSH</acronym> key with an empty passphrase and put it in a special file:
+First, create a <acronym>SSH</acronym> key with an empty passphrase and
+put it in a special file:
 </para>
 
 <informalexample>
@@ -561,8 +562,8 @@ The key fingerprint is:
 
 <para>
 Then, this key should be added to
-<filename>~/.ssh/authorized_keys</filename> on &svn-debian; for the
-Alioth account (&lt;alioth_account&gt;) under which identity commits
+<filename>~/.ssh/authorized_keys</filename> on &git-debian; for the
+Salsa account (&lt;salsa_account&gt;) under which identity commits
 will be done.
 </para>
 
@@ -574,15 +575,14 @@ happen, the following should be added to
 
 <informalexample>
 <screen>
-host &svn-debian;
-  user &lt;alioth_account&gt;
-  IdentityFile /home/user/.ssh/nopass
+host &git-debian;
+  user &lt;salsa_account&gt;
 </screen>
 </informalexample>
 
 <para>
 Of course, this actually means that this local account will then be
-able to commit to &svn-debian; with &lt;alioth_account&gt; as
+able to commit to &git-debian; with &lt;salsa_account&gt; as
 identity, <emphasis>without further control</emphasis>. This means
 that the account the script is run with should be very safely
 protected.
@@ -601,7 +601,7 @@ control possibilities to the synchronisation script.
 
 <para>
 First of all, before doing any work, the script opens a special file
-kept in the <acronym>SVN</acronym> repository and named
+kept in the <acronym>GIT</acronym> repository and named
 <filename>packages/po/run-l10n-sync</filename>. The "run=" line in
 this file mentions whether synchronisation should happen or not. If
 the file contains "run=0", then the script will exit without taking
@@ -610,7 +610,7 @@ any action.
 
 <para>
 This mechanism gives all &d-i; developers with commit access to the
-<acronym>SVN</acronym> repository a very simple way to disable the
+<acronym>GIT</acronym> repository a very simple way to disable the
 synchronization script actions. For this, developers just need to
 change the file and commit the new version.
 </para>
@@ -625,7 +625,8 @@ While the script is disabled, runs can still be enforced by using the
 While it is running, the script also creates a file named
 <filename>.l10n-sync.lock</filename> at the root of the local copy of
 &d-i; repository. The file is removed only after successful runs of
-the script. When this file already exists, the script does not run and exits with an error message.
+the script. When this file already exists, the script does not run and
+exits with an error message.
 </para>
 
 <para>

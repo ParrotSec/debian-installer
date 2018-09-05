@@ -75,28 +75,38 @@ fi
 
 # All these options make apt read the right sources list, and use APTDIR for
 # everything so it need not run as root.
-APT_GET="apt-get --assume-yes \
-	-o Dir::Etc::sourcelist=`pwd`/$LIST \
-	-o Dir::Etc::sourceparts=/dev/null \
-	-o Dir::Etc::Preferences=`pwd`/preferences.$TYPE.local \
-	-o Dir::State=`pwd`/$APTDIR/state \
-	-o Debug::NoLocking=true \
-	-o Debug::pkgDepCache::AutoInstall=true \
-	-o Dir::Cache=`pwd`/$APTDIR/cache \
-	-o Acquire::Retries=3 \
-	-o APT::Install-Recommends=false
-	-o Apt::Architecture=`dpkg-architecture -qDEB_HOST_ARCH` \
-	-o Dir::Etc::trusted="$KEYRING"
-	"
+export APT_CONFIG="$APTDIR/apt.conf"
+PWD="$(pwd)"
+
+mkdir -p $APTDIR
+cat > "$APT_CONFIG" <<EOF
+Dir "$PWD/$APTDIR";
+Dir::Etc::parts "/dev/null";
+Dir::Etc::sourcelist "$PWD/$LIST";
+Dir::Etc::sourceparts "/dev/null";
+Dir::Etc::Preferences "$PWD/preferences.$TYPE.local";
+Dir::Etc::PreferencesParts "/dev/null";
+Dir::State "$PWD/$APTDIR/state";
+Debug::NoLocking "true";
+Debug::pkgDepCache::AutoInstall "true";
+Dir::Cache "$PWD/$APTDIR/cache";
+Acquire::Retries "3";
+APT::Install-Recommends "false";
+Apt::Architecture "$DEB_HOST_ARCH";
+Apt::Architectures "$DEB_HOST_ARCH";
+Dir::Etc::trusted "$KEYRING";
+Dir::State::Status "$PWD/$APTDIR/state/status";
+Acquire::Languages "none";
+EOF
+
+APT_GET="apt-get --assume-yes"
 
 # Prepare APTDIR
 mkdir -p $APTDIR/state/lists/partial
 mkdir -p $APTDIR/state/mirrors/partial
 mkdir -p $APTDIR/cache/archives/partial
 echo -n > $APTDIR/state/status
-if [ "$TYPE" = "deb" ]; then
-	APT_GET="$APT_GET -o Dir::State::Status=`pwd`/$APTDIR/state/status"
-else
+if [ "$TYPE" != "deb" ]; then
 	# Prime status file with a few system libraries that don't
 	# currently have udebs, or which udebs still depend on for various
 	# reasons.
@@ -115,7 +125,6 @@ else
 			echo >> $APTDIR/state/status
 		fi
 	done
-	APT_GET="$APT_GET -o Dir::State::Status=`pwd`/$APTDIR/state/status"
 fi
 
 # Update package lists and autoclean cache.

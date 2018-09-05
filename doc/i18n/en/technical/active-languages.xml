@@ -4,12 +4,15 @@ Active languages
 </title>
 
 <para>
-Active languages are languages which have been removed from the prospective languages list. As soon as this is done, translations for these languages are added to the indvidual &d-i; packages by the synchronisation
-script (see <xref linkend="synchronisation-scripts"/>).
+Active languages are languages which have been removed from the prospective languages
+list. As soon as this is done, translations for these languages are added to the
+indvidual &d-i; packages by the synchronisation script (see
+<xref linkend="synchronisation-scripts"/>).
 </para>
 
 <para>
-This section describes the technical operations that should take place when the decision to activate a given language is taken by the &i18n-coords;.
+This section describes the technical operations that should take place when
+the decision to activate a given language is taken by the &i18n-coords;.
 </para>
 
 <sect2>
@@ -18,7 +21,10 @@ Removing the language from the prospective list
 </title>
 
 <para>
-The first action to take place is the removal of the language from the <filename>packages/po/PROSPECTIVE</filename> file. Then, the next run of the synchronization script will automatically add translation files for that language into each &d-i; package.
+The first action to take place is the removal of the language from the
+<filename>packages/po/PROSPECTIVE</filename> file. Then, the next run of
+the synchronization script will automatically add translation files for that
+language into each &d-i; package.
 </para>
 </sect2>
 
@@ -39,7 +45,10 @@ Activate language in localechooser
 </title>
 
 <para>
-The language should be activated in the <classname>localechooser</classname> package. For this, the language entry in the <filename>languagelist</filename> should be uncommented and the  <classname>localechooser</classname> must be rebuilt and uploaded.
+The language should be activated in the <classname>localechooser</classname>
+package. For this, the language entry in the <filename>languagelist</filename>
+should be uncommented and the  <classname>localechooser</classname> must be
+rebuilt and uploaded.
 </para>
 </sect2>
 
@@ -49,7 +58,10 @@ Uploading packages
 </title>
 
 <para>
-For the translation to be effective, all &d-i; packages with localized messages should be rebuilt and uploaded. Until this happens, translations for that language will not appear. Of course, this shouldn't be done for all packages except when the release time is coming.
+For the translation to be effective, all &d-i; packages with localized messages
+should be rebuilt and uploaded. Until this happens, translations for that language
+will not appear. Of course, this shouldn't be done for all packages except when
+the release time is coming.
 </para>
 </sect2>
 
@@ -59,11 +71,14 @@ Add or check tasks in tasksel
 </title>
 
 <para>
-Tasks related to the new language should be considered for addition in tasksel (see <xref linkend="language-tasks"/>).
+Tasks related to the new language should be considered for addition in tasksel
+(see <xref linkend="language-tasks"/>).
 </para>
 
 <para>
-These tasks should also be added in the <filename>tasks.list</filename> file of the <classname>debian-cd</classname> package so that CD or DVD prioritize the task's components for inclusion on first CDs or DVDs.</para>
+These tasks should also be added in the <filename>tasks.list</filename> file of
+the <classname>debian-cd</classname> package so that CD or DVD prioritize the task's
+components for inclusion on first CDs or DVDs.</para>
 
 </sect2>
 
@@ -73,7 +88,9 @@ Check the availability of font for the graphical installer
 </title>
 
 <para>
-A check should be made for the chosen font for the graphical installer. In case a dedicated font is needed, the udeb providing that font must be existing, or a patch should be created against the relevant package for it to provide this udeb package.
+A check should be made for the chosen font for the graphical installer. In case a
+dedicated font is needed, the udeb providing that font must be existing, or a patch
+should be created against the relevant package for it to provide this udeb package.
 </para>
 
 </sect2>
@@ -84,7 +101,11 @@ Record the new status of the language
 </title>
 
 <para>
-The status of the relevant language chould be changed in <filename>installer/doc/i18n/languages.xml</filename>. "prospective" should be removed from the "nlp_step" field and the "supported" field should be changed from "false" to the next version of the installer release (see other languages for examples).
+The status of the relevant language chould be changed in
+<filename>installer/doc/i18n/languages.xml</filename>. "prospective" should be
+removed from the "nlp_step" field and the "supported" field should be changed from
+<quote>false</quote> to the next version of the installer release (see other languages
+for examples).
 </para>
 
 </sect2>

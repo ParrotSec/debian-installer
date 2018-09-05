@@ -4,7 +4,9 @@
 <title>Introduction</title>
 
 <para>
-The <classname>tasksel</classname> package is responsible for the installation of several <emphasis>package sets</emphasis>, for various activities (desktop, file server, ...).
+The <classname>tasksel</classname> package is responsible for the installation
+of several <emphasis>package sets</emphasis>, for various activities (desktop,
+file server, ...).
 </para>
 
 <para>
@@ -22,12 +24,17 @@ as well as the type of install.
 </para>
 
 <para>
-For instance, if &d-i; is run in French language, the <emphasis>french</emphasis> task will
-be automatically installed.
+For instance, if &d-i; is run in French language, the <emphasis>french</emphasis>
+task will be automatically installed.
 </para>
 
 <para>
-<emphasis>Language tasks</emphasis> are separated in two types of tasks: the <emphasis>&language;</emphasis> task and the  <emphasis>&language;-desktop</emphasis> task. The former is installed for every standard system install while the latter is only installed if the <emphasis>desktop</emphasis> tasks is selected by the user (the <emphasis>desktop</emphasis> task installs a basic graphical environment, which can be completed with the <emphasis>Gnome</emphasis> or <emphasis>KDE</emphasis> tasks).
+<emphasis>Language tasks</emphasis> are separated in two types of tasks: the
+<emphasis>&language;</emphasis> task and the  <emphasis>&language;-desktop</emphasis>
+task. The former is installed for every standard system install while the latter is
+only installed if the <emphasis>desktop</emphasis> tasks is selected by the user (the
+<emphasis>desktop</emphasis> task installs a basic graphical environment, which can
+be completed with the <emphasis>Gnome</emphasis> or <emphasis>KDE</emphasis> tasks).
 </para>
 
 </sect1>
@@ -90,7 +97,8 @@ many other unrelated packages to be installed.
 </para>
 
 <para>
-Like all packages included in tasks, packages included in <emphasis>&language;</emphasis> tasks should be suitably generic for a large number of the users of the language (at least 25%).
+Like all packages included in tasks, packages included in <emphasis>&language;</emphasis>
+tasks should be suitably generic for a large number of the users of the language (at least 25%).
 </para>
 
 </sect1>

@@ -1,3 +1,9 @@
+debian-installer (20180905+parrot1) parrot; urgency=medium
+
+  * Sync with Debian.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 05 Sep 2018 14:49:18 +0200
+
 debian-installer (20180813+parrot5) parrot; urgency=medium
 
   * Rebuild to include latest live-installer udebs.

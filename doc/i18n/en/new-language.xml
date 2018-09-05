@@ -30,7 +30,8 @@ First contact with &d-i; development team
 </title>
 
 <para>
-Translators or translation teams of a not supported language should contact the &d-i; i18n coordination team (see <xref linkend="coordination-team"/>). They should provide a real
+Translators or translation teams of a not supported language should contact
+the &d-i; i18n coordination team (see <xref linkend="coordination-team"/>). They should provide a real
 name (the Debian Project encourages the use of real names) and
 possibly a GPG key (this is not mandatory but could help in the
 future).
@@ -287,7 +288,9 @@ This will be handled by the &i18n-coords;.
 </para>
 
 <para>
-This entry should mention the &d-i; interfaces which this language is available on (text, latin-1 serial, dialog or graphical interface). This choice depends on the needed rendering mechanism for this language. 
+This entry should mention the &d-i; interfaces which this language is 
+available on (text, latin-1 serial, dialog or graphical interface). 
+This choice depends on the needed rendering mechanism for this language. 
 </para>
 
 <para>
@@ -298,31 +301,37 @@ This defines five categories for languages:
 
 <listitem>
 <para>
-<emphasis>Category 0</emphasis>: languages that can be rendered on any ASCII console. This only includes English by a design decision of &d-i;. In short, even if a language can be rendered using only ASCII characters, it will <emphasis>not</emphasis> be placed in category 0;
+<emphasis>Category 0</emphasis>: languages that can be rendered on any 
+ASCII console. This only includes English by a design decision of &d-i;. 
+In short, even if a language can be rendered using only ASCII characters, 
+it will <emphasis>not</emphasis> be placed in category 0;
 </para>
 </listitem>
 
 <listitem>
 <para>
 <emphasis>Category 1</emphasis>: languages that can be rendered on any
-Latin-1 console (several serial terminals). This includes so-called <emphasis>Latin-1</emphasis> languages;
+Latin-1 console (several serial terminals). This includes so-called
+<emphasis>Latin-1</emphasis> languages;
 </para>
 </listitem>
 
 <listitem>
 <para>
-<emphasis>Category 2</emphasis>: languages that can be rendered at the Linux text console, without the need of a framebuffer terminal. 
+<emphasis>Category 2</emphasis>: languages that can be rendered at the 
+Linux text console, without the need of a framebuffer terminal. 
 </para>
 </listitem>
 
 <listitem>
 <para>
-<emphasis>Category 3</emphasis>: languages that can be rendered at the Linux text console only by using a framebuffer terminal. The
+<emphasis>Category 3</emphasis>: languages that can be rendered at the
+Linux text console only by using a framebuffer terminal. The
 key point for these languages is the availability of their glyphs in
 the <classname>bterm-unifont</classname> package. These languages should
 also not need complex rendering mechanisms such as combination
-mechanisms. The difference against Category 2 is the possibility to display the language
-at the Linux console without framebuffer. 
+mechanisms. The difference against Category 2 is the possibility to 
+display the language at the Linux console without framebuffer. 
 </para>
 </listitem>
 
@@ -415,12 +424,15 @@ namely French:
 <para>
 For this step to be completed, the new file must have been committed in
 the <classname>installer/built/needed-characters</classname>
-directory. The file name must be the ISO 639-3 language code with <filename>.utf</filename> as extension.
+directory. The file name must be the ISO 639-3 language code with
+<filename>.utf</filename> as extension.
 </para>
 
 <para>
 As long as the language remains a prospective language, that file
-should be named after the language's ISO 639-3 code and the <filename>.prospective</filename> file extension. The extension will be changed to <filename>.utf</filename> when the language is completely supported.
+should be named after the language's ISO 639-3 code and the
+<filename>.prospective</filename> file extension. The extension will be
+changed to <filename>.utf</filename> when the language is completely supported.
 </para>
 
 <para>
@@ -443,7 +455,8 @@ Font for the graphical version of &d-i;
 </title>
 
 <para>
-The graphical version of &d-i; will use several different font sets, depending on the language.
+The graphical version of &d-i; will use several different font sets,
+depending on the language.
 </para>
 
 <para>
@@ -495,34 +508,34 @@ value to <emphasis>keymap</emphasis>.
 
 <sect1>
 <title>
-Account creation on Alioth
+Account creation on Salsa
 </title>
 
 <para>
-All &d-i; work is maintained in a centralized revision control system,
-using <acronym>SVN</acronym> and <acronym>git</acronym>. For translators not familiar with
-<acronym>SVN</acronym>, <xref linkend="svn-basics"/> will give them
+All &d-i; work is maintained in a revision control system,
+using <acronym>GIT</acronym>. For translators not familiar with
+<acronym>GIT</acronym>, <xref linkend="git-basics"/> will give them
 enough information to be able to commit their translations
-themselves. (The use of <acronym>git</acronym> is only required for developers
-working on the code of &d-i;, not for translators!)
+themselves.
 </para>
 
 <para>
 This chapter will also explain in details how to get an account on the
-Alioth server, the server used for centralized development of several
+Salsa server, the server used for centralized development of several
 co-maintained Debian packages and projects.
 </para>
 
 <para>
 After your account has been created, please check that you can login
-with it on &url-alioth; using the chosen password. Then, mention your
+with it on <ulink url="&url-salsa;">Salsa</ulink>
+using the chosen password. Then, mention your
 account name to the &i18n-coords; who will grant you commit access to
 the needed repositories.
 </para>
 
 <para>
 For this step to be completed, the language coordinator must have a
-working &alioth; account and must have sent his/her account name to
+working &salsa; account and must have sent his/her account name to
 the &i18n-coords;.
 </para>
 
@@ -542,13 +555,13 @@ Granting and checking the translator commit access
 
 <para>
 After the new translator is notified by the &i18n-coords; that (s)he
-has been granted commit access to the &d-i; <acronym>SVN</acronym>
-repositories, (s)he should check that (s)he's able to checkout the
-&d-i; repository, as well as the &tasksel; repository.
+has been granted commit access to the &d-i; <acronym>GIT</acronym>
+repository, (s)he should check that (s)he's able to checkout the
+&d-i; repository.
 </para>
 
 <para>
-For this, <xref linkend="svn-basics"/> will give him/her any needed
+For this, <xref linkend="git-basics"/> will give him/her any needed
 details.
 </para>
 
@@ -560,7 +573,11 @@ there. This will be verified by the &i18n-coords;.
 </para>
 
 <para>
-&i18n-coords; must then add the language code to the packages/po/PROSPECTIVE file in order to avoid the translations to immediately spread out to individual packages. This is motivated by the will of activating languages only after they completed the first two sublevels of translations (<xref linkend="sublevels"/>).
+&i18n-coords; must then add the language code to the
+packages/po/PROSPECTIVE file in order to avoid the translations to
+immediately spread out to individual packages. This is motivated by the
+will of activating languages only after they completed the first two
+sublevels of translations (<xref linkend="sublevels"/>).
 </para>
 
 <para>
@@ -635,11 +652,15 @@ value to <emphasis>mailing_list</emphasis>.
 </para>
 
 <para>
-Optionally, translators may subscribe to the &email-debian-boot-list; which is the development mailing list for &d-i;. Topics there are more technical but will allow translators to participate more deeply in &d-i; development.
+Optionally, translators may subscribe to the &email-debian-boot-list;
+which is the development mailing list for &d-i;. Topics there are more
+technical but will allow translators to participate more deeply in &d-i; development.
 </para>
 
 <para>
-Joining IRC channels is also a good communication method: Debian i18n contributors usually hang around on #debian-i18n on irc.debian.org while &d-i; developers join #debian-boot.
+Joining IRC channels is also a good communication method: Debian i18n
+contributors usually hang around on #debian-i18n on irc.debian.org while
+&d-i; developers join #debian-boot.
 </para>
 
 </sect1>
@@ -673,11 +694,13 @@ the <filename>.prospective</filename> file extension by a <filename>.utf</filena
 </para>
 
 <para>
-Finally, a new entry will be added to the file used by the scripts which generate the translation status pages (&url-d-i-translation-status;).
+Finally, a new entry will be added to the file used by the scripts which
+generate the translation status pages (&url-d-i-translation-status;).
 </para>
 
 <para>
-The new language process officially finishes here. The only work that's left to do is ... translating.
+The new language process officially finishes here. The only work that's
+left to do is ... translating.
 </para>
 
 </sect1>

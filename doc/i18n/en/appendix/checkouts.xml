@@ -1,7 +1,7 @@
 <appendix id="checkouts"><title>Checkout commands</title>
 
 <para>
-First said, translators don't need to checkout the repositories by
+First said, translators don't need to checkout the repository by
 hand to translate the po files. They can get all files here:
 </para>
 
@@ -12,7 +12,8 @@ hand to translate the po files. They can get all files here:
 </informalexample>
 
 <para>
-where &lt;STAGE&gt; is either level1, level2, level3, level4 and level5 &lt;LANGUAGECODE&gt; your language code like de, es, zh_CN, ...
+where &lt;LEVEL&gt; is either level1, level2, level3, level4 or
+level5, and &lt;LANGUAGECODE&gt; is your language code like de, es, zh_CN, ...
 </para>
 
 <para>
@@ -30,7 +31,9 @@ POT templates can be found at:
 </sect2>
 
 <para>
-For translators who prefer working from developer's repositories, the following lists, level by level, all checkout commands to get access to translation material.
+For translators who prefer working from developer's repositories, the
+following lists, level by level, all checkout commands to get access to
+translation material.
 </para>
 
 <sect3>
@@ -38,10 +41,7 @@ For translators who prefer working from developer's repositories, the following 
 
 <itemizedlist>
 <listitem>
-Anonymous: <command>&svn-level1-anon;</command>
-</listitem>
-<listitem>
-Non anonymous: <command>&svn-level1;</command>
+<command>&git-level1;</command>
 </listitem>
 </itemizedlist>
 
@@ -55,10 +55,7 @@ Non anonymous: <command>&svn-level1;</command>
 
 <itemizedlist>
 <listitem>
-Anonymous: <command>&svn-tasksel-anon;</command>
-</listitem>
-<listitem>
-Non anonymous: <command>&svn-tasksel;</command>
+<command>&git-tasksel;</command>
 </listitem>
 </itemizedlist>
 
@@ -69,21 +66,7 @@ Non anonymous: <command>&svn-tasksel;</command>
 
 <itemizedlist>
 <listitem>
-Anonymous: <command>&git-iso-codes-anon;</command>
-</listitem>
-<listitem>
-Non anonymous: <command>&git-iso-codes;</command>
-</listitem>
-</itemizedlist>
-
-</sect4>
-
-<sect4>
-<title>Console-data</title>
-
-<itemizedlist>
-<listitem>
-Anonymous: <command>&svn-console-data;</command>
+<command>&git-iso-codes;</command>
 </listitem>
 </itemizedlist>
 
@@ -94,7 +77,40 @@ Anonymous: <command>&svn-console-data;</command>
 
 <itemizedlist>
 <listitem>
-Anonymous: <command>&svn-popcon;</command>
+<command>&git-popcon;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+<sect4>
+<title>eject</title>
+
+<itemizedlist>
+<listitem>
+<command>????? &git-eject;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+<sect4>
+<title>espeakup</title>
+
+<itemizedlist>
+<listitem>
+<command>&git-espeakup;</command>
+</listitem>
+</itemizedlist>
+
+</sect4>
+
+<sect4>
+<title>grub2</title>
+
+<itemizedlist>
+<listitem>
+<command>&git-grub2;</command>
 </listitem>
 </itemizedlist>
 
@@ -110,7 +126,7 @@ Anonymous: <command>&svn-popcon;</command>
 
 <itemizedlist>
 <listitem>
-Anonymous: <command>&svn-debconf;</command>
+<command>&git-debconf;</command>
 </listitem>
 </itemizedlist>
 
@@ -119,9 +135,11 @@ Anonymous: <command>&svn-debconf;</command>
 <sect4>
 <title>Newt</title>
 
-<para>
-No repository yet
-</para>
+<itemizedlist>
+<listitem>
+<command>&git-newt;</command>
+</listitem>
+</itemizedlist>
 
 </sect4>
 
@@ -130,7 +148,7 @@ No repository yet
 
 <itemizedlist>
 <listitem>
-Anonymous: <command>&svn-win32-loader-anon;</command>
+<command>&git-win32-loader-anon;</command>
 </listitem>
 </itemizedlist>
 
@@ -147,10 +165,10 @@ Developers need the following commands to checkout the whole source tree:
 
 <informalexample>
   <screen>
-svn co svn+ssh://svn.debian.org/svn/d-i/trunk debian-installer
-cd debian-installer
-scripts/git-setup
-mr -p checkout
+git clone git@salsa.debian.org:installer-team/d-i.git
+cd d-i
+./scripts/git-setup
+mr checkout
   </screen>
 </informalexample>
 </sect3>

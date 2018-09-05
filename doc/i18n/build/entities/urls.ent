@@ -9,15 +9,17 @@
   Standard Debian URLs
   -->
 
-<!ENTITY alioth "alioth.debian.org">
-<!ENTITY url-alioth "https://&alioth;/">
-<!ENTITY alioth-account-page '<ulink url="https://alioth.debian.org/account">https://alioth.debian.org/account</ulink>'>
+<!ENTITY salsa "salsa.debian.org">
+<!ENTITY url-salsa "https://&salsa;/">
+<!ENTITY salsa-account-page '<ulink url="https://salsa.debian.org/public">https://salsa.debian.org/public</ulink>'>
 
-<!ENTITY svn-debian-auth "&lt;alioth_username&gt;@svn.debian.org">
-<!ENTITY svn-debian "anonscm.debian.org">
+<!ENTITY salsa-debian-auth "&lt;salsa_username&gt;@salsa.debian.org">
+<!ENTITY salsa-debian "salsa.debian.org">
 
-<!ENTITY git-debian-auth "&lt;alioth_username&gt;@git.debian.org">
-<!ENTITY git-debian "anonscm.debian.org">
+<!ENTITY git-debian-auth "&lt;salsa_username&gt;@salsa.debian.org">
+<!ENTITY git-debian "salsa.debian.org">
+
+<!ENTITY hosted-weblate "https://hosted.weblate.org/projects/debian-installer/">
 
 <!ENTITY irc-server "irc.debian.org">
 <!ENTITY irc-channel "#debian-boot on &irc-server;">
@@ -34,16 +36,16 @@
 <!ENTITY url-d-i-translation-status "&url-status;/translation-status.html">
 
 <!ENTITY url-level1     "&url-status;/level1">
-<!ENTITY url-sublevel1-pot     "&url-status;/level1/POT/debian-installer_packages_po_sublevel1.pot">
-<!ENTITY url-sublevel2-pot     "&url-status;/level1/POT/debian-installer_packages_po_sublevel2.pot">
-<!ENTITY url-sublevel3-pot     "&url-status;/level1/POT/debian-installer_packages_po_sublevel3.pot">
-<!ENTITY url-sublevel4-pot     "&url-status;/level1/POT/debian-installer_packages_po_sublevel4.pot">
-<!ENTITY url-sublevel5-pot     "&url-status;/level1/POT/debian-installer_packages_po_sublevel5.pot">
-<!ENTITY url-sublevel1-po     "&url-status;/level1/files/&language;/debian-installer_packages_po_sublevel1_&language;.po">
-<!ENTITY url-sublevel2-po     "&url-status;/level1/files/&language;/debian-installer_packages_po_sublevel2_&language;.po">
-<!ENTITY url-sublevel3-po     "&url-status;/level1/files/&language;/debian-installer_packages_po_sublevel3_&language;.po">
-<!ENTITY url-sublevel4-po     "&url-status;/level1/files/&language;/debian-installer_packages_po_sublevel4_&language;.po">
-<!ENTITY url-sublevel5-po     "&url-status;/level1/files/&language;/debian-installer_packages_po_sublevel5_&language;.po">
+<!ENTITY url-sublevel1-pot     "&url-status;/level1/POT/packages_po_sublevel1.pot">
+<!ENTITY url-sublevel2-pot     "&url-status;/level1/POT/packages_po_sublevel2.pot">
+<!ENTITY url-sublevel3-pot     "&url-status;/level1/POT/packages_po_sublevel3.pot">
+<!ENTITY url-sublevel4-pot     "&url-status;/level1/POT/packages_po_sublevel4.pot">
+<!ENTITY url-sublevel5-pot     "&url-status;/level1/POT/packages_po_sublevel5.pot">
+<!ENTITY url-sublevel1-po     "&url-status;/level1/files/&language;/packages_po_sublevel1_&language;.po">
+<!ENTITY url-sublevel2-po     "&url-status;/level1/files/&language;/packages_po_sublevel2_&language;.po">
+<!ENTITY url-sublevel3-po     "&url-status;/level1/files/&language;/packages_po_sublevel3_&language;.po">
+<!ENTITY url-sublevel4-po     "&url-status;/level1/files/&language;/packages_po_sublevel4_&language;.po">
+<!ENTITY url-sublevel5-po     "&url-status;/level1/files/&language;/packages_po_sublevel5_&language;.po">
 <!ENTITY url-sublevel1-pot-link     '<ulink url="&url-sublevel1-pot;">&url-sublevel1-pot;</ulink>'>
 <!ENTITY url-sublevel1-po-link     '<ulink url="&url-sublevel1-po;">&url-sublevel1-po;</ulink>'>
 <!ENTITY url-sublevel2-pot-link     '<ulink url="&url-sublevel2-pot;">&url-sublevel2-pot;</ulink>'>
@@ -67,29 +69,24 @@
 <!ENTITY url-level3-pot-link     '<ulink url="&url-level3-pot;">&url-level3-pot;</ulink>'>
 <!ENTITY url-level3-po-link     '<ulink url="&url-level3-po;">&url-level3-po;</ulink>'>
 
-<!-- SVN/CVS URLs for various files locations -->
-<!ENTITY svn-level1 "svn co svn+ssh://&svn-debian-auth;/svn/d-i/trunk/packages/po debian-installer">
-<!ENTITY svn-level1-anon "svn co svn+ssh://&svn-debian;/d-i/trunk/packages/po debian-installer">
+<!ENTITY git-clone-d-i-repo "git clone git@salsa.debian.org:installer-team/d-i.git d-i">
 
-<!ENTITY svn-di-sandbox "<classname>svn+ssh://&svn-debian-auth;/svn/d-i/people/sandbox</classname>">
-<!ENTITY svn-tasksel-anon "svn co svn://&svn-debian;/tasksel/trunk tasksel">
-<!ENTITY svn-tasksel "svn co svn+ssh://&svn-debian-auth;/svn/tasksel/trunk tasksel">
-<!ENTITY git-tasksel-anon "git clone ssh://&git-debian;/git/tasksel/tasksel.git">
-<!ENTITY git-tasksel "git clone ssh://&git-debian-auth;/git/tasksel/tasksel.git">
-<!ENTITY svn-win32-loader-anon "svn co svn://&svn-debian;/svn/d-i/trunk/win32-loader">
-<!ENTITY svn-win32-loader "svn co svn+ssh://&svn-debian-auth;/svn/d-i/trunk/win32-loader">
-<!ENTITY git-win32-loader-anon "git clone ssh://&git-debian;/git/d-i/win32-loader.git">
-<!ENTITY git-win32-loader "git clone ssh://&git-debian-auth;/git/d-i/win32-loader.git">
-<!ENTITY git-iso-codes-anon "git clone git://&git-debian;/git/iso-codes/iso-codes.git">
-<!ENTITY git-iso-codes "git clone ssh://&git-debian-auth;/git/iso-codes/iso-codes.git">
-<!ENTITY svn-console-data "svn co svn://&svn-debian;/console-data/trunk/debian/po console-data">
-<!ENTITY bzr-grub2 "bzr co bzr+ssh://bzr.debian.org/bzr/pkg-grub/trunk/grub/">
-<!ENTITY console-data-en     "&url-status;/level2/files/en/console-data_debian_po_en.po">
-<!ENTITY svn-popcon "svn co svn://&svn-debian;/svn/popcon/trunk/popularity-contest/debian/po popularity-contest">
-<!ENTITY git-debconf "git clone git://&git-debian;/git/debconf/debconf.git">
-<!ENTITY svn-debconf "svn co svn://&svn-debian;/debconf/trunk/src/debconf debconf">
-<!ENTITY git-eject "git clone ssh://&git-debian;/git/collab-maint/eject">
-<!ENTITY git-espeakup "git clone ssh://&git-debian;/git/pkg-a11y/espeakup.git">
+<!-- URLs for various files locations -->
+<!ENTITY git-level1 "git clone git@salsa.debian.org:installer-team/d-i.git">
+<!ENTITY git-level1-anon "git clone git@salsa.debian.org:installer-team/d-i.git">
+
+<!ENTITY git-tasksel-anon "git clone git@salsa.debian.org:installer-team/tasksel.git">
+<!ENTITY git-tasksel "git clone git@salsa.debian.org:installer-team/tasksel.git">
+<!ENTITY git-win32-loader-anon "git clone -q git@salsa.debian.org:installer-team/win32-loader.git">
+<!ENTITY git-win32-loader "git clone git@salsa.debian.org:installer-team/win32-loader.git">
+<!ENTITY git-iso-codes-anon "git clone git@salsa.debian.org:debian/iso-codes.git">
+<!ENTITY git-iso-codes "git clone git@salsa.debian.org:debian/iso-codes.git">
+<!ENTITY git-grub2 "git clone git@salsa.debian.org:grub-team/grub.git">
+<!ENTITY git-popcon "git clone git@salsa.debian.org:popularity-contest-team/popularity-contest.git">
+<!ENTITY git-debconf "git clone git@salsa.debian.org:pkg-debconf/debconf.git">
+<!ENTITY git-eject "git clone ssh://&git-debian;/git/collab-maint/eject"> <!-- FIXME: no upstream repo currently ??? -->
+<!ENTITY git-espeakup "git clone git@salsa.debian.org:a11y-team/espeakup.git">
+<!ENTITY git-newt "git clone git@salsa.debian.org:mckinstry/newt.git">
 
 <!-- Wiki page for fonts -->
 <!ENTITY wiki-fonts "https://wiki.debian.org/DebianInstaller/GUIFonts">

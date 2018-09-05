@@ -13,6 +13,7 @@ libdebian-installer4-udeb
 lowmemcheck
 main-menu
 rootskel
+rootskel-gtk
 udpkg
 rescue-check
 env-preseed
@@ -20,6 +21,7 @@ pciutils-udeb
 screen-udeb
 wget-udeb
 ca-certificates-udeb
+parrot-archive-keyring-udeb
 
 #include "udev"
 

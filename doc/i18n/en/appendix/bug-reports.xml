@@ -4,7 +4,7 @@
 This section applies to translators who need to send their completed
 translations back to the package maintainers, especially for packages
 from levels above 2 for which no direct Subversion commit is
-possible (either because the translator cannot use <acronym>SVN</acronym> or
+possible (either because the translator cannot use <acronym>GIT</acronym> or
 because the package maintainer(s) do not encourage wide commit
 access).
 </para>
@@ -15,7 +15,10 @@ Debian bug reports, severities and tags
 </title>
 
 <para>
-All interactions with Debian package maintainers should be made through the Debian Bug Tracking System (BTS). Other ways of interaction such as sending files to maintainers directly, or to the &i18n-coords; is to be prohibited as it makes things impossible to track down.
+All interactions with Debian package maintainers should be made through the
+Debian Bug Tracking System (BTS). Other ways of interaction such as sending
+files to maintainers directly, or to the &i18n-coords; is to be prohibited as
+it makes things impossible to track down.
 </para>
 
 <para>

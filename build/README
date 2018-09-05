@@ -7,7 +7,7 @@ version of Debian for which it is targeted. If you are using stable, use
 "apt-get source debian-installer" to get a version of the installer that
 will build on your system. If you are using testing or unstable, check out
 a copy of the installer using the command 
-"git clone git://git.debian.org/d-i/debian-installer.git"
+"git clone https://salsa.debian.org/installer-team/debian-installer.git"
 
 Recipe:
  - Install the build-dependencies on the host system

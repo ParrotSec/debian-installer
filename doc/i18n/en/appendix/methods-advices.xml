@@ -140,7 +140,8 @@ packages. &d-i; translators should follow the status of their
 translations for the various levels.
 </para>
 
-<para>The translation status pages are the recommended reference to use in order to follow each language's statistics. See 
+<para>The translation status pages are the recommended reference to use in
+order to follow each language's statistics. See 
 <xref linkend="gettext-tools"/> for details.
 </para>
 
@@ -179,6 +180,7 @@ the spelling in translation files.
 Finally, <command>podebconf-display-po</command> (from the
 <classname>po-debconf</classname> package) can be used on 
 <emphasis>debconf</emphasis> translation files:
+(but not on the po files from level1 under <emphasis>sublevelX</emphasis>!)
 </para>
 
 <informalexample>

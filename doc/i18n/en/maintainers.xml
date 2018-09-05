@@ -6,25 +6,25 @@ Checkout of the whole &d-i; source tree
 </title>
 
 <para>
-While translators can checkout only some subdirectories of the tree
-containing their translation files (done with subversion), developers
-need the whole source tree, which additionally requires the use of
+Developers need the whole source tree, which requires the use of
 <command>git</command> and <command>mr</command>:
 </para>
 
 <informalexample>
   <screen>
-svn co svn+ssh://svn.debian.org/svn/d-i/trunk debian-installer
-cd debian-installer
-scripts/git-setup
-mr -p checkout
+git clone git@salsa.debian.org:installer-team/d-i.git
+cd d-i
+./scripts/git-setup
+mr checkout
   </screen>
 </informalexample>
 
 <para>
 In the past, we had everything in one subversion repository. Then one day, the
 developer parts were migrated to git, while the translator files were left
-on subversion; this is why we have the project divided into two parts now.
+on subversion; this is why we had the project divided into two parts now.
+Then, the Alioth server was replaced by Salsa, and thus everything was migrated
+to git.
 </para>
 
 </sect1>
@@ -118,14 +118,14 @@ General recommendations
 &d-i; developers are strongly encouraged to read the
 <emphasis>po-debconf(7)</emphasis> man page and must have a good
 knowledge of <classname>po-debconf</classname> mechanisms. Please ask
-for advice in the &email-debian-boot-list; mailing list when in doubt.
+for advice on the &email-debian-boot-list; mailing list when in doubt.
 </para>
 
 <para>
 Templates files <emphasis>must</emphasis> be named
 <filename>&lt;package&gt;.templates</filename>. Developer
 <emphasis>should not</emphasis> use files named
-<filename>debian/templates</filename> though
+<filename>debian/templates</filename>, even though
 <command>debhelper</command> scripts properly handle such files. This
 requirement has been added because the translators work on a general
 file which groups together all templates from all &d-i; packages. This
@@ -143,7 +143,9 @@ New debconf templates introduction
 
 <para>
 Maintainers must respect the <emphasis>Debconf Templates Style Guide
-(DTSG)</emphasis> (see the Debian Developers Reference, chapter <emphasis>Best Packaging Practices</emphasis>, section <emphasis>General recommendations for authors and translators</emphasis>) and the
+(DTSG)</emphasis> (see the Debian Developers Reference, chapter
+<emphasis>Best Packaging Practices</emphasis>, section <emphasis>General
+recommendations for authors and translators</emphasis>) and the
 general style for writing templates for &d-i; (a special section of
 the DTSG mentions &d-i; templates). In any case,
 <emphasis>before</emphasis> committing new templates or templates
@@ -244,9 +246,9 @@ understand the way translations are handled.
 <para>
 All PO files from all packages sitting under the
 <filename>packages</filename> directory of the &d-i; source tree are
-merged into one single file and translators update this file. These
-so-called <emphasis>master</emphasis> PO files are kept into
-<filename>packages/po</filename> into the &d-i; main directory.
+merged into five po files and translators work on these files. These
+so-called <emphasis>master</emphasis> PO files are kept in
+<filename>packages/po</filename> in the &d-i; main directory.
 </para>
 
 <para>
@@ -357,21 +359,30 @@ not kept and thus the string becomes
 Review changes to existing templates
 </title>
 
-<para>Some peer review is strongly suggested when changing existing debconf templates and the changes are significant enough to motivate a peer review (maintainers should be aware that even minor changes might be inconsistent with the &d-i; writing style, so in doubt, any change should be considered as significant enough).</para>
-
 <para>
-In such case, it is recommended to first duplicate the existing template, with another name (for instance, the former name followed by <emphasis>_save</emphasis>).
-</para>
-
-<para>The changed template is then unmarked for translation (by removing the leading "_" character) and a review may be requested in the mailing list.
-</para>
-
-<para>
-As soon as the review is completed, the modified template should be marked for translation again.
+Some peer review is strongly suggested when changing existing debconf templates
+and the changes are significant enough to motivate a peer review (maintainers
+should be aware that even minor changes might be inconsistent with the &d-i;
+writing style, so in doubt, any change should be considered as significant enough).
 </para>
 
 <para>
-Before removing the old template, the i18n synchronisation script must be run once to fill in the new template with the former translation, by <emphasis>fuzzy matching</emphasis>.
+In such case, it is recommended to first duplicate the existing template, with
+another name (for instance, the former name followed by <emphasis>_save</emphasis>).
+</para>
+
+<para>The changed template is then unmarked for translation (by removing the
+leading "_" character) and a review may be requested in the mailing list.
+</para>
+
+<para>
+As soon as the review is completed, the modified template should be marked for
+translation again.
+</para>
+
+<para>
+Before removing the old template, the i18n synchronisation script must be run once
+to fill in the new template with the former translation, by <emphasis>fuzzy matching</emphasis>.
 </para>
 
 </sect2>
@@ -419,14 +430,15 @@ In this case, preventive <emphasis>unfuzzyfication</emphasis> may be done:
 <informalexample>
 <screen>
 cd &lt;di_dir&gt;/packages/po/
-svn update
+git pull
 mkdir NEW
 for i in *.po; do
  msgcat --no-wrap $i |\
    sed -e '/^msgid/s/partitons/partitions/g' |\
    msgcat - &gt; NEW/$i &amp;&amp; mv NEW/$i $i
 done
-svn commit -m"Preventive unfuzzy before correcting typo in &lt;mypackage&gt;" *.po
+git add *
+git commit -m"Preventive unfuzzy before correcting typo in &lt;mypackage&gt;" *.po
 rmdir NEW
 </screen>
 </informalexample>

@@ -95,8 +95,8 @@ Package description
 </title>
 
 <para>
-The &tasksel; package, called for each installation, proposes <emphasis>tasks</emphasis> to trigger
-the installation of complete sets of Debian packages. A
+The &tasksel; package, called for each installation, proposes <emphasis>tasks</emphasis>
+to trigger the installation of complete sets of Debian packages. A
 <emphasis>task</emphasis> is a collection of several individual Debian
 packages all related to a specific activity.
 </para>
@@ -144,14 +144,14 @@ order of importance:
 <itemizedlist>
 <listitem>
 <para>
-<filename>tasks/po/debian-tasks.pot</filename>: tasks descriptions translations. These files are named <emphasis>tasks</emphasis>
-translations.
+<filename>tasks/po/debian-tasks.pot</filename>: tasks descriptions translations.
+These files are named <emphasis>tasks</emphasis> translations.
 </para>
 </listitem>
 <listitem>
 <para>
-<filename>debian/po/templates.pot</filename>: text of the screen shown to users. These files are named <emphasis>debconf</emphasis>
-translations.
+<filename>debian/po/templates.pot</filename>: text of the screen shown to users.
+These files are named <emphasis>debconf</emphasis> translations.
 </para>
 </listitem>
 <listitem>
@@ -169,7 +169,7 @@ Access to these files:
 
 <itemizedlist>
 <listitem>
-<acronym>GIT</acronym> access: &git-tasksel; (documenting how to use GIT is way out of the scope of this document)
+<acronym>GIT</acronym> access: &git-tasksel;
 </listitem>
   <listitem>
     <para>
@@ -178,12 +178,14 @@ Access to these files:
     <itemizedlist>
       <listitem>
         <para>
-          &url-level2-pot-link;, <filename>tasksel_tasks.pot</filename> (tasks), <filename>tasksel_debian_po.pot</filename> (debconf) and <filename>tasksel_po.pot</filename> (programs)
+          &url-level2-pot-link;, <filename>tasksel_tasks.pot</filename> (tasks),
+<filename>tasksel_debian_po.pot</filename> (debconf) and <filename>tasksel_po.pot</filename> (programs)
         </para>
       </listitem>
       <listitem>
         <para>
-          &url-level2-po-link;, <filename>tasksel_tasks_&language;.po</filename> (tasks), <filename>tasksel_debian_po_&language;.po</filename> (debconf) and <filename>tasksel_po_&language;.po</filename> (program)
+          &url-level2-po;, <filename>tasksel_tasks_&language;.po</filename> (tasks),
+<filename>tasksel_debian_po_&language;.po</filename> (debconf) and <filename>tasksel_po_&language;.po</filename> (program)
         </para>
       </listitem>
     </itemizedlist>
@@ -222,7 +224,7 @@ repository and later commit the needed updates.
 </para>
 
 <para>
- In case <acronym>GIT</acronym> push actions are
+In case <acronym>GIT</acronym> push actions are
 absolutely impossible, these updates can be sent as bug reports
 against the <classname>tasksel</classname> package (see <xref
 linkend="bug-reports"/> for details) and mention whether the file is
@@ -238,7 +240,7 @@ Specific recommendations
 </title>
 
 <para>
-In the program translation file, "aptitude" is a program name and
+In the program translation file, <quote>aptitude</quote> is a program name and
 should not be translated.
 </para>
 
@@ -267,7 +269,7 @@ likely to be used in other parts of the Debian operating system.
 
 <para>
 For this reason, translators need to translate country names
-from ISO-3166 in the <classname>iso-codes</classname> package (ISO-3166 is the
+from ISO-3166-1 in the <classname>iso-codes</classname> package (ISO-3166-1 is the
 standard for country (and other <quote>areas of specific geographic
 interest</quote> names and codes)).
 </para>
@@ -283,7 +285,11 @@ Files location and access methods
 <para>
 This package is a <quote>regular</quote> Debian package. The
 package maintainer uses a <acronym>GIT</acronym> repository.
-However, <classname>iso-codes</classname> domains are also registered in the <ulink url="&url-tp;">Translation Project</ulink>. <classname>iso-codes</classname> encourage translators to use the Translation project in order to update translations for ISO-3166 (as well as ISO-639 for language names, ISO-4217 for currency names, ISO-3166-2 for countries subdivisions names and ISO-15924 for language scripts names).
+However, <classname>iso-codes</classname> domains are also registered in the
+<ulink url="&url-tp;">Translation Project</ulink>. <classname>iso-codes</classname>
+encourage translators to use the Translation project in order to update translations
+for ISO-3166 (as well as ISO-639 for language names, ISO-4217 for currency names,
+ISO-3166-2 for countries subdivisions names and ISO-15924 for language scripts names).
 </para>
 
 <para>
@@ -294,7 +300,9 @@ As a consequence, references to GIT are kept here only for reference.
   <listitem>
 Anonymous GIT checkout command: <command>&git-iso-codes-anon;</command>
     <para>
-      The translation material is in directory <filename>iso_3166</filename> (working on <filename>iso_639</filename>, which contain language names, will be appreciated by maintainers, though not directly useful for &d-i;).
+      The translation material is in directory <filename>iso_3166-1</filename>
+(working on <filename>iso_639</filename>, which contain language names, will be
+appreciated by maintainers, though not directly useful for &d-i;).
     </para>
 
   </listitem>
@@ -306,21 +314,17 @@ Anonymous GIT checkout command: <command>&git-iso-codes-anon;</command>
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="&url-level2-pot;/iso-codes_iso_3166.pot">&url-level2-pot;/iso-codes_iso_3166.pot</ulink>
+          <ulink url="&url-level2-pot;/iso-codes_iso_3166-1.pot">&url-level2-pot;/iso-codes_iso_3166-1.pot</ulink>
         </para>
       </listitem>
       <listitem>
         <para>
-          &url-level2-po;/iso-codes_iso_3166_&language;.po
+          &url-level2-po;/iso-codes_iso_3166-1_&language;.po
         </para>
       </listitem>
     </itemizedlist>
   </listitem>
 </itemizedlist>
-
-<para>
-Hmm, iso-codes is missing in the level2 POT directory. What's wrong here? 26.10.2017
-</para>
 
 </sect3>
 
@@ -330,8 +334,9 @@ Updating/adding translations
 </title>
 
 <para>
-Translations should preferrably be updated through the Translation Project. Alternatively, in case a given team of the TP is unresponsive, they can be reported as bugs against the
-<classname>iso-codes</classname> package.
+Translations should preferrably be updated through the Translation Project.
+Alternatively, in case a given team of the TP is unresponsive, they can be reported
+as bugs against the <classname>iso-codes</classname> package.
 </para>
 
 </sect3>
@@ -366,10 +371,12 @@ maintainer: <email>iso-codes@packages.debian.org</email>.
 </para>
 
 <para>
-The ISO-639 (language names), ISO-15924 (scripts names) and ISO-4217 files (currencies names) can
-also be translated. However, this is a very tedious task which may
-turn to be very difficult (translating language names is even more
-difficult than translating country names). Finally, for the very courageous translators, ISO-3166-2 is available, featuring thousands of strings for the subdivisions of most countries in the world.
+The ISO-639 (language names), ISO-15924 (scripts names) and ISO-4217 files
+(currencies names) can also be translated. However, this is a very tedious
+task which may turn to be very difficult (translating language names is even more
+difficult than translating country names). Finally, for the very courageous
+translators, ISO-3166-2 is available, featuring thousands of strings for the
+subdivisions of most countries in the world.
 </para>
 
 </sect3>
@@ -417,7 +424,7 @@ Files location and access methods
 
 <itemizedlist>
   <listitem>
-Anonymous SVN checkout command: <command>&svn-popcon;</command>
+Anonymous GIT checkout command: <command>&git-popcon;</command>
   </listitem>
   <listitem>
     <para>
@@ -477,7 +484,8 @@ Package description
 </title>
 
 <para>
-The <classname>eject</classname> package is used as part of &d-i; to offer a menu entry allowing to eject the CD that is eventually in the CD-ROM drive.
+The <classname>eject</classname> package is used as part of &d-i; to offer a
+menu entry allowing to eject the CD that is eventually in the CD-ROM drive.
 </para>
 
 <para>
@@ -500,7 +508,7 @@ it.
 
 <itemizedlist>
 <listitem>
-<acronym>GIT</acronym> access: &git-eject; 
+<acronym>GIT</acronym> access: ????? &git-eject; 
 </listitem>
   <listitem>
     <para>
@@ -615,28 +623,17 @@ Grub2
 
 <sect3>
 <title>
-Package description
-</title>
-
-<para>
-During expert installs on i386 and amd64, the <classname>grub2</classname> package may prompt users about installing GRUB 2 instead of the older GRUB.
-</para>
-
-</sect3>
-
-<sect3>
-<title>
 Files location and access methods
 </title>
 
 <para>
 This package is a <quote>regular</quote> Debian package. The
-package maintenance team uses an <acronym>BZR</acronym> repository.
+package maintenance team uses a <acronym>GIT</acronym> repository.
 </para>
 
 <itemizedlist>
   <listitem>
-Anonymous BZR checkout command: <command>&bzr-grub2;</command>
+<acronym>GIT</acronym> access: &git-grub2;
 </listitem>
   <listitem>
     <para>

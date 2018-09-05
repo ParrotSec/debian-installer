@@ -20,13 +20,15 @@ be used in the locales file.
 
 <para>
 On Debian systems, the <classname>iso-codes</classname> packages
-includes a list of all ISO-639 material. This list must be used as a reference when in doubt for the code of a given language.
+includes a list of all ISO-639 material. This list must be used as a
+reference when in doubt for the code of a given language.
 </para>
 
 <para>
 Some languages may have <emphasis>variants</emphasis>, for instance
 depending on the region they're spoken in. The distinction must be
-made on the <emphasis>written</emphasis> form of the language: different variants in terms of <emphasis>spoken</emphasis> language are out of topic here.
+made on the <emphasis>written</emphasis> form of the language: different
+variants in terms of <emphasis>spoken</emphasis> language are out of topic here.
 </para>
 
 <para>
