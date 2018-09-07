@@ -1,3 +1,12 @@
+debian-installer (20180908+parrot1) testing; urgency=medium
+
+  * Include new grub2 udebs.
+  * Include new Linux 4.18.0-parrot8 (4.18.8).
+  * Include updated netcfg udeb.
+  * Include updated rootskel-gtk udeb.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 08 Sep 2018 01:09:21 +0200
+
 debian-installer (20180905+parrot2) parrot; urgency=medium
 
   * Rebuild to include latest live-installer udebs.
