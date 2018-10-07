@@ -1,3 +1,9 @@
+debian-installer (20181007+parrot2) testing; urgency=medium
+
+  * Bump new Linux version 4.18.0-parrot10 (4.18.10).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 07 Oct 2018 12:20:01 +0200
+
 debian-installer (20180908+parrot1) testing; urgency=medium
 
   * Include new grub2 udebs.
