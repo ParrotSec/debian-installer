@@ -1,3 +1,9 @@
+debian-installer (20181120+parrot2) parrot; urgency=medium
+
+  * Rebuild with latest partman modules.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 23 Nov 2018 03:37:04 +0100
+
 debian-installer (20181120+parrot1) testing; urgency=medium
 
   * Rebuild with new kernel revision and updated udebs.
