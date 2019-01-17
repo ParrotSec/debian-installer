@@ -1,3 +1,10 @@
+debian-installer (20190117+parrot1) testing; urgency=medium
+
+  * Bump kernel version 4.19.13.
+  * Rebuild with latest partman and cdrom-detect modules.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 17 Jan 2019 13:43:36 +0100
+
 debian-installer (20181120+parrot2) parrot; urgency=medium
 
   * Rebuild with latest partman modules.
