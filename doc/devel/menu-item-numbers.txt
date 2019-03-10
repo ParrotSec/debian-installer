@@ -2,4 +2,4 @@ The list of the currently assigned menu-item numbers has been moved to
 the "D-I Internals" document.
 
 See installer/doc/devel/internals/menu-item-numbers.xml, or
-http://d-i.alioth.debian.org/doc/internals/.
+http://d-i.debian.org/doc/internals/.

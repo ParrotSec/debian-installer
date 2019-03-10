@@ -1,11 +1,11 @@
 Source: debian-installer
 Section: devel
 Priority: optional
-Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
-Uploaders: Cyril Brulebois <kibi@debian.org>
+Maintainer: Parrot Dev Team <team@parrotsec.org>
+Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Standards-Version: 3.9.5
-Vcs-Git: https://salsa.debian.org/installer-team/debian-installer.git
-Vcs-Browser: https://salsa.debian.org/installer-team/debian-installer
+Vcs-Git: https://nest.parrotsec.org/debian-packages/debian-installer/debian-installer.git
+Vcs-Browser: https://nest.parrotsec.org/debian-packages/debian-installer/debian-installer
 Build-Depends:
 # Base build dependencies:
 	debhelper (>= 7.0.0),
@@ -17,7 +17,7 @@ Build-Depends:
 	gnupg,
 #		New versions of apt need gnupg for security checks.
 	debian-archive-keyring (>= 2006.11.22),
-	kali-archive-keyring,
+	parrot-archive-keyring,
 #		To provide the archive key for security checks.
 	dctrl-tools,
 #		Various manipulations of the udeb Packages files.
@@ -119,11 +119,11 @@ Build-Depends:
 #		IEEE1275 bootloader support.
 	u-boot-imx [armhf],
 	u-boot-omap (>= 2016.09~rc1) [armhf],
-	u-boot-sunxi [armhf],
-	u-boot-sunxi (>= 2018.03) [arm64],
+	u-boot-sunxi (>= 2018.09) [armhf],
+	u-boot-sunxi (>= 2018.11+dfsg-2) [arm64],
 	u-boot-rockchip (>= 2017.07+dfsg1-3) [armhf],
 #		U-boot binaries for armhf systems without u-boot in flash memory
-	atf-allwinner [arm64],
+	arm-trusted-firmware [arm64],
 	device-tree-compiler [arm64],
 #		arm-trusted-firmware for allwinner, used in combination with
 #		u-boot-sunxi to produce bootable arm64 images.
