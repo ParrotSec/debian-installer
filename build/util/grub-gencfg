@@ -196,7 +196,7 @@ start_submenu("Advanced options ...", Hotkey => 'a'); {
 
     start_submenu("... Desktop environment menu ..."); {
 
-        foreach ( ["GNOME", "gnome"], ["KDE", "kde"], ["LXDE", "lxde"] ) {
+        foreach ( ["GNOME", "gnome"], ["KDE Plasma", "kde"], ["LXDE", "lxde"] ) {
             my ($desktop,$opt) = @{$_};
 
             my $one = sub { my ($title, %xargs) = @_;

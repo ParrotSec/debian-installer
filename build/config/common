@@ -5,13 +5,13 @@
 # local setting such as EXTRAFILES. That way you won't accidentially commit
 # your local changes.
 
-# set DEBUG to y if you want to get the source for and compile
+# set DEBUG to y if you want to get the source for and compile 
 # debug versions of the needed udebs
 #DEBUG = y
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.19.0-parrot1-13t
+LINUX_KERNEL_ABI ?= 4.19.0-parrot1-20t
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -49,7 +49,7 @@ DEBIAN_RELEASE = $(USE_UDEBS_FROM)
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 4.5 (stable)
+DEBIAN_VERSION = 4.6 (stable)
 DEBIAN_VERSION ?= buster
 
 # Define here from what release (codename!) components (udebs) should be taken
@@ -71,7 +71,7 @@ BOOTMENU_BEEP ?= n
 
 # Filesystem type for the initrd, currently valid values are ext2, cramfs,
 # and initramfs.
-# NOTE: Your kernel must support this filesystem, not just a module.
+# NOTE: Your kernel must support this filesystem, not just a module. 
 INITRD_FS = initramfs
 
 # What device to write floppies on
@@ -89,10 +89,10 @@ WRITE_MEDIA = floppy
 TYPE = $(MEDIUM)
 
 # Used to write a /etc/lsb-release file in the installer initrd.
-LSB_DISTRIB_ID=Parrot
+LSB_DISTRIB_ID=Debian
 LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) installer"
 # Inlude the build date of the installer in here.
-LSB_DISTRIB_RELEASE="Parrot - installer build $(BUILD_DATE)"
+LSB_DISTRIB_RELEASE="$(DEBIAN_VERSION) - installer build $(BUILD_DATE)"
 
 # This keyring is only used to verify udeb downloads using apt. Since the
 # build process does not run as root, apt cannot read /etc/apt/trusted.gpg.

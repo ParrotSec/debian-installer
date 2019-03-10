@@ -2,4 +2,4 @@ The overview of the currently assigned menu-item numbers has been moved to
 the "D-I Internals" document.
 
 See installer/doc/devel/internals/available-hooks.xml, or
-http://d-i.alioth.debian.org/doc/internals/.
+https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel/internals/

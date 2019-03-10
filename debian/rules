@@ -6,19 +6,13 @@ DATE=$(shell echo $(VERSION) | cut -d '.' -f 1)
 SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
 SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
 
-ifneq ($(filter parrot testing,$(SUITE)),)
-SUITE=parrot
-USE_UDEBS_FROM=parrot
-TRANSSTATUS=
-BOOTMENU_BEEP=y
-else
 # Daily builds vs. uploads to unstable:
 ifeq (${SUITE},UNRELEASED)
-USE_UDEBS_FROM=unstable
+USE_UDEBS_FROM=testing
 TRANSSTATUS=
 BOOTMENU_BEEP=n
 else
-USE_UDEBS_FROM=buster
+USE_UDEBS_FROM=parrot
 USE_PROPOSED_UPDATES=0
 TRANSSTATUS=translation-status
 BOOTMENU_BEEP=y
@@ -30,16 +24,6 @@ ifeq ($(ARCH),armel)
 SSL_CERTS=
 else
 SSL_CERTS=/usr/share/ca-certificates/mozilla/*
-endif
-
-TRANSSTATUS=translation-status
-BOOTMENU_BEEP=y
-
-# Adjust for non-released ports if needed:
-RELEASE_ARCHES=amd64 arm64 armel armhf i386 mips mips64el mipsel ppc64el s390x
-ifeq (,$(filter $(ARCH), $(RELEASE_ARCHES)))
-USE_UNRELEASED=1
-USE_UDEBS_FROM=unstable
 endif
 
 # Adjust for non-released ports if needed:
@@ -99,7 +83,7 @@ install: build
 	cp -a build/dest/* $(IMAGEDIR)
 	ln -s $(DATE) $(ARCHIVEDIR)/current
 
-binary-arch: install
+binary-arch: install  
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
@@ -118,5 +102,5 @@ binary-arch: install
 
 binary-indep:
 
-binary: binary-indep binary-arch
-.PHONY: build build-images clean binary-indep binary-arch binary install
+binary: binary-indep binary-arch 
+.PHONY: build build-images clean binary-indep binary-arch binary install 

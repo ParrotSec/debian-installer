@@ -27,8 +27,7 @@ running <command>apt install &lt;package&gt;</command>.
     <para>
       <emphasis>Lokalize</emphasis> (Debian package
       <classname>lokalize</classname>): very complete and
-      powerful. Needs installing the KDE libraries (but, of course, it
-      may work without the full KDE environment).
+      powerful. Needs installing the Qt and KDE Frameworks libraries.
     </para>
     <para>
       The Lokalize editor (formerly KBabel) is undoubtfully the most complete gettext
@@ -37,11 +36,6 @@ running <command>apt install &lt;package&gt;</command>.
       complete, including correct Right-To-Left (RTL) and BiDi support
       for Arabic/Hebrew and other RTL languages as well as support for
       combined languages such as languages using the Devanagari script.
-    </para>
-    <para>
-      The major drawback is for Gnome users: it may be quite long
-      to launch and memory hungry because of the need of KDE and Qt
-      libraries.
     </para>
   </listitem>
   <listitem>

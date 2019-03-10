@@ -13,7 +13,6 @@ libdebian-installer4-udeb
 lowmemcheck
 main-menu
 rootskel
-rootskel-gtk
 udpkg
 rescue-check
 env-preseed

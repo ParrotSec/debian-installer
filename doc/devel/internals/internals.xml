@@ -71,8 +71,8 @@ the debian-boot list.
 </para><para>
 
 For any kind of work on Debian Installer, you should check out the d-i
-repository on alioth, see
-<ulink url="http://anonscm.debian.org/viewvc/d-i/trunk/README?view=markup">
+repository on Salsa, see
+<ulink url="https://salsa.debian.org/installer-team/d-i/raw/master/README">
 the README file</ulink>.
 
 </para><para>
