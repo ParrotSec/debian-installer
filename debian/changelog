@@ -1,3 +1,9 @@
+debian-installer (20190311+parrot2) testing; urgency=medium
+
+  * Fix invalid endif in d/rules.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 11 Mar 2019 17:24:07 +0100
+
 debian-installer (20190311+parrot1) testing; urgency=medium
 
   * Import new Debian release.

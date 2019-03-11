@@ -17,7 +17,6 @@ USE_PROPOSED_UPDATES=0
 TRANSSTATUS=translation-status
 BOOTMENU_BEEP=y
 endif
-endif
 
 # Don't integrate SSL certs in armel, the size limits will be missed
 ifeq ($(ARCH),armel)

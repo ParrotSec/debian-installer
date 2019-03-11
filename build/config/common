@@ -18,7 +18,7 @@ KERNEL_FLAVOUR ?= di
 
 # List here any extra udebs that are not in the list file but that
 # should still be included on the system.
-EXTRAS ?= ca-certificates-udeb
+EXTRAS ?= ca-certificates-udeb parrot-archive-keyring-udeb
 
 # This variable can be used to copy in additional files from the system
 # that is doing the build. Useful if you need to include strace, or gdb,
