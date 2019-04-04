@@ -1,4 +1,0 @@
-This document describes how the scripts in this directory can be used for
-building the Debian Installer i18n doc.
-
-Indeed, everything is taken from D-I manual build, so building the i18n-doc just needs running ./build.sh in the "build" directory.

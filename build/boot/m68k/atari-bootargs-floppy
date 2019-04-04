@@ -1,1 +1,0 @@
--s -d -k /linux root=/dev/ram video=atafb:vga16 console=tty load_ramdisk=1 prompt_ramdisk=1 fb=false

@@ -1,7 +1,0 @@
-<?xml version='1.0'?>
-
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-	<xsl:import href="../stylesheets/style-pdf.xsl"/>
-	<xsl:import href="../stylesheets/lang-drivers/driver.##LANG##.xsl"/>
-</xsl:stylesheet>
-

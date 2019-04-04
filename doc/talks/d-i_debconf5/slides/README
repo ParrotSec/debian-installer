@@ -1,6 +1,0 @@
-Slides using the latex-beamer style: you need to install the
-latex-beamer and latex-ucs packages.
-
-Makefile should either be fixed (useful for cleanup) or deleted. Use build.sh instead.
-
-build.sh has to be run twice if you change the title of the section, dunno why 

@@ -1,5 +1,0 @@
-Slides using the latex-beamer style: you need to install the latex-beamer
-and latex-ucs packages.
-
-The PDF has to be built twice the first time and if you change e.g. the title
-of a section; this is needed to correctly update the table of contents etc.

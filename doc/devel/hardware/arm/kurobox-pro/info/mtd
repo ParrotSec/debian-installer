@@ -1,5 +1,0 @@
-dev:    size   erasesize  name
-mtd0: 00040000 00001000 "physmap-flash.0"
-mtd1: 00400000 00020000 "uImage"
-mtd2: 04000000 00020000 "rootfs"
-mtd3: 0bc00000 00020000 "extra"

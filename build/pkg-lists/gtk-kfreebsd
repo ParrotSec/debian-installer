@@ -1,6 +1,0 @@
-console-setup-pc-ekbd
-console-setup-freebsd-charmaps-udeb
-kbdcontrol-udeb
-
-# Exclude screen support
-screen-udeb -

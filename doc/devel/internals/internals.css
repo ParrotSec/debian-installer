@@ -1,6 +1,0 @@
-/* Cascading stylesheet for the Debian Installer internals talk */
-
-/* Use grey background for examples */
-pre.screen {
-  background-color : #E0E0E0;
-}

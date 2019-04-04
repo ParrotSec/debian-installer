@@ -1,7 +1,0 @@
-The 2004 directory contains the original presentation by Gaudenz Steinlin.
-The 2006 directory contains an updated version by Frans Pop used at FOSDEM.
-
-The Slides are made with LaTeX using the "beamer" class.
-
-To build on Debian, install the package latex-beamer and run 
-'pdflatex d-i_internals.tex' twice in one of the directories.
