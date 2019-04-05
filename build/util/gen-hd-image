@@ -1,0 +1,384 @@
+#!/bin/sh
+#
+# gen-hd-image V1.01
+# Copyright 2014,2015 by Karsten Merker <merker@debian.org>
+#
+# This file is dual-licensed. It is provided under (at your option)
+# either the terms of the GPL2+ or the terms of the X11 license as
+# described below.  Note that this dual licensing only applies to this
+# file, and not this project as a whole.
+#
+# License options:
+#
+# - Option "GPL2+":
+#
+#   This program is free software; you can redistribute it and/or
+#   modify it under the terms of the GNU General Public License as
+#   published by the Free Software Foundation; either version 2 of the
+#   License, or (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public
+#   License along with this program; if not, write to the Free
+#   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+#   MA 02110-1301 USA
+#
+#   On Debian systems, the full text of the GPL version 2 is
+#   available in the file /usr/share/common-licenses/GPL-2.
+#
+# - or, alternatively, option "X11":
+#
+#   Permission is hereby granted, free of charge, to any person
+#   obtaining a copy of this software and associated documentation
+#   files (the "Software"), to deal in the Software without
+#   restriction, including without limitation the rights to use,
+#   copy, modify, merge, publish, distribute, sublicense, and/or
+#   sell copies of the Software, and to permit persons to whom the
+#   Software is furnished to do so, subject to the following
+#   conditions:
+#
+#   The above copyright notice and this permission notice shall be
+#   included in all copies or substantial portions of the Software.
+#
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+#   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+#   OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#   OTHER DEALINGS IN THE SOFTWARE.
+
+set -e
+
+PATH="${PATH}:/bin:/sbin:/usr/bin:/usr/sbin"
+export PATH
+
+FSTYPE="fat32"
+PARTID="0x0c"
+FATSIZE="32"
+BUILDTYPE="complete"
+SOURCEDIR="."
+PARTOFFSET="2048"
+DEFAULT_IMAGESIZE="976560" # default d-i FLOPPY_SIZE for hd-media images
+IMAGESIZE="${DEFAULT_IMAGESIZE}"
+COMPRESS="none"
+COMPRESS_OPTS=""
+VERBOSITY="0"
+PREREQUISITES="fmt sfdisk"
+PREREQUISITES_MISSING=""
+
+log()
+{
+  if [ "${VERBOSITY}" -gt 0 ]; then
+    echo "$(basename $0): $1"
+  fi
+}
+
+error()
+{
+  echo "$(basename $0): $1" 1>&2
+}
+
+clean_tempfiles()
+{
+  # Only try to delete what was worked on:
+  if [ -n "${TEMP_FS_IMAGEFILE}" ]; then rm -f "${TEMP_FS_IMAGEFILE}"; fi
+  if [ -n "${TEMP_HD_IMAGEFILE}" ]; then rm -f "${TEMP_HD_IMAGEFILE}"; fi
+}
+
+check_prerequisites()
+{
+  for TOOL in $1
+  do
+    which >/dev/null ${TOOL}
+    if [ ! "$?" -eq 0 ]; then
+      PREREQUISITES_MISSING="${PREREQUISITES_MISSING}${TOOL} "
+    fi
+  done
+  if [ -n "${PREREQUISITES_MISSING}" ]; then
+    error "ERROR: The following programs are unavailable, but required"
+    error "ERROR: for the selected options: ${PREREQUISITES_MISSING}"
+    error "ERROR: Exiting."
+    exit 1
+  fi
+}
+
+usage()
+{
+  fmt -w 75 -s <<EOF
+
+$(basename $0) - bootable harddisk image generator
+
+SYNOPSIS:
+
+$(basename $0) -o output_image_name [-s image_size] [-i sourcedir] [-t fstype] [-p partition_offset] [-b build_type] [-z|-j|-J] [-h] [[bootloader_image bootloader_offset] ...]
+
+DESCRIPTION:
+
+$(basename $0) generates harddisk images with a partition table and a
+single primary partition from a directory tree without requiring root
+privileges.  It optionally also installs firmware/bootloader
+binaries (usually u-boot) in the image area between the MBR and the
+first partition and allows to generate concatenateable partial images
+(only the MBR+firmware area or only the partition area).
+
+OPTIONS
+
+  -b build_type
+
+       Specify the type of image to build. Valid options are:
+
+       - complete:   complete harddisk image (MBR/firmware + partition)
+       - firmware:   only MBR/firmware/bootloader image
+       - partition:  only partition image
+
+       The default is building a complete harddisk image.
+
+  -h
+
+       Display this help text and exit.
+
+  -i sourcedir
+
+       Specify the source directory from which the filesystem in
+       the image should be generated.  The default is the current
+       directory.
+
+  -j
+
+       Compress the image with bzip2.
+
+  -J
+
+       Compress the image with xz.
+
+  -o output_image_name
+
+       Specify the name of the generated image. If one of the
+       compression options (-z/-j/-J) is selected, the according
+       suffix (.gz/.bz2/.xz) will be appended to the supplied
+       file name.
+
+  -p partition_offset
+
+       Specify the partition offset from the beginning of the
+       device in blocks of 512 Bytes.  The default is 2048, i.e.
+       the partition starts at an offset of 1 MB.
+
+  -s image_size
+
+       Specify the size of the complete harddisk image in kB.
+       When building partial images, the size of the parts is
+       calculated accordingly, so that the sum of the parts is
+       the specified image size.  The default image size is
+       ${DEFAULT_IMAGESIZE} kB.
+
+  -t fstype
+
+       Type of the filesystem to create in the harddisk image.
+       Available options are fat32 (default), fat16 and ext2.
+       Generating large ext2 images can be very slow (ca. 5
+       minutes for a 1GB image on a 1GHz Cortex-A7).
+
+  -v
+
+       Verbose output.
+
+  -z
+
+       Compress the image with gzip.
+
+The bootloader_image and bootloader_offset parameters specify which
+bootloader image should be installed at which offset (in blocks of 512
+Bytes) from the start of the harddisk image.  This parameter set can be
+used multiple times to install multi-part bootloader images (e.g.  to
+install u-boot versions with separate SPL images).
+
+EOF
+}
+
+# Parse parameters:
+# -h help
+# -i input directory
+# -o output filename
+# -s size of disk image
+# -t type of filesystem (fat16/fat32/ext2)
+# -p partition offset
+# -b build type (complete/firmware/partition)
+# -z/-j/-J gzip/bzip2/xz compression
+# -v verbose
+
+while getopts "hi:o:s:t:p:b:zjJv" option; do
+  case ${option} in
+    h)
+      usage
+      exit 0
+      ;;
+    i)
+      SOURCEDIR="${OPTARG}"
+      ;;
+    o)
+      IMAGEFILE="${OPTARG}"
+      ;;
+    s)
+      IMAGESIZE="${OPTARG}"
+      ;;
+    t)
+      FSTYPE="${OPTARG}"
+      case "${FSTYPE}" in
+        fat16)
+          PARTID="0x0e"
+          FATSIZE="16"
+          ;;
+        fat32)
+          PARTID="0x0c"
+          FATSIZE="32"
+          ;;
+        ext2)
+          PARTID="0x83"
+          ;;
+        *)
+          echo "$(basename $0): Invalid filesystem type \"${FSTYPE}\". Use fat16, fat32 or ext2."
+          exit 1
+          ;;
+      esac
+      ;;
+    p)
+      PARTOFFSET="${OPTARG}"
+      ;;
+    b)
+      BUILDTYPE="${OPTARG}"
+      case "${BUILDTYPE}" in
+        complete|firmware|partition)
+          ;;
+        *)
+          echo "$(basename $0): Invalid build type \"${BUILDTYPE}\". Use complete, firmware or partition."
+          exit 1
+          ;;
+      esac
+      ;;
+    z)
+      COMPRESS="gzip"
+      COMPRESS_OPTS="-n"
+      PREREQUISITES="${PREREQUISITES} gzip"
+      ;;
+    j)
+      COMPRESS="bzip2"
+      PREREQUISITES="${PREREQUISITES} bzip2"
+      ;;
+    J)
+      COMPRESS="xz"
+      PREREQUISITES="${PREREQUISITES} xz"
+      ;;
+    v)
+      VERBOSITY="1"
+      ;;
+  esac
+done
+
+shift $((${OPTIND}-1))
+
+case "${FSTYPE}" in
+  fat16|fat32)
+    PREREQUISITES="${PREREQUISITES} mkfs.msdos mcopy"
+    ;;
+  ext2)
+    PREREQUISITES="${PREREQUISITES} genext2fs"
+    ;;
+esac
+
+check_prerequisites "${PREREQUISITES}"
+
+FS_SIZE=$((${IMAGESIZE}-${PARTOFFSET}/2))
+if [ ${FS_SIZE} -lt 34816 ] && [ "${FSTYPE}" = "fat32" ]; then
+  error "INFO: Image size too small for FAT32, using FAT16."
+  FSTYPE="fat16"
+  PARTID="0x0e"
+  FATSIZE="16"
+fi
+if [ ${FS_SIZE} -gt 2097152 ] && [ "${FSTYPE}" = "fat16" ]; then
+  error "INFO: Image size too big for FAT16, using FAT32."
+  FSTYPE="fat32"
+  PARTID="0x0c"
+  FATSIZE="32"
+fi
+
+log "Starting to generate image ${IMAGEFILE} ..."
+
+case "${BUILDTYPE}" in
+  complete|firmware)
+    log "Building partition table ..."
+    TEMP_HD_IMAGEFILE=$(mktemp)
+    dd 2>/dev/null if=/dev/zero bs=1k of="${TEMP_HD_IMAGEFILE}" seek=$((${IMAGESIZE}-1)) count=1
+    sfdisk --force -u S "${TEMP_HD_IMAGEFILE}" 1>/dev/null 2>/dev/null <<EOF
+${PARTOFFSET}, ,${PARTID},*,
+EOF
+    while [ "$#" -ge "2" ]
+    do
+      if [ -n "$1" ]; then
+        BOOTLOADER_IMAGE="$1"
+        BOOTLOADER_OFFSET="$2"
+        log "Installing ${BOOTLOADER_IMAGE} at sector ${BOOTLOADER_OFFSET} ..."
+        dd 2>/dev/null if="${BOOTLOADER_IMAGE}" of="${TEMP_HD_IMAGEFILE}" bs=512 seek="${BOOTLOADER_OFFSET}" conv=notrunc
+      fi
+      shift 2
+    done
+    if [ "$#" -eq 1 ]; then
+      error "ERROR: Firmware/bootloader image name or offset missing. Exiting."
+      clean_tempfiles
+      exit 1
+    fi
+    ;;
+esac
+
+case "${BUILDTYPE}" in
+  complete|partition)
+    log "Building filesystem ..."
+    TEMP_FS_IMAGEFILE=$(mktemp)
+    TEMP_FS_IMAGESIZE=$((${IMAGESIZE}-${PARTOFFSET}/2)) # fs size in kB
+    dd 2>/dev/null if=/dev/zero bs=1k of="${TEMP_FS_IMAGEFILE}" seek=$((${TEMP_FS_IMAGESIZE}-1)) count=1
+    case "${FSTYPE}" in
+      fat16|fat32)
+        mkfs.msdos -v -F "${FATSIZE}" "${TEMP_FS_IMAGEFILE}" "${TEMP_FS_IMAGESIZE}"
+        mcopy -s -i "${TEMP_FS_IMAGEFILE}" ${SOURCEDIR}// ::
+        # The trailing // is necessary to make mcopy copy the contents
+        # of ${SOURCEDIR} but not ${SOURCEDIR} itself. Using ${SOURCEDIR}/*
+        # would omit dotfiles and ${SOURCEDIR}/. does not work with mcopy.
+        ;;
+      ext2)
+        genext2fs -z -U -d "${SOURCEDIR}" -b "${TEMP_FS_IMAGESIZE}" "${TEMP_FS_IMAGEFILE}"
+        ;;
+    esac
+    ;;
+esac
+
+case "${BUILDTYPE}" in
+  firmware)
+    dd 2>/dev/null if="${TEMP_HD_IMAGEFILE}" bs=512 count="${PARTOFFSET}" of="${IMAGEFILE}"
+    ;;
+  complete)
+    dd 2>/dev/null if="${TEMP_HD_IMAGEFILE}" bs=512 count="${PARTOFFSET}" of="${IMAGEFILE}"
+    cat "${TEMP_FS_IMAGEFILE}" >> "${IMAGEFILE}"
+    ;;
+  partition)
+    mv "${TEMP_FS_IMAGEFILE}" "${IMAGEFILE}"
+    chmod +r "${IMAGEFILE}"
+    ;;
+esac
+
+if [ ! "${COMPRESS}" = "none" ];
+then
+  log "Compressing image ..."
+  "${COMPRESS}" ${COMPRESS_OPTS} -f "${IMAGEFILE}"
+fi
+
+clean_tempfiles
+
+log "Image finished."
+
+exit 0

@@ -1,0 +1,98 @@
+# All output files will go here.
+BASE_DEST = ./dest/
+
+# All output files will go here.
+DEST = $(BASE_DEST)$(targetdirs)
+
+# DEST with the last element stripped
+SOME_DEST = $(shell echo $(DEST) |sed 's|/[^/]*$$||')
+
+# Scratch directory.
+BASE_TMP = ./tmp/
+
+# Per-type scratch directory.
+TEMP = $(BASE_TMP)$(targetstring)
+
+# Build tree location.
+TREE = $(TEMP)/tree
+
+# Stamp directory.
+STAMPS = ./stamps/
+
+# Directory apt uses for stuff.
+APTDIR = apt
+
+# Directory udebs are placed in.
+UDEBDIR = udebs
+
+# Extra udebs (for driver1, etc.) are placed here
+EXTRAUDEBDIR = extraudebs
+
+# Local directory that is searched for udebs, to avoid downloading.
+# (Or for udebs that are not yet available for download.)
+LOCALUDEBDIR = localudebs
+
+# Directory where debug versions of udebs will be built.
+DEBUGUDEBDIR = debugudebs
+
+# Directory where sources for all udebs may be kept
+SOURCEDIR = sourceudebs
+
+# Location of your "normal" sources.list. The sources.list for fetching
+# udebs will be derived from this file. Alternatively you can specify a mirror
+# in config/main or create your own sources.list.local
+SYSTEM_SOURCES_LIST = /etc/apt/sources.list
+
+# Figure out which sources.list to use. The .local one is preferred,
+# so you can set up a locally preferred one (and not accidentially
+# commit it).
+SOURCES_LIST = $(if $(wildcard sources.list.local),sources.list.local,sources.list)
+
+# Used in the font reduction code.
+LOCALE_PATH = $(TREE)/usr/lib/locale
+
+# This directory structure allows netboot dirs for multiple arches to
+# cooexist on a single tftp server. The debian-installer files are also
+# isolated into their own directory so the tftp server can be used for
+# other purposes too. Anything outside this directory should be a symlink
+# to a file in it.
+NETBOOT_DI_DIR = debian-installer
+NETBOOT_PATH = $(NETBOOT_DI_DIR)/$(ARCH)
+
+# The files we may want to have in dest/
+INITRD = $(SOME_DEST)/$(EXTRANAME)initrd.gz
+KERNEL = $(foreach name,$(KERNELNAME),$(SOME_DEST)/$(EXTRANAME)$(name))
+DTBS = $(SOME_DEST)/$(EXTRANAME)README
+BOOT = $(SOME_DEST)/$(EXTRANAME)boot.img$(GZIPPED)
+ROOT = $(SOME_DEST)/$(EXTRANAME)root.img$(GZIPPED)
+EXTRA = $(SOME_DEST)/$(EXTRANAME).img$(GZIPPED)
+MINIISO = $(SOME_DEST)/$(EXTRANAME)mini.iso
+DEBIAN_CD_INFO = $(SOME_DEST)/$(EXTRANAME)debian-cd_info.tar.gz
+NETBOOT_DIR = $(SOME_DEST)/$(EXTRANAME)$(NETBOOT_DI_DIR)
+NETBOOT_TAR = $(SOME_DEST)/$(EXTRANAME)netboot.tar.gz
+RAMDISK = $(SOME_DEST)/$(EXTRANAME)ramdisk.gz
+MISC = $(foreach name,$(MISCNAME),$(SOME_DEST)/$(EXTRANAME)$(name))
+
+# some intersting files in tmp/ we may need
+TEMP_INITRD = $(TEMP)/initrd.gz
+TEMP_UDEB_LIST = $(TEMP)/udeb.list
+TEMP_KERNEL = $(foreach name,$(KERNELNAME),$(TEMP)/$(name))
+TEMP_DTBS = $(TEMP)/lib
+TEMP_BOOT = $(TEMP)/boot.img
+TEMP_ROOT = $(TEMP)/root.img
+TEMP_MINIISO = $(TEMP)/mini.iso
+TEMP_EXTRA = $(TEMP)/$(EXTRANAME).img
+TEMP_BOOT_SCREENS = $(TEMP)/boot_screens
+TEMP_SYSLINUX = $(TEMP)/syslinux
+TEMP_NETBOOT_DIR = $(TEMP)/dir_tree
+TEMP_CD_INFO_DIR = $(TEMP)/cd_info
+TEMP_CD_TREE = $(TEMP)/cd_tree
+TEMP_POWERPC_INITRD = $(TEMP)/powerpc_initrd_tree
+TEMP_GRUB_EFI = $(TEMP)/grub_efi
+
+DPKGDIR = $(TREE)/var/lib/dpkg
+
+EXTRAUDEBSDIR = $(TREE)/extraudebs-tmp
+EXTRAUDEBSDPKGDIR = $(EXTRAUDEBSDIR)/var/lib/dpkg
+
+UDEB_LISTS = $(TEMP_UDEB_LIST)

@@ -1,0 +1,34 @@
+# udebs needed for graphical installer
+rootskel-gtk
+cdebconf-gtk-udeb
+cdebconf-gtk-terminal
+
+xserver-xorg-core-udeb
+gtk2-engines-udeb
+
+# Fonts: see http://wiki.debian.org/DebianInstaller/GUIFonts
+fonts-android-udeb
+fonts-freefont-udeb
+fonts-farsiweb-udeb
+fonts-tibetan-machine-udeb
+fonts-dejavu-udeb
+fonts-khmeros-udeb
+fonts-thai-tlwg-udeb
+fonts-taml-udeb
+fonts-mlym-udeb
+fonts-knda-udeb
+fonts-telu-udeb
+fonts-sil-abyssinica-udeb
+# For Sinhala
+fonts-noto-hinted-udeb
+fonts-lao-udeb
+fonts-ukij-uyghur-udeb
+fonts-sil-padauk-udeb
+fonts-lohit-guru-udeb
+
+# Graphical accessibility
+libgail18-udeb
+libatk-adaptor-udeb
+
+# Exclude screen support
+screen-udeb -

@@ -1,0 +1,23 @@
+#include "base"
+#include "kernel"
+
+# Other udebs that are needed for netboot install
+localechooser
+choose-mirror
+net-retriever
+download-installer
+cdebconf-newt-udeb
+cdebconf-newt-terminal ?
+cdebconf-text-udeb
+installation-locale
+di-utils-terminfo
+preseed-common
+initrd-preseed
+network-preseed
+file-preseed
+
+nano-udeb
+
+save-logs
+
+libfribidi0-udeb

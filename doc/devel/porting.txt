@@ -1,0 +1,114 @@
+Some hints on porting d-i to a new architecture.
+
+This will try to document the places you need to modify d-i to support your
+new architecture, but it's necessarily incomplete, not coering topics like
+getting a working kernel for your architecture, or making install images
+that have the necessary magic to be bootable on your architecture.
+
+It assumes that you're working from a subversion checkout of the d-i tree,
+and will be building packages from it and uploading them to your archive.
+
+If you're not already well familiar with Debian development, d-i, and the
+specifics of your architecture, this document is not likely to be useful to
+you.
+
+* archive
+
+  First, you're going to need an archive for packages for your
+  architecture. It will need to be similar to the official Debian mirrors
+  for d-i to work.
+  
+  In particular, d-i needs the dists/suite/Release file, the
+  dists/suite/main/binary-yourarch/Release file, and
+  dists/suite/debian-installer/binary-yourarch/Packages.gz, as well as all
+  the debs and udebs etc.
+
+  A partial test of your archive is to see if debootstrap can sucessfully
+  use it.
+
+* gpg key
+
+  If you're using a gpg key to sign your archive, you will need to update
+  the debian-archive-keyring package to include your key, and install the
+  package before building your installer images, so the installer includes
+  your key.
+
+  If you're not using a gpg key, you will need to preseed
+  debian-installer/allow_unauthenticated=true.
+
+* Architecture fields
+
+  Many d-i udebs have Architecture fields that limit the udeb to a subset
+  of architectures. For example, packages/netcfg/debian/control lists most
+  arches (except for s390). Others include clock-setup, and kbd-chooser.
+  You will need to grep for all of these, and add your architecture to all
+  of them that it makes sense to add it to.
+
+* libdebian-installer
+
+  In packages/libdebian-installer/src/system there are files that are used
+  to determine the aubarch of a system. By default the subarch is
+  "generic"; if your architecture has subarches you may need to add a new
+  file for your architecture, and edit the Makefile to include it.
+
+* partman
+
+  packages/partman-partitioning/lib/disk-label.sh has a default_disk_label
+  function that you will need to extend so it knows what kind of disk label
+  is the default on your architecture.
+
+* kernel udebs
+
+  Unless you're using monolithic kernels, you will need to create kernel
+  module udebs. The simplest way is to go into packages/ and copy and modify
+  the linux-kernel-di-* directories.
+
+  This web page may also be helpful:
+  http://wiki.debian.org/DebianInstaller/Modify/CustomKernel
+
+* base-installer
+
+  packages/base-installer/kernel/ contains files for each architecture that
+  select a kernel package to install. Copy and modify one of the files for
+  your architecture. You can also copy and modify stuff in the tests/
+  subdirectory to use the regression test suite to make sure your file
+  works.
+
+* kbd-chooser
+
+  packages/kbd-chooser/Makefile contains some architecture tests that set
+  options based on what kinds of keyboards an architecture has. Add your
+  architecture.
+
+* building images
+
+  installer/build/config/ contains files for each architecture that define
+  the images to build, the kernel version to use, etc. You'll need to add
+  one for your architecture, as well as a installer/build/config/yourarch/
+  subdirectory with the rest of the .cfg files needed to build the images.
+
+  installer/build/pkg-lists/ also contains per-architecture files, and
+  you'll need to add files for your architecture there also.
+
+  Once that's done, make all_build in installer/build should build some
+  images. Good luck!
+  
+  (If it doesn't go as planned, the d-i team can assist with this most
+  complicated stage in getting d-i working for your architecture.)
+
+* lowmem
+
+  packages/lowmem/debian-installer-startup.d/S15lowmem contains some
+  architecture specific definitions of when the installer should enter low
+  memory mode. It defaults to 64 megabytes for unknown architectures, which
+  is higher than probably necessary for yours. The file contains some hints
+  for getting more accurate numbers specific to your architecure.
+
+* boot loader installer
+
+  Finally, you'll probably need to add some way to make d-i install a boot
+  loader for your architecture on the target system, using a boot loader
+  installer. Existing boot loader installers live under
+  packages/*-installer/, and if the boot loader is used for another
+  architecture, you can modify one of these. If not, some programming will
+  be needed..

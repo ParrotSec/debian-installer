@@ -1,0 +1,356 @@
+Dealing with d-i installation reports
+=====================================
+
+Debian-Installer has a large number of installation reports in the BTS.
+These are very valuable to us, since they're our only way of knowing how
+well d-i is doing on widely varied hardware, operated by users who are not
+intimatly familiar with d-i. But after each beta release of the installer,
+we get more installation reports than our limited manpower can easily deal
+with.
+
+This document is aimed at getting a Debian developer who is not
+familiar with d-i up to the point where you can help us process and
+categorise our install reports. Along the way, you should learn a lot more
+about d-i.
+
+It would be a good idea to go check out our web site
+(http://www.debian.org/devel/debian-installer), read the
+INSTALLATION-HOWTO, and do a test install to a spare swap partition or
+machine, to get a feel for what d-i looks like, and what a user sees before
+filing an installation report. You might want to file your own installation
+report summarising your experiences, too.
+
+
+The BTS
+-------
+
+All of our install reports should be under the "installation-reports"
+pseudo-package in the BTS, although sometimes they are miscategorised in
+other places (like under "installation"). As with any report, the users
+often get the severity wrong; just because d-i breaks on their machine does
+not really warrant a grave severity installation report.
+
+The more current, interesting, and easier to deal with reports are at the
+end of the list of normal severity reports. As you head back in time to the
+beginning of the list, the versions of the installer become progressively
+more broken, and our memories of the old bugs fainter.
+
+The process of categorising an installation report is mainly one of reading
+over the report, and identifying problems, and working out what part of the
+installer is responsible for the problem, and cloning off a bug report to
+be reassigned to that installer component. The goal is to make sure the
+right people see the report, and make sure that no useful information is
+disregarded or lost.
+
+
+Processing a sample report
+--------------------------
+
+Let's look at a sample installation report, bug #230396. This walkthrough
+is provided as an example of how someone knowledgeable about the parts of
+d-i and how they interact would process this report. Later sections of this
+document will try to fill in the gaps you'll need to be able to do the
+same.
+
+The first thing to take note of is the version of the installer, and the
+media used to install and basic description of the machine. Without this
+info, many install reports will be useless, so if you find an install
+report without that basic info, or that is too vague about it, you may need
+to write the reporter to get more info, and tag it moreinfo in the
+meantime.
+
+The summary of it is a little way down:
+
+  Base System Installation Checklist:
+
+  Initial boot worked:    [O]
+  Configure network HW:   [E]
+  Config network:         [O]
+  Detect CD:              [ ]
+  Load installer modules: [E]
+  Detect hard drives:     [ ]
+  Partition hard drives:  [ ]
+  Create file systems:    [ ]
+  Mount partitions:       [ ]
+  Install base system:    [ ]
+  Install boot loader:    [ ]
+  Reboot:                 [ ]
+  [O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+
+Well this install didn't go very well, they had problems and failed to
+install. Looking in the "Comments/Problems" section, we see:
+
+   I have a D-Link DE-220 ISA Card. The address/irq is 0x300, 11.
+   The detection failed (its not a PNP card).
+   Choosing the module 'ne' also failed, because it did not prompt me to
+   enter the io port and irq.
+
+   I was able to get the card to work by using insmod with the correct
+   io/irq from the command line.
+
+That explains the first "E" in the list. The part of the installer that is
+responsible for configuring network hardware is the ethdetect package. The
+problem is that apparently it did not make it easy enough for this user to
+manually configure his ISA ethernet card (it autodetects only PCI cards).
+So, look up its bug list and see if it has a bug for this issue. It does
+not, so let's give it one:
+
+	clone 230396 -1
+	reassign -1 ethdetect
+	retitle -1 failed to configure a D-Link DE-220 ISA Card
+	tags -1 d-i
+
+See the BTS documentation for help with the clone command if you're not
+familiar with it. Notice that the new bug is retitled, to include as much
+information about the hardware that caused the problem as possible. And
+a d-i tag is added. We use these tags to be able to find all bugs in d-i,
+across the set of packages that compose it.
+
+Moving on the the next "E", we find this in the report:
+
+  Load installer modules:
+
+  Some of the mirrors listed (I tried 2 in canada) don't have the
+  installer files.  (At least thats whats returned in the error message)
+
+  While downloading files from the mirror, suddenly the installer quits to
+  a console screen with the message "Terminated" repeating over and again
+  once every few seconds.
+
+The part of d-i that's responsible for picking a mirror to download debian
+from is called "choose-mirror". It would be acceptable to reassign this
+bug to it, as follows:
+
+	clone 230396 -2
+	reassign -2 choose-mirror
+	retitle -2 failed to load all installer modules from Canadian mirrors
+	tags -2 d-i
+
+However, the second paragraph, about the installer crashing and repeating
+an error message is really more interesting. This is a common symptom of
+something going badly wrong, and if we look up at the top of the
+installation report, where it describes the system, we find it has only 24
+MB of memory. Note that beta 2 of d-i is documented to not work with less
+than 32 MB. So the installer ran out of memory. Rather than discard the
+report because of that, let's clone off a bug report, because it should
+surely deal with low memory better than going into a crash loop:
+
+	clone 230396 -3
+	reassign -3 debian-installer
+	retitle -3 goes into crash loop loading installer with 24 MB of ram
+	tags -3 d-i
+
+If it seems to be a general problem or it's not clear what part of the
+installer is really at fault, it's acceptable to assign bugs to the
+debian-installer pseudo package. The d-i team can always make better
+reassignments later.
+
+There is a bit more to this report that I left out. The user commented
+that:
+
+    The root floppy has what I consider a vague name.
+    Also, the rawrite2.exe tool wouldn't read the image files from the hard
+    drive because the filename was too long.  I had to rename and shorten
+    the image file names before I could create them under windows.  Maybe
+    this is more of a problem with rawrite, but I digress.
+
+This could also stand to be cloned off and reassigned to the
+debian-installer pseudo package. It's a valuable observation.
+
+	clone 230396 -4
+	reassign -4 debian-installer
+	retitle -4 floppy images have bad names that play badly with rawrite2
+	tags -4 d-i
+
+Finally, after sending off the four clone commands to
+control@bugs.debian.org, you can close the installation report. Be sure to
+thank the reporter for his report, suggest things he might try to get a
+successful install (upgrade his memory in this case..), and mention that
+his issues have been brought to the attention of the debian-installer team.
+You may also want to mail the maintainers of the packages that the report
+was cloned to (if the packages are not part of d-i), to make sure they
+notice the problem and understand it.
+
+Note that some installation reports will only have one bug-worthy issue in
+them. It's probably easier to not clone these, and just reassign the whole
+installation report to the appropriate package.
+
+
+Background information
+----------------------
+
+The example above showed that you need to know a certain amount of
+information about the internals of d-i to properly categorise installation
+reports.
+
+A good place to start is by reading the d-i TODO list, in d-i's subversion
+repository. These commands will check out the whole d-i tree, which will be
+useful in other ways too:
+
+ svn co svn://svn.debian.org/svn/d-i/trunk d-i
+ cd d-i
+ sed -i -e 's/+ssh//' .mrconfig
+ mr -p checkout
+
+Then look in installer/doc/TODO to see some of our most pressing and largest
+problems. More known problems with the beta releases are documented on the
+errata page, <http://www.debian.org/devel/debian-installer/errata>. If you
+become familiar with these well-known problems, you can save a lot of time
+dealing with the parts of install reports that repeat them, and focus
+on the more interesting stuff.
+
+You should also be aware that after a successful install, d-i writes all of
+its logs to /var/log/installer/ on the installed system. These logs can be
+very useful.
+
+Let's go through the stages of the install, and see what parts of the
+installer are responsible for them.
+
+  Initial boot worked:    [ ]
+
+The parts of the installer responsible for the initial boot include the
+linux kernel (if the boot error looks like a kernel bug). Debian-Installer
+uses the stock Debian kernel image. At the time of this writing, it is
+taken from the kernel-image-2.4.24-1-386 package for i386.
+
+After the kernel, it's most likely a bug in the installer's initrd. If it
+gets to init, and does not get to a prompt for a language, that's a good
+bet. Such bugs should be assigned to the debian-installer pseudo-package.
+
+If they're booting from a CDROM, the bug could be in the debian-cd package,
+or in isolinux.
+
+If they're netbooting, the problem could be anywhere..
+
+If booting from floppies, a likely candidate is a bad floppy.
+
+If booting from a USB memory stick, the most common cause of failure to
+boot at all is an old BIOS.
+
+If it booted up past init, but never got around to interacting with the
+user, then other candidates include problems in main-menu and cdebconf.
+main-menu is what drives the whole installation, and cdebconf is of course
+what is used for interaction. If these fail, the install won't get far.
+
+Also, before the next item in the checklist, the installer will prompt
+the user for their language (via the languagechooser package), and keyboard
+(via kbd-chooser).
+
+  Configure network HW:   [ ]
+
+The frontend for network hardware configuration is the ethdetect package.
+It in turn calls hw-detect to scan for PCI and PCMCIA hardware. Don't worry
+which to assign bugs to, as they have the same source package.
+
+If the user has PCI hardware that is not detected, then the bug should be
+assigned to the discover-data package, since hw-detect uses discover to do
+its job. When assigning a bug to discover-data, be sure that it includes
+the module that should be loaded, and the PCI ID that discover should
+associate with this module.
+
+If the user has hardware that is detected, but the module fails to load,
+it could be a bug in the kernel, and if so should be reassigned to the
+appropriate kernel package, such as kernel-image-2.4.24-1-386.
+
+Similarly, hangs during hardware detection are often kernel bugs.
+
+  Config network:         [ ]
+
+This is taken care of by the netcfg package. Users sometimes put an E
+here when it belonged in "Configure network HW" instead.
+
+If the problem relates to entering IP address, gateway, netmask, hostname,
+etc, then netcfg is the place to assign it.
+
+Netcfg runs a DHCP client, and currently dhcp-client is the one used.
+Problems in configuring DHCP can be reassigned to that package.
+
+  Detect CD:              [ ]
+
+This is done by cdrom-detect. Of course, the kernel has to be able to see
+the CD drive, and the CD has to be a valid CD. discover also takes care of
+probing for SCSI and IDE disks, so if the installer cannot find their CD
+drive at all, that's a place to look too.
+
+  Load installer modules: [ ]
+
+Depending on the type of install, the actual retrieval of the d-i udebs
+will be done by one of cdrom-retriever, net-retriever, or media-retriever.
+They are all controlled by anna (from the package by that name).
+
+It's more likely that problems in this area have to do with bad media, or
+networking issues, or bad mirrors.
+
+  Detect hard drives:     [ ]
+
+This is taken care of at the kernel level by discover again. If it fails to
+find the drive, it's important to know what module should be loaded, and
+of course the specifics of the hardware.
+
+  Partition hard drives:  [ ]
+
+d-i actually contains three different modules that can do this.
+
+partman is our new system, which is now the default on most architectures.
+It uses parted exclusively, and does file system creation too.
+
+The old system is the "partitioner" module. This uses libparted to list the
+existing partitions, and then cfdisk to do the actual partitioning.
+
+If they say they used the automatic partitioner, that is "partman-auto". In
+some older installations, especially debian-edu, it may have been
+"autopartkit" instead.
+
+  Create file systems:    [ ]
+  Mount partitions:       [ ]
+
+Generally this is also partman's job. If the user used "partitioner" above,
+then they will use partconf for these two steps. partconf uses libparted to
+list the partitions. It uses standard mkfs.fstype programs to create the
+various file systems.
+
+  Install base system:    [ ]
+
+This step is handled by base-installer, which uses debootstrap. If there is
+a problem, it will 90% of the time be a problem with debootstrap, and the
+debootstrap log file will be essential to working it out.
+
+  Install boot loader:    [ ]
+
+The default boot loader used to be lilo (for betas 1 and 2), and is now
+grub (on i386 anyway). The various bootloader installation programs are
+lilo-installer, grub-installer, yaboot-installer, and so on ad naseum.
+
+If they had a boot loader install problem, it's important to know how their
+partitions were set up.
+
+  Reboot:                 [ ]
+
+d-i does some things between boot loader install and reboot, that might
+cause an error here. The finish-install package is responsible for that.
+
+Most often, a user will put an E here if their installed system failed to
+boot. The boot loader is a good possibility, and if so see above. Other
+possibilities include a kernel problem, and problems in the debian base
+system.
+
+base-config also enters the picture here, as do tasksel, aptitude, all
+the debian packages that could possibly be installed. If the user finds
+problems in this part of the install, clone them off to the appropriate
+debian package.
+
+Various parts of d-i are responsible for setting up parts of the installed
+system. Problems with /etc/network/interfaces, /etc/hosts, and similar are
+in the purview of netcfg, while /etc/fstab is set up by partconf (or
+autopartkit, or partman). hw-detect is responsible for ensuring that the
+right modules are put in /etc/modules, and that packages like discover,
+pcmcia-cs, and hotplug are installed onto the base system to deal with the
+hardware.
+
+
+More information
+----------------
+
+The above is only an overview, and if you need more detail on a part of the
+installer, you should post to debian-boot@lists.debian.org, or ask on the
+#debian-boot irc channel on irc.debian.org. Or see the source.

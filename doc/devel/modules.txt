@@ -1,0 +1,122 @@
+Modules
+-------
+
+The new debian installer is highly modular. Modules are loaded at several
+points in the install process to add capabilities to the installer. Modules
+are essentially sets of files that get unpacked onto the installation
+system, plus some metadata.
+
+Because there is already so much infrastructure to build and manage debian
+packages, and because it allows metadata to accompany the files in a module,
+we have decided to use debian packages as the modules for the installer. To 
+differentiate them from normal Debian packages, modules have filenames
+ending in ".udeb". However, modules must not have the same package
+name as any regular Debian package. The 'u' in udeb stands for Greek
+mu, meaning micro (udebs take less space than regular debian packages).
+
+Unlike regular debian packages, modules for the installer will not be
+policy compliant. They will not contain documentation in /usr/share/doc.
+They need not comply with the FHS. They may be statically linked. They are
+built with options such as -Os and -fomit-frame-pointer to reduce binary
+size. They may conflict with essential "real" debian packages, and thus be
+non-installable on a real debian system, although it is recommended that if
+possible, this be avoided.
+
+Here is a short rundown on differences between deb packages and udebs:
+
+All udeb packages should be able to build debug versions if
+DEB_BUILD_OPTIONS="debug".
+
+Misc.Differences
+================
+
+* Udebs must not include .md5sum files.
+
+New Control Scripts
+===================
+
+menutest
+--------
+
+Menutest scripts should return a true value (0) if they think it would be a
+good idea if their menu item was default, and a false value if it doesn't
+matter. For example in case of a udeb providing an ethernet driver, the
+menutest script would run a hardware detection routine and return 0 if the
+particular ethernet card was installed.
+
+Menutest scripts are optional. If a module does not have one, a simpler
+default test is used.
+
+isinstallable
+-------------
+
+If this script exists, and when run returns a non-zero value, then
+its menu item is not displayed.
+
+New Headers
+===========
+
+Installer-Menu-Item
+-------------------
+
+A priority (a number). The priority number influences the ordering of
+items in the menu; higher numbered items are closer to the end of the
+menu.  See the file menu-item-numbers.txt for the currently used
+numbers.  If this field does not appear, or has a value of 0, a module
+will not appear on the main menu.
+
+Subarchitecture
+---------------
+
+Whitespace separated list of supported subarchitectures.
+
+Kernel-Version
+--------------
+
+The uname -r of the version of the kernel that this udeb contains files
+(eg, kernel modules) for. If specified, must exactly match the running
+kernel or anna will skip installing the udeb.
+
+
+Modules will not be installed by a full-fledged dpkg implementation, so the
+following features of regular debs will not be supported:
+
+Disallowed Control Files
+========================
+
+preinst, postrm, prerm, md5sums, conffiles
+
+Disallowed Headers
+==================
+
+* Pre-Depends
+* Conflicts
+* Breaks
+* Essential
+* Suggests
+
+Disallowed Header Options
+=========================
+
+* `|' in dependencies.
+
+Supported Control Files
+=======================
+
+postinst
+
+Supported Headers
+=================
+
+* Depends, Recommends
+  only simple dependencies, no alternatives (versioned dependencies may be
+  used, but the version part will be ignored by most of d-i)
+* Enhances, Provides
+
+
+A 2 minute primer on building udebs.
+====================================
+
+1. Add a Build-Dependency against debhelper (>= 4.2).
+2. Add "Package-Type: udeb" to the package's stanza in the control file.
+3. Build the package!

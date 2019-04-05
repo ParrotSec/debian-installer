@@ -1,0 +1,61 @@
+#!/bin/sh
+# Given an iso image, runs isohybrid on it to allow it to be booted from
+# USB stick as well as CD. Then it adds a small second FAT partition, which
+# the user can use to provide firmware files to the installer on the same
+# USB stick.
+
+# This needs to be big enough to hold the uncompressed firmware.tar.gz
+# file. Currently that is 4.4M; add a few more to grow.
+firmware_volume_size_M=6
+# max size 11 chars:  ----------- 
+firmware_volume_name="Firmware"
+
+iso="$1"
+
+if [ -z "$iso" ]; then
+	echo "usage: $0 iso" >&2
+	exit 1
+fi
+
+set -e
+
+# isohybrid's defaults, but let's insure against future changes.
+heads=64
+sectors=32
+
+isohybrid -h "$heads" -s "$sectors" -u "$iso"
+
+# Make the firmware volume.
+tmpdir="$(mktemp -d)"
+firmware_volume_file="$tmpdir/fat"
+mkfs.msdos -n "$firmware_volume_name" -C "$firmware_volume_file" \
+	$(expr $firmware_volume_size_M \* 1024)
+
+# Combine images. 
+# XXX This wastes some space because isohybrid pads the iso to one
+# megabyte. Could reuse that padding for the start of the firmware volume.
+cat "$firmware_volume_file" >> "$iso"
+rm -r "$tmpdir"
+
+cylinders="$(($(stat -c %s "$iso") / $heads / $sectors))"
+
+# Now adjust the partition table of the hybrid iso.
+# It has a first partition which is the iso; add a second partition for the
+# firmware volume.
+(
+
+# Make new partition #2
+echo n
+echo p
+echo 3
+echo # use default start sector
+echo # use default end sector
+
+# Pedantically, set partition type to 1: FAT 16
+echo t
+echo 3
+echo 1
+
+# Done!
+echo w
+) | fdisk -C "$cylinders" -H "$heads" -S "$sectors" "$iso"

@@ -1,10 +1,105 @@
 #! /usr/bin/make -f
-%:
-	dh $@
 
-build-arch: debian/templates
+ARCH=$(shell dpkg-architecture -qDEB_BUILD_ARCH)
+VERSION=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Version: | cut -d ' ' -f 2)
+DATE=$(shell echo $(VERSION) | cut -d '.' -f 1)
+SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
+SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
 
-DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+# Daily builds vs. uploads to unstable:
+ifeq (${SUITE},UNRELEASED)
+USE_UDEBS_FROM=testing
+TRANSSTATUS=
+BOOTMENU_BEEP=n
+else
+USE_UDEBS_FROM=parrot
+USE_PROPOSED_UPDATES=0
+TRANSSTATUS=translation-status
+BOOTMENU_BEEP=y
+endif
 
-debian/templates: debian/templates-arch
-	debian/templates-build.pl $(DEB_HOST_ARCH) < $< > $@
+# Don't integrate SSL certs in armel, the size limits will be missed
+ifeq ($(ARCH),armel)
+SSL_CERTS=
+else
+SSL_CERTS=/usr/share/ca-certificates/mozilla/*
+endif
+
+# Adjust for non-released ports if needed:
+RELEASE_ARCHES=amd64 arm64 armel armhf i386 mips mips64el mipsel ppc64el s390x
+ifeq (,$(filter $(ARCH), $(RELEASE_ARCHES)))
+USE_UNRELEASED=1
+USE_UDEBS_FROM=unstable
+endif
+
+ARCHIVEDIR=debian/tmp/installer-$(ARCH)
+DESTDIR=$(ARCHIVEDIR)/$(DATE)
+IMAGEDIR=$(DESTDIR)/images
+TARNAME=debian-installer-images_$(VERSION)_$(ARCH).tar.gz
+
+export SOURCE_DATE_EPOCH
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean
+	$(MAKE) -C build reallyclean
+	$(MAKE) -C doc/devel/partman clean
+	$(MAKE) -C doc/devel/internals clean
+
+# Must run as root, so is not run as part of regular build.
+build-images:
+ifeq ($(SSL_CERTS),)
+	# Drop wget-udeb only needed for SSL certs
+	sed -i -e '/^wget-udeb/ d' build/pkg-lists/base
+endif
+	$(MAKE) -C build all_build stats release \
+		USE_UDEBS_FROM=$(USE_UDEBS_FROM) BUILD_DATE=$(DATE) \
+		USE_PROPOSED_UPDATES=$(USE_PROPOSED_UPDATES) \
+		USE_UNRELEASED=$(USE_UNRELEASED) \
+		TRANSSTATUS=$(TRANSSTATUS) BOOTMENU_BEEP=$(BOOTMENU_BEEP) \
+		SSL_CERTS=$(SSL_CERTS)
+
+build: build-arch build-indep
+build-arch: build-stamp
+build-indep: build-stamp
+
+build-stamp:
+	rm -f $@
+	$(MAKE) -C doc/devel/internals
+	$(MAKE) -C doc/devel/partman
+	touch $@
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	debian/rules build-images
+
+	install -d $(IMAGEDIR)
+	cp -a build/dest/* $(IMAGEDIR)
+	ln -s $(DATE) $(ARCHIVEDIR)/current
+
+binary-arch: install  
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs doc/* -X Makefile -X build.sh -X .xsl \
+		-X internals.xml -X partman-doc.sgml -X .gitignore
+	dh_compress
+	dh_fixperms
+
+	./build/util/write-built-using
+
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+	./build/util/gen-tarball debian/tmp ../$(TARNAME)
+	dpkg-distaddfile $(TARNAME) raw-installer -
+
+binary-indep:
+
+binary: binary-indep binary-arch 
+.PHONY: build build-images clean binary-indep binary-arch binary install 

@@ -1,0 +1,14 @@
+<chapter id="manual"><title>Installation guide translations</title>
+
+<sect1>
+<title>Introduction</title>
+
+<para>
+The main page for internationalization of the installation guide is
+<ulink url="https://d-i.debian.org/manual/">https://d-i.debian.org/manual/</ulink>.
+It contains links to preview variants of the manual in the available languages as well as some
+documentation and statistics.
+</para>
+</sect1>
+
+</chapter>

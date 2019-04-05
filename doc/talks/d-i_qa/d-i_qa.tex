@@ -1,0 +1,219 @@
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage[english]{babel}
+% or whatever
+
+\usepackage{pdfpages}
+
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+
+\title[Managing breakage in Debian Installer] % (optional, use only with long paper titles)
+{Managing breakage in Debian Installer}
+
+\author % (optional, use only with lots of authors)
+{Frans ~Pop}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date[QA 2005] % (optional, should be abbreviation of conference name)
+{Debian QA meeting,\\ Darmstadt}
+% - Either use conference name or its abbreviation.
+% - Not really informative to the audience, more for people (including
+% yourself) who are reading the slides online
+
+
+
+
+\pgfdeclareimage[height=2cm]{debian-logo}{debian-swirl}
+\logo{\pgfuseimage{debian-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+\begin{frame}
+  \frametitle{Types of breakage}
+	\begin{itemize}[<+->]
+	\item
+		General or architecture specific
+	\item
+		Build failures: D-I images, CD images
+	\item
+		Basic installation problems in D-I itself
+	\item
+		Base installation problems: (c)debootstrap
+	\item
+		Base configuration problems
+	\item
+		Problems installing tasks
+	\item
+		Internationalization problems 1st/2nd stage
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Complex environment}
+	\begin{itemize}[<+->]
+	\item
+		D-I is a mini Linux distribution for 12 architectures
+	\item
+		Great variety: disklabels, filesystems, bootloaders, ...
+	\item
+		Some components we control ourselves, others... not
+	\item
+		Complex build environment (including CD building)
+	\item
+		Complex operational environment
+	\end{itemize}
+\end{frame}
+
+\section{Why does d-i break?}
+
+\begin{frame}
+  \frametitle{Causes of breakage}
+	\begin{itemize}[<+->]
+	\item
+		Changes in D-I itself causing unexpected breakage
+	\item
+		New upstream releases of stuff used in D-I \\
+		\small (random example: dpkg)
+	\item
+		Library changes
+	\item
+		Transitions can hit D-I very hard -> delays
+	\item
+		Kernel configuration changes
+	\item
+		Migrations of udebs need to be triggered manually
+	\item
+		Build dependencies
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Build-Depends (1)}
+\small debhelper, apt, gnupg, dpkg, grep-dctrl, bc, libc6-pic | libc6.1-pic | libc0.3-pic | glibc-pic, libdebian-installer4, libdebconfclient0, libparted1.6-13, libslang2-pic, libnewt-pic, libdiscover1-pic [!s390 !s390x], libdiscover1 [!s390 !s390x], libbogl-dev, libtextwrap1, cramfsprogs [powerpc ia64 mips], genext2fs, e2fsprogs, mklibs, mkisofs, genromfs [sparc], hfsutils [powerpc], dosfstools [i386 ia64 m68k amd64], syslinux [i386 amd64], palo [hppa], elilo [ia64], yaboot [powerpc], aboot [alpha], silo [sparc], sparc-utils [sparc], genisovh [mips], delo [mipsel], tip22 [mips], colo [mipsel], sibyl [mips mipsel], atari-bootstrap [m68k], vmelilo [m68k], m68k-vme-tftplilo [m68k], sysutils [i386 amd64], mtools [i386 ia64 m68k amd64], modutils, module-init-tools [i386 powerpc amd64 hppa ia64 sparc], bf-utf-source [!s390 !s390x], upx-ucl-beta [i386], bzip2 [powerpc], mkvmlinuz [powerpc]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Build-Depends (2) - Installation Guide}
+docbook, docbook-xml, docbook-xsl, xsltproc, gawk, w3m, poxml, jadetex, openjade | openjade1.3, docbook-dsssl, gs-common, debiandoc-sgml
+\end{frame}
+
+
+\section{Managing breakage}
+
+\begin{frame}
+  \frametitle{Options}
+	\begin{itemize}[<+->]
+	\item
+		Prevent breakage
+	\item
+		Detect breakage as soon as possible
+		\begin{itemize}
+		\item
+			Daily builds for all architectures \\
+			http://d-i.debian.org/daily-images/build-logs.html
+		\item
+			The D-I testlab (Joey Hess): \\
+			alpha, hppa, i386, ia64, mipsel, sparc \\
+			http://people.debian.org/\~{}joeyh/d-i/test-logs.html
+		\item
+			Installation reports
+		\item
+			IRC: \#debian-boot
+		\end{itemize}
+	\item
+		Problems often are noticed in D-I before they are seen elsewhere
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fixing breakage}
+	\begin{itemize}[<+->]
+	\item
+		Debug and trace
+	\item
+		Report
+	\item
+		If under our control: fix and upload
+	\item
+		If not under our control: file bug and hound maintainer
+	\item
+		... or NMU
+	\item
+		Test locally
+	\item
+		Wait for fix to make it to daily builds
+	\end{itemize}
+
+For some types of problems we need help from porters or specialists
+\end{frame}
+
+\begin{frame}
+  \frametitle{Communicating breakage}
+Keeping the team, porters and users informed: \\
+http://wiki.debian.net/DebianInstallerToday
+\end{frame}
+
+\end{document}

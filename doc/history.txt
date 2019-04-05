@@ -1,0 +1,253 @@
+A few historical bits about d-i development
+-------------------------------------------
+
+No idea where this will lead us, but on a quiet morning in July 2005,
+I imagined it would be worth keeping track of D-I history, so I just
+started this document to keep the information I've found.
+
+Please throw in any interesting information you might have. We'll
+think about organizing this stuff as soon as we have enough material.
+
+
+
+Original announcement of the D-I project - June 20th 2000
+ First mention found: http://lists.debian.org/debian-boot/2000/06/msg00279.html
+
+ Interesting quote from it: Joey Hess said '..."debian-installer", or
+ some actual cool name someone comes up with. I hate naming
+ projects. :-)'. 
+
+ It seems that the name was quite good after all...as we kept it up to now.
+
+The "first" things
+------------------
+
+ First "weekly" status report - November 1st 2000: 
+    http://lists.debian.org/debian-boot/2000/11/msg00006.html
+
+ First udeb uploads - December 12th 2000:
+    http://lists.debian.org/debian-boot/2000/12/msg00336.html
+
+ First D-I team meeting - December 9th 2000:
+    http://lists.debian.org/debian-boot/2000/12/msg00276.html
+     No meeting minutes found up to now..:-)
+
+ First appearance of the graphical frontend - December 27th 2000:
+    http://lists.debian.org/debian-boot/2000/12/msg00547.html
+
+ First successful (cough) "installation report" - February 14th 2001:
+    http://lists.debian.org/debian-boot/2001/02/msg00503.html
+
+ First mention of devfs (aaaargh) - February 21st 2001
+    http://lists.debian.org/debian-boot/2001/02/msg00747.html
+
+ First "new" tasksel - May 9th 2001
+    http://lists.debian.org/debian-boot/2001/05/msg00162.html
+    http://lists.debian.org/debian-boot/2001/05/msg00513.html
+
+ First tzconfig using debconf - June 10th 2001
+    http://lists.debian.org/debian-boot/2001/06/msg00490.html
+
+ First Debian derived distribution wanting to use D-I - July 28th 2001
+    http://lists.debian.org/debian-boot/2001/07/msg00717.html
+
+ First message to debian-boot by Frans Pop - March 1st 2004
+    http://lists.debian.org/debian-boot/2004/03/msg00045.html
+
+ D-I repository moved from CVS to Subversion - March 21st 2004
+    http://lists.debian.org/debian-boot/2004/03/msg02586.html
+
+ First political struggle around D-I - April 5th 2004
+    http://lists.debian.org/debian-boot/2004/04/msg00438.html
+
+ Second political struggle around D-I - Sep 23th 2004
+    http://lists.debian.org/debian-boot/2004/09/msg01324.html
+
+ First message to debian-boot by Attilio Fiandrotti and begin of
+    the "g-i aka graphical installer" revival story - March 31st 2005
+    http://lists.debian.org/debian-boot/2005/03/msg01184.html
+
+ Base-config removed - Dec 21st 2005
+    http://lists.debian.org/debian-boot/2005/12/msg00917.html
+
+ First daily builds with the graphical installer included - May 17th 2006
+    http://lists.debian.org/debian-boot/2006/05/msg00659.html
+
+ D-I repository switched to use git - January 17th 2011
+    http://lists.debian.org/debian-boot/2011/01/msg00748.html
+
+
+Status reports
+--------------
+
+First status report: 
+ http://lists.debian.org/debian-boot/2000/11/msg00006.html
+
+Following progress reports:
+ http://lists.debian.org/debian-boot/2000/12/msg00020.html (Dec 1st 2000)
+ http://lists.debian.org/debian-boot/2000/12/msg00338.html (Dec 12th 2000)
+ http://lists.debian.org/debian-boot/2001/02/msg00591.html (Feb 16th 2001)
+ http://lists.debian.org/debian-boot/2001/07/msg00714.html (Jul 26th 2001)
+ http://lists.debian.org/debian-devel-announce/2002/07/msg00013.html
+ http://lists.debian.org/debian-devel-announce/2002/08/msg00004.html
+ http://lists.debian.org/debian-devel-announce/2002/10/msg00007.html
+ http://lists.debian.org/debian-devel-announce/2002/11/msg00011.html
+ http://lists.debian.org/debian-devel-announce/2003/02/msg00013.html
+ http://lists.debian.org/debian-boot/2007/07/msg00431.html
+ <to be continued>
+
+Debian-installer releases:
+--------------------------
+
+First alpha: December 8th 2002
+  http://lists.debian.org/debian-devel-announce/2002/12/msg00002.html
+
+Sarge installer beta1: November 9th 2003
+  http://lists.debian.org/debian-devel-announce/2003/11/msg00003.html
+  - i386 and PowerPC only
+
+Sarge installer beta2: January 14th 2004
+  http://lists.debian.org/debian-devel-announce/2004/01/msg00006.html
+  - install from USB storage
+  - all errata from beta1 fixed
+
+Sarge installer beta3: March 16th 2004
+  http://lists.debian.org/debian-devel-announce/2004/03/msg00013.html
+  - new partitioner with menus (partman)
+  - support wireless
+  - 2.4.25 kernel, eearly SATA support
+  - more arches: ia64, sparc, m68k, mips, alpha
+  - boot logo
+  - installation manual
+  - Languages: 35
+
+Sarge installer beta4: April 30th 2004
+  http://lists.debian.org/debian-devel-announce/2004/04/msg00025.html
+  - New architectures: arm, hppa, mipsel
+  - detection of other OS
+  - experimental support for kernel 2.6
+  - new boot logo
+  - Languages: 38
+
+Sarge installer Release Candidate 1: August 7th 2004
+  http://lists.debian.org/debian-devel-announce/2004/08/msg00004.html
+  - All 11 arches supported
+  - install 2.6 on i386 is OK
+  - Languages: 40
+
+Sarge installer Release Candidate 2: November 22th 2004
+  http://lists.debian.org/debian-devel-announce/2004/11/msg00010.html
+  - Support LVM on software RAID
+  - Fix RC1 errata
+  - Languages: 40
+
+Sarge installer Release Candidate 3: March 23th 2004
+  http://lists.debian.org/debian-boot/2005/03/msg00764.html
+  - Ready for shipping!
+
+Sarge release: June 6th 2005
+  http://www.debian.org/News/2005/20050606
+  - Languages: 40
+
+Etch installer beta1: November 12th 2005
+  http://lists.debian.org/debian-devel-announce/2005/11/msg00008.html
+  - Install 2.6 by default
+  - Rescue mode
+  - Alpha release of the graphical installer
+  - Improved locale/timezone/clock settings
+  - Automatic laptop detection
+  - Languages: 49
+
+Etch installer beta2: March 15th 2006
+  http://lists.debian.org/debian-devel-announce/2006/03/msg00013.html
+  - Die, base-config, die! One stage installation
+  - Switch to udev
+  - Installed system is UTF-8 by default
+  - Languages: 51
+
+Etch installer beta3: August 11th 2006
+  http://lists.debian.org/debian-devel-announce/2006/08/msg00009.html
+  - Integration of graphical installer for i386 and powerpc
+  - Encrypted partitions support
+  - Languages: 60
+
+Etch installer Release Candidate 1: November 13th, 2006
+  http://lists.debian.org/debian-devel-announce/2006/11/msg00003.html
+  - Automated partitionins supports LVM+crypto
+  - Support for preseeded software RAID on multiple disk setups
+  - Languages: 61
+
+Etch installer Release Candidate 2: March 19th, 2007
+  http://www.debian.org/devel/debian-installer/News/2007/20070319
+  - Support resize of NTFS partitions
+  - Improved support for visually impaired users (high contrast)
+  - Languages: 65
+
+Etch release: April 8th, 2007
+  http://www.us.debian.org/News/2007/20070408
+  - Languages: 57 (some were disabled)
+
+Lenny installer beta1: March 17th, 2008
+  http://lists.debian.org/debian-devel-announce/2008/03/msg00012.html
+  - support fod CD/DVD is back
+  - clock sync with NTP
+  - volatile support
+  - win32-loader integrated
+  - SATA RAID support
+  - Languages: 58
+
+Lenny installer Release Candidate 1: November 12th, 2008
+  http://lists.debian.org/debian-devel-announce/2008/11/msg00002.html
+  - support for Live CD
+  - loading firmware from removable media
+  - integration of hardware speech synthesis
+  - Languages: 62
+
+Lenny installer Release Candidate 2: January 31st, 2009
+  http://lists.debian.org/debian-devel-announce/2009/01/msg00009.html
+  - improved brltty (Braille devices)
+  - improved fallback to English when translations are incomplete
+  - Languages: 63
+
+Lenny release: February 14th, 2009
+  http://www.debian.org/News/2009/20090214
+  - Languages: 63
+
+Squeeze installer Alpha 1: February 10th, 2010
+  https://lists.debian.org/debian-devel-announce/2010/02/msg00011.html
+  - help during installation process
+  - installation of recommended packages
+  - improvementsin language/country/locale selection
+  - improved mirror selection
+  - option to select "UTC" timezone
+  - ext4 support in partman
+  - Languages: 66 (Asturian, Estonian, Kazakh)
+
+Squeeze installer Beta 1: October 30th, 2010
+  https://lists.debian.org/debian-devel-announce/2010/10/msg00013.html
+  - support for isohybrid images to improve USB stick installs
+  - support for firmware .deb files in firmware/ on installation media
+  - Support for Guruplug and OpenRD-Ultimate
+  - Languages: 67 (Kannada, Persian, Telugu. Dropped Wolof, Welsh)
+
+Squeeze installer Beta 2: December 8th, 2010
+  https://lists.debian.org/debian-devel-announce/2010/12/msg00001.html
+  - improved OS detection
+  - ZFS support in kfreebsd-* (later disabled on i386)
+  - improved USB CD-ROM detection
+  - Languages: 67
+
+Squeeze installer Release Candidate 1: January 12th, 2011
+  https://lists.debian.org/debian-devel-announce/2011/01/msg00002.html
+  - uses Squeeze artwork theme
+  - support new suite name for volatile
+  - many hardware support fixes
+  - many fixes for release critical bugs
+  - Languages: 70 (Lao, Sinhala). 100% complete for 57.
+
+Squeeze installer Release Candidate 2: January 22th, 2011
+  https://lists.debian.org/debian-devel-announce/2011/01/msg00005.html
+  - fix keyboard configuration for several languages
+  - final set of release critical fixes
+  - Languages: 70
+

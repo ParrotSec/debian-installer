@@ -1,0 +1,43 @@
+Porting debian-installer to 2.6 for your architecture
+=====================================================
+
+This is a fairly haphazard collection of notes on what you need to do to
+port d-i to 2.6 for your architecture.
+
+Kernels and build system
+------------------------
+
+  * Create packages/linux-kernel-di-<architecture>-2.6/ with
+    appropriate sets of module udebs. There are plenty of examples to borrow
+    from here.
+
+  * Create 2.6.cfg files in installer/build/config/ for each target you want
+    to ship with 2.6. You'll need to set at least KERNELVERSION,
+    KERNELMAJOR, and EXTRANAME. i386 has good examples here. Use
+    FLAVOUR_SUPPORTED in the parent config file to get 2.6.cfg to be
+    included in the build system.
+
+  * If your kernels don't have ext2 built-in (some 2.6 ones don't), set
+    INITRD_FS = cramfs (or INITRD_FS = initramfs to live on the bleeding
+    edge).
+
+  * Add your architecture to the module-init-tools build-dependency list in
+    installer/debian/control.
+
+  * If you need different packages in your initrd on 2.6 versus 2.4 which
+    aren't already handled by the build system, use [2.4] and [2.6]
+    qualifiers (see installer/build/README).
+
+Other packages
+--------------
+
+  * Make any necessary changes to packages/rootskel/debian/templates-arch.
+
+  * Make packages/base-installer/debian/postinst install an appropriate 2.6
+    kernel when d-i is running with 2.6 itself.
+
+  * You may need to make some changes to hardware detection in
+    packages/hw-detect/.
+
+  * You may need to tweak packages/usb-discover/usb-discover, particularly
+    if you're using a different kernel version from other architectures.

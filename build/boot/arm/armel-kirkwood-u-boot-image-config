@@ -1,0 +1,6 @@
+# Directory to create; and file to copy
+# Plug computers
+dockstar /usr/lib/u-boot/dockstar/u-boot.kwb
+dreamplug /usr/lib/u-boot/dreamplug/u-boot.kwb
+guruplug /usr/lib/u-boot/guruplug/u-boot.kwb
+sheevaplug /usr/lib/u-boot/sheevaplug/u-boot.kwb

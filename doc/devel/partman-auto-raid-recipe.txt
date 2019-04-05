@@ -1,0 +1,101 @@
+This allows preseeding of a fully configured RAIDed system by setting
+partman-auto/method to "raid" and using partman-auto-raid/recipe to tell
+it how to construct the RAID array(s).
+
+The preseedable parameter partman-auto-raid/recipe should consist of
+recipes separated by periods ("."). The recipes are of the form:
+
+<raidtype> <devcount> <sparecount> <fstype> <mountpoint> <devices> <sparedevices> <extra-args>
+
+where <devices> is a list of the devices to make up the RAID and
+<sparedevices> is a list of the spare devices in the array; devices are
+separated by hashes ("#").
+
+<extra-args> can be used to pass extra arguments to "mdadm --create", like
+"--layout o2". Blanks must be substituted by hashes ("#"), e.g. you have
+to specify "--layout#o2".
+
+For example:
+d-i partman-auto-raid recipe string  \
+  1 2 0 ext3 / /dev/sda1#/dev/sdb1 . \
+  1 2 0 swap - /dev/sda5#/dev/sdb5 .
+This must be written all on one line; if you write it across multiple lines
+you must use continuation characters (as in the example).
+
+This makes the first RAID device that was created by this udeb be a RAID1 of
+two disks disc0/part1 and disc1/part1 and be formatted as ext3 and mounted
+on /.  The second is also a RAID1 and used as swap (and the mountpoint
+ignored).
+
+-- Simon Huggins <huggie@earth.li>
+sponsored by Black Cat Networks http://www.blackcatnetworks.co.uk/
+
+It is also possible to preseed LVM over RAID.  The following example will
+create a RAID 1 setup on two hard drives with:
+
+  /dev/md0 as /boot (ext3)
+  /dev/md1 as a LVM physical volume
+  /dev/mapper/<hostname>-root as / (ext3)
+  /dev/mapper/<hostname>-swap_1 as swap
+  /dev/mapper/<hostname>-home as /home (ext3)
+
+--- 8< ---
+d-i partman-auto/method string raid
+
+d-i partman-auto/disk string /dev/sda /dev/sdb
+
+d-i partman-auto-raid/recipe string			\
+	1 2 0 ext3 /boot				\
+		/dev/sda1#/dev/sdb1			\
+	.						\
+	1 2 0 lvm -					\
+		/dev/sda5#/dev/sdb5			\
+	.
+
+# In the expert_recipe, there is a stanza for each RAID partition
+# and each LVM partition.
+# The RAID partitions are tagged as "lvmignore", while
+# the LVM logical volumes as "defaultignore" and "lvmok".
+# The RAID partition containing the LVM volumes must be made big
+# enough to hold them all.
+# Note that in the example shown here the mountpoint for /boot
+# (which is not encapsulated within LVM) is specified in the
+# partman-auto-raid recipe, rather than in the corresponding 
+# raid partition definition below.
+#
+d-i partman-auto/expert_recipe string			\
+	multiraid ::					\
+		100 512 256 raid			\
+			$lvmignore{ }			\
+			$primary{ }			\
+			method{ raid }			\
+		.					\
+		900 5000 4000 raid			\
+			$lvmignore{ }			\
+			method{ raid }			\
+		.					\
+		700 5000 4000 ext3			\
+			$defaultignore{ }		\
+			$lvmok{ }			\
+			method{ format }		\
+			format{ }			\
+			use_filesystem{ }		\
+			filesystem{ ext3 }		\
+			mountpoint{ / }			\
+		.					\
+		64 512 300% linux-swap			\
+			$defaultignore{ }		\
+			$lvmok{ }			\
+			method{ swap }			\
+			format{ }			\
+		.					\
+		100 1000 1000000000 ext3		\
+			$defaultignore{ }		\
+			$lvmok{ }			\
+			method{ format }		\
+			format{ }			\
+			use_filesystem{ }		\
+			filesystem{ ext3 }		\
+			mountpoint{ /home }		\
+		.
+--- >8 ---

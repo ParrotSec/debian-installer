@@ -1,0 +1,3 @@
+# Just the kernel of right version. Included on all images that are
+# bootable.
+kernel-image-${kernel:Version}

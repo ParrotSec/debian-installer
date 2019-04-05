@@ -1,27 +1,47 @@
-This is a root filesystem skeleton for the Debian/GNU Linux installer.
+This is the debian-installer build system, which produces the
+Debian installation media.
 
-Author(s): Frans Pop
+The debian-installer build system is Copyright 2001-2009 by Joey Hess
+<joeyh@debian.org> and the d-i team, and is licensed under the terms
+of the GNU GPL 2 or any later version, which can be found in
+/usr/share/common-licenses/GPL-2 on Debian systems.
 
-Copyright 2005 Frans Pop <fjp@debian.org> and the Debian installer team.
+The install media built by the debian-installer build system contain a wide
+variety of free software, including the GNU C library, busybox, linux
+kernel, newt, etc. It also includes much of the rest of the
+debian-installer: main-menu, udpkg, anna, cdebconf, rootskel and di-utils.
+The sources to all of the software included in the install media, and the
+details about its copyright can be found in the Debian archive.
 
-The license of this package is GPL, version 2 or later.
+The open use Debian logo is used in some boot screens. It is copyright (c)
+1999 Software in the Public Interest. This logo or a modified version may be
+used by anyone to refer to the Debian project, but does not indicate
+endorsement by the project. http://www.debian.org/logos/
 
-The open use Debian logo is copyright (c) 1999 Software in the Public
-Interest. This logo or a modified version may be used by anyone to refer to
-the Debian project, but does not indicate endorsement by the project.
-http://www.debian.org/logos/
+The joy theme images (list of files below) have been designed from the
+joy theme (© 2012 Adrien Aubourg, GPLv2) but use the klowner layout and
+a rebuilt-from-scratch "debian" word.
 
-The 'dark' theme is derived from the HighContrastLargePrintInverse GNOME
-theme, downloaded from
-http://ftp.gnome.org/pub/GNOME/sources/gnome-themes/2.14/gnome-themes-2.14.3.tar.bz2
-It is written by Bill Haneman, based on Standard theme by T. Liebeck,
-and released under LGPL 2.1.
+    build/boot/hurd/pics/joy-hurd.svg
+    build/boot/kfreebsd/pics/joy-kbsd.svg
+    build/boot/x86/pics/joy.svg
 
-src/usr/share/graphics/logo_debian_futureprototype.svg is
-copyright 2018 by iAlex Makas <radicalmonday@gmail.com> , licensed
-under the GNU GPL version 2, or later. Minor changes may have been made
-by package maintainers to to suite format.
+The Lines theme images (list of files below) have been designed from the
+Lines theme (© 2014 Juliette Taka BELIN, GPLv2+) but use the klowner
+layout.
 
-On Debian systems, the complete text of the GNU GPL version 2 can be found in
-/usr/share/common-licenses/GPL-2, and the complete text of the GNU LGPL 2.1
-in /usr/share/common-licenses/LGPL-2.1.
+    build/boot/hurd/pics/lines-hurd.svg
+    build/boot/kfreebsd/pics/lines-kbsd.svg
+    build/boot/x86/pics/lines.svg
+
+The Soft Waves theme images (list of files below) are © 2016 Juliette Taka
+BELIN, GPLv2+.
+
+    build/boot/hurd/pics/softwaves-hurd.svg
+    build/boot/kfreebsd/pics/softwaves-kbsd.svg
+    build/boot/x86/pics/softwaves.svg
+
+The gen-hd-image tool, used to build bootable partitioned disk images, is
+Copyright 2014,2015 Karsten Merker <merker@debian.org> and is dual-licensed.
+It is provided under the terms of the GNU GPL version 2 or any later
+version, or alternatively under the terms of the X11 license.

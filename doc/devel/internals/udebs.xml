@@ -1,0 +1,206 @@
+<chapter id="udebs">
+<title>D-I components or udebs</title>
+<para>
+
+A udeb (or micro-deb) is a special kind of Debian package. Technically
+udebs are very similar to regular packages: you can look at their contents
+using <command>dpkg -c</command>, and extract them using
+<command>dpkg -x</command> and <command>dpkg -e</command>.
+
+</para><para>
+
+The main difference is that a lot of policy requirements are waived. For
+example, a udeb does not contain a changelog, licence, manpages or
+md5sums<footnote>
+
+<para>
+Of course, the source package for a udeb <emphasis>does</emphasis> contain
+a licence and changelog.
+</para>
+
+</footnote>. The reason is to minimize size which is important as the
+installation takes place completely in RAM, with swap only becoming
+available after stage 4 of the installation (partitioning).
+
+</para><para>
+
+Another important difference is that udebs are not really meant to be
+uninstalled or upgraded.
+
+</para><para>
+
+The relaxed policy requirements are one of the reasons that udebs should not
+be installed on a normal system. The other reason being that it just doesn't
+make sense and it's likely to break things.
+
+</para><para>
+
+Two special classes of udebs should be mentioned here. However, covering
+these in detail is outside the scope of this document.
+
+<variablelist>
+  <varlistentry>
+    <term>Kernel image and kernel module udebs</term>
+    <listitem><para>
+Kernel udebs are built basically by repackaging a regular kernel image
+package. Reason is again to reduce memory usage: not all modules included
+in a kernel image package are needed during an installation. Also, different
+modules are needed in the initrd for different installation methods, remaining
+modules can either be loaded later or optionally (by manual selection or
+through dependencies). The package <classname>kernel-wedge</classname>
+contains the toolset used to reorganize a kernel-image package into multiple
+kernel (module) udebs.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>Partman and its components</term>
+    <listitem><para>
+Partman has a very specific structure and requires a fairly strict
+conformance to this structure for udebs that extend its functionality.
+    </para></listitem>
+  </varlistentry>
+</variablelist>
+
+</para>
+
+   <sect1><title>Contents of a udeb</title>
+<para>
+
+For components that are included in the main menu, the udeb will contain
+at least:
+
+<itemizedlist>
+ <listitem><para>
+a postinst
+ </para></listitem>
+ <listitem><para>
+a debconf template that contains the description for the main menu:
+
+<informalexample><screen>
+debian-installer/&lt;component&gt;/title
+Type: text
+_Description: &lt;menu entry&gt;
+</screen></informalexample>
+
+ </para></listitem>
+</itemizedlist>
+
+</para><para>
+
+Other things like additional debconf templates, C programs, hook scripts
+can be added as needed.
+
+</para><para>
+
+A special type of control file worth mentioning is the
+<filename>.isinstallable</filename> file. If a script with this extension
+is present in <filename>/var/lib/dpkg/info</filename> for a component,
+the main menu will run this script and only include the component in the
+menu if the script exits 0.
+
+</para>
+   </sect1>
+
+   <sect1><title>Creating a udeb</title>
+<para>
+
+Creating a udeb is not all that hard, especially if you use
+<classname>debhelper</classname>. <classname>debhelper</classname> knows the
+special properties of a udeb and will do the right thing by default at build
+time. That is, if you don't forget to tell it you are creating a udeb.
+
+</para><para>
+
+The example below shows the <filename>debian/control</filename> file for a
+udeb that is supposed to be included in the main menu. Note the special
+<quote>debian-installer</quote> section.
+
+</para>
+
+<informalexample><screen>
+Source: kbd-chooser
+Section: debian-installer
+Priority: optional
+Maintainer: Debian Install System Team &lt;debian-boot@lists.debian.org&gt;
+Uploaders: [...]
+Build-Depends: debhelper (&gt;= 7.3.10), libdebian-installer4-dev (&gt;= 0.41),
+    po-debconf (&gt;= 0.5.0), flex | flex-old , bison,
+    libdebconfclient0-dev (&gt;= 0.49)
+
+Package: kbd-chooser
+Architecture: i386 amd64 powerpc alpha hppa sparc [...]
+Package-Type: udeb
+Depends: ${shlibs:Depends}, ${misc:Depends}, console-keymaps
+Description: Detect a keyboard and select layout
+Installer-Menu-Item: 1200
+</screen></informalexample>
+
+<para>
+
+The line <literal>Package-Type</literal> tells
+<classname>debhelper</classname> to treat the package as a udeb. The
+<literal>Installer-Menu-Item</literal> is added in the control file for
+the udeb and will eventually end up in the <classname>dpkg</classname>
+status file to help <classname>main-menu</classname> figure out that this
+udeb should be included in the menu and in what order<footnote>
+
+<para>
+See <xref linkend="ap-menu-item"/> for the specification of menu numbers that
+currently are in use.
+</para>
+
+</footnote>.
+
+Packaging a udeb becomes a bit harder if it is derived from a regular
+package but needs to be compiled with different compiler options (e.g.
+some features disabled or a different optimization).
+
+</para><para>
+
+The main thing to always keep in mind when creating a udeb is size. It is
+very important to keep size as minimal as possible. This includes using
+tabs instead of spaces when indenting in scripts and not being too verbose
+in comments.
+
+</para>
+   </sect1>
+
+   <sect1><title>Library udebs</title>
+<para>
+
+Creation of correct dependencies on library udebs depends on
+<quote>package type</quote> support in shlibs files for libraries.
+This allows <command>dpkg-dev</command> and <classname>debhelper</classname>
+to automatically set correct dependencies on library udebs when a d-i
+component that depends on them is built.
+
+</para><para>
+
+For example, the regular binary package <classname>zlib1g</classname> has
+the following lines in its shlibs control file:
+<informalexample><screen>
+libz 1 zlib1g (>= 1:1.2.3.3.dfsg-1)
+udeb: libz 1 zlib1g-udeb (>= 1:1.2.3.3.dfsg-1)
+</screen></informalexample>
+
+</para><para>
+
+The second line is specific to the package type <quote>udeb</quote>. This
+alternative line is used when <command>dpkg-shlibdeps</command> is called
+with the <command>-tudeb</command> option; <command>dh_shlibdeps</command>
+will automatically add this option when processing a udeb.
+
+</para><para>
+
+Generating the extra <literal>udeb:</literal> lines is supported by
+<command>dh_makeshlibs</command> if the
+<command>--add-udeb="&lt;udeb name&gt;"</command> option is used.
+For example, the <filename>debian/rules</filename> file for
+<classname>libusb</classname> contains the following line:
+<informalexample><screen>
+dh_makeshlibs -V -s --add-udeb="libusb-0.1-udeb"
+</screen></informalexample>
+
+</para>
+   </sect1>
+</chapter>

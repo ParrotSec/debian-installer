@@ -1,0 +1,78 @@
+#! /bin/bash
+set -e
+
+# Create syslinux configuration or list syslinux configuration files (x86)
+# If called with two arguments (source and destination dir), the script will
+# create a syslinux configuration; if called with only one argument, it will
+# list the files for the created configuration.
+# The variables TYPE and INCLUDE_GTK - which determine the contents
+# of the created syslinux configuration - should be set in the environment.
+
+# See also the x86_syslinux target in build/config/x86.cfg and the
+# documentation for the SYSLINUX_CFG option in build/README.
+
+SRC="$1"
+DST="$2"
+
+[ -d "$SRC" ] || exit 1
+
+if [ -z "$DST" ]; then
+	# Only list config files
+	cd "$SRC"
+	# spk.cfg is only meant for the netboot-gtk image which has the gtk
+	# initrd at the root instead of gtk/
+	if [ "$IS_PURE_GTK" = 1 ]
+	then
+		FILTER=
+	else
+		FILTER="! -name spk.cfg ! -name adspk.cfg ! -name rqspk.cfg"
+	fi
+	find . -type f $FILTER | sed "s:\./::"
+	exit 0
+elif [ ! -d "$DST" ]; then
+	exit 1
+fi
+
+# Create config for default desktop environment
+create_standard_config() {
+	cp "$SRC"/syslinux.cfg "$SRC"/menu.cfg "$SRC"/stdmenu.cfg \
+	   "$SRC"/prompt.cfg "$SRC"/exithelp.cfg "$DST"/
+	cp "$SRC"/{,ad,rq}txt.cfg "$DST"/
+	if [ -n "$INCLUDE_GTK" ]; then
+		cp "$SRC"/{ad,rq,}{,spk}gtk.cfg "$DST"/
+	fi
+	if [ "$IS_PURE_GTK" = 1 ]; then
+		cp "$SRC"/{,ad,rq}spk.cfg "$DST"/
+	fi
+}
+
+case $TYPE in
+    template)
+	cp -r "$SRC"/*.cfg "$DST"/
+	if [ -z "$INCLUDE_GTK" ]; then
+		rm -f "$DST"/*gtk.cfg
+		rm -f "$DST"/*spkgtk.cfg
+		rm -f "$DST"/*spgtk.cfg
+	fi
+	if [ "$IS_PURE_GTK" != 1 ]; then
+		rm -f "$DST"/*spk.cfg
+	fi
+	exit 0
+	;;
+    prompt)
+	cp "$SRC"/prompt.cfg "$DST"/syslinux.cfg
+	cp "$SRC"/menu.cfg "$DST"/
+	cp "$SRC"/{,ad,rq}txt.cfg "$DST"/
+	if [ "$IS_PURE_GTK" = 1 ]; then
+		cp "$SRC"/{,ad,rq}spk.cfg "$DST"/
+	fi
+	;;
+    standard)
+	create_standard_config
+	;;
+    *)
+	exit 1
+	;;
+esac
+
+sed -i "s/desktop=%desktop% //" "$DST"/*.cfg

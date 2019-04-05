@@ -1,0 +1,12 @@
+setenv ramdisk uInitrd;
+setenv kernel uImage;
+setenv bootargs initrd=0x91000000 console=ttymxc0,115200 root=/dev/sda2 rootwait rw video=imx-ipuv3-fb:1024x600M-16@60 quiet lpj=3997696 earlyprintk=serial;
+${loadcmd} ${ramdiskaddr} ${ramdisk};
+if imi ${ramdiskaddr}; then; else
+  setenv bootargs ${bootargs} noinitrd;
+  setenv ramdiskaddr "";
+fi;
+${loadcmd} ${kerneladdr} ${kernel}
+if imi ${kerneladdr}; then
+  bootm ${kerneladdr} ${ramdiskaddr}
+fi;

@@ -1,0 +1,16 @@
+prompt  = true
+default = install
+message = /debian.txt
+root    = /dev/ram0
+image   = /linux
+read-write
+
+[boot]
+label   = Install
+ramdisk = /root.bin
+
+[boot]
+label   = Rescue
+ramdisk = /root.bin
+append  = single
+

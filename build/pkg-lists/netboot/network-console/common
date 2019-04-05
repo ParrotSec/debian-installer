@@ -1,0 +1,10 @@
+#include "network-console"
+
+# Remove localechooser so it will be pulled in via the network once the
+# user has logged in via SSH and can actually respond to questions.
+localechooser -
+# Also remove console-setup as it's not relevant for this type of install
+# (and the devices for which it's used).
+console-setup-udeb -
+kbd-udeb -
+console-setup-pc-ekmap -

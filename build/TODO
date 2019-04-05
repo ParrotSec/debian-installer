@@ -1,0 +1,5 @@
+* Use debian-archive-keyring-udeb
+* The apt download fails if the dpkg status file of the build system is
+  in an inconsistent state. It could be overridden to use another status
+  file, but that file would have to claim that all dependencies of the
+  udebs it's downloading were met. Hmm.

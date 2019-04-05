@@ -1,0 +1,229 @@
+Release testing checklist. Successful installs should be reported 
+for each of the following before release.
+
+Note that testing an installation includes checking the syslog for
+the installation for any anomalies.
+
+					pass/fail (details)
+
+Translations (using netinst CD image unless otherwise stated)
+	C (no locales)			
+	Albanian			
+	Arabic				
+	Basque				
+	Belarusian			
+	Bosnian				
+	Bulgarian			
+	Catalan				pass (dec)
+	Chinese (Simplified)		
+	Chinese (Traditional)		
+	Croatian			
+	Czech				
+	Danish				
+	Dutch			
+	Dzongkha			
+	Esperanto			
+	Finnish				
+	French				pass (bubulle@debian.org)
+	Galician			pass (dec)
+	German				
+	Greek				
+	Hebrew				
+	Hindi				
+	Hungarian			
+	Indonesian			
+	Italian				pass (dec)
+	Japanese			
+	Korean				
+	Kurdish				
+	Latvian				
+	Lithuanian			
+	Macedonian			
+	Northern Sami			
+	Norwegian Bokmal		
+	Norwegian Nynorsk		
+	Persian				
+	Polish				
+	Portuguese of Brazil
+	Portuguese			
+	Romanian			
+	Russian			
+	Slovak				
+	Slovenian			
+	Spanish				pass (dec)
+	Swedish				
+	Turkish				
+	Ukrainian			
+	Vietnamese			
+	Welsh				
+	Wolof				
+
+i386
+	netinst CD install		pass (dec) (to retest with 2.6.26-12)	
+	businesscard CD install		pas (bubulle@debian.org)
+	netboot install			pass (dec)
+	pcmcia install				
+	lvm install			pass (jan 30: andremachado@techforce.com.br)
+	lvm root				
+	software raid install	
+	lvm over raid			
+	crypto install (dm-crypt)	pass (dec)	
+	crypto install (loop-AES)		
+	crypto install (both)			
+	crypto root (dm-crypt)			
+	usb keychain				
+
+	32 mb ram install			pass (dec)
+	48 mb ram install			pass (dec)
+	rescue mode				
+	graphical rescue mode			pass (dec)
+	graphical (gtk)				pass (dec)
+	lvm install from netinst CD		
+	raid root				
+	raid 1 root and boot (lilo)		
+	usb floppy install	
+	real floppy install			
+	floppy + cd install			
+	floppy + network install	
+	pcmcia network install 			
+	  (any boot media)			
+	windows detection			
+	NTFS resizing				
+	other linux detection		
+	full CD desktop install			
+	- CD1 only (all tasks must show!)
+	- CD1 + CD2 only
+	- CD1 + mirror
+	KDE CD install				
+	- CD only (all tasks must show!)
+	- CD + mirror
+	XFCE CD install				
+	multiarch CD install			
+	Xen install
+	- text mode
+	- graphical mode
+
+amd64
+	netinst CD install			pass (dec)
+	businesscard CD install			pass (jan 30: chealer@gmail.com)
+	netboot install				
+	usb keychain		
+	full CD					
+	KDE CD install
+	XFCE CD install
+	graphical (gtk)			
+	multiarch CD boots amd64 and installs	
+
+powerpc
+	pegasos netinst cd			
+	pegasos businesscard cd			
+	pegasos	netboot				
+	pegasos serial install			
+	newworld netinst cd			
+	newworld businesscard cd		
+	newworld netboot	 		
+	newworld serial install			
+	newworld floppy + cd 			
+	newworld floppy + network 		
+	newworld w. pcmcia network card		
+	newworld 32 mb ram			
+	newworld 48 mb ram			
+	oldworld netinst cd			
+	oldworld businesscard cd		
+	oldworld netboot	 		
+	oldworld serial install			
+	oldworld floppy + cd 			
+	oldworld floppy + network 		
+	oldworld w. pcmcia network card		
+	oldworld 32 mb ram			
+	oldworld 48 mb ram			
+	G5 powermac netinst cd			
+	G5 powermac businesscard cd		
+	G5 powermac netboot	 		
+	G5 powermac serial install		
+	IBM 32bit CHRP netinst cd		
+	IBM 32bit CHRP businesscard cd		
+	IBM 32bit CHRP netboot	 		
+	IBM 32bit CHRP serial install		
+	IBM 64bit CHRP netinst cd		
+	IBM 64bit CHRP businesscard cd		
+	IBM 64bit CHRP netboot	 		
+	IBM 64bit CHRP serial install		
+	nubus powermac netinst cd		
+	nubus powermac businesscard cd		
+	nubus powermac netboot	 		
+	nubus powermac serial install		
+	prep powermac netinst cd		
+	prep powermac businesscard cd		
+	prep powermac netboot	 		
+	prep powermac serial install		
+	apus netinst cd				
+	apus businesscard cd			
+	apus netboot	 			
+	apus serial install			
+
+alpha
+	netinst cd install			pass (Jan 30: noahm@debian.org)
+	businesscard cd install			
+	netboot install				
+	desktop task install			
+
+armel
+	QNAP TS-109/TS-209			
+	QNAP TS-409				
+	Kurobox Pro				
+	HP mv2120				
+
+hppa
+	netinst CD install			
+	businesscard CD install			
+	netboot				
+
+ia64
+	netboot					
+	netinst CD				
+	businesscard CD				
+	usb keyboard			
+	desktop task install			
+
+mips
+	SGI (IP22; Indy) netboot		
+	SGI (IP22; Indy) CD boot		
+	SGI (IP22; Indy) via serial		
+	SGI (IP22; Indy) via graphics		
+	SGI (IP32; O2) via serial		
+	SGI (IP32; O2) via graphics		
+
+mipsel
+	Cobalt via SSH				
+	Cobalt via serial			
+	Cobalt (lowmem 1, 32 MB)		
+	Cobalt (lowmem 2, 24 MB)		
+
+m68k
+	amiga cdrom				
+	amiga nativehd				
+	atari cdrom				
+	atari floppy				
+	atari nativehd				
+	mac cdrom22				
+	mac hd-media22				
+	mac nativehd22				
+	vme netboot				
+
+s390						
+	IPL from dasd (generic)
+	IPL from vm reader (generic)
+	IPL from tape				
+	IUCV network				
+	CTC network				
+	QETH network, QDIO, IP	
+	QETH network, QDIO, Ethernet
+	QETH network, OSA			
+	DASD, ECKD				
+	DASD, FBA				
+
+sparc
+	sparc64 netinst cd 2.6			pass (jurij@wooyd.org)
+	sparc64 businesscard cd 2.6		
+	sparc64 netboot 2.6

@@ -1,0 +1,226 @@
+#!/usr/bin/perl
+
+# Invoke as:
+#
+#  ./gen-grub-cfg KEY1 VAL1 KEY2 VAL2 ... -- COMMAND LINE
+#
+# Keys are:
+#    KERNEL             Normal kernel to use (required)
+#    INITRD             Normal initrd to use (required)
+#    INITRD_GTK         Graphical installer initrd (optional)
+#
+#    KERNEL32           Alternative kernel for optional 32-bit entries
+#    INITRD32           Alternative initrd for optional 32-bit entries
+#    INITRD32_GTK       Alternative graphical initrd for optional 32-bit entries
+#
+#    THEME_PATH         Path (in boot env) where themes are kept
+#    HEADER             Local path to file cat include as a header
+#
+# At least KERNEL and INITRD must be given.
+#
+# Unsupported:
+#    DEBIAN_VERSION
+#    BUILD_DATE
+#
+# TODO: Theme generation from template
+#
+# When invoked as:
+#
+#  ./gen-grub-cfg \
+#    KERNEL "/%install%/vmlinuz" \
+#    KERNEL32 "/%install-x86%/vmlinuz" \
+#    INITRD "/%install%/initrd.gz" \
+#    INITRD32 "/%install-x86%/initrd.gz" \
+#    INITRD_GTK "/%install%/gtk/initrd.gz" \
+#    INITRD32_GTK "/%install-x86%/gtk/initrd.gz" \
+#    THEME_PATH "/boot/grub/theme/" \
+#    HEADER "build/boot/x86/grub/grub-efi.cfg" \
+#    -- vga=788
+#
+# Will reproduce something similar to
+# debian-testing-amd64-netinst.iso::/boot/grub/grub.cfg weekly build
+# circa 2014-09-27.
+
+use warnings;
+use strict;
+
+my %VARS;
+
+while (@ARGV) {
+    my $key=shift;
+    last if $key eq "--";
+
+    my $value=shift;
+    $VARS{$key}=$value;
+}
+
+my @OPTS = @ARGV;
+
+die "No kernel?" unless $VARS{KERNEL};
+die "No initrd?" unless $VARS{INITRD};
+
+my $graphical = defined $VARS{INITRD_GTK};
+my $thirtytwo = defined $VARS{KERNEL32} && defined $VARS{INITRD32}
+    && (!$graphical || defined $VARS{INITRD32_GTK});
+my $themed = defined $VARS{THEME_PATH};
+
+my @menu_number = (1);
+
+sub print_indented ($)
+{
+    my ($text) = @_;
+    foreach ( split "\n", $text ) {
+        my $i = 1;
+        print "    " while ( $i++ < $#menu_number );
+        print "$_";
+        print "\n";
+    }
+}
+
+sub menu_theme ()
+{
+    my $name = join "-", @menu_number;
+}
+sub print_set_theme ($)
+{
+    my ($theme) = @_;
+    return unless $themed;
+
+    print_indented("set theme=$VARS{THEME_PATH}$theme\n");
+}
+
+sub start_submenu ($;%)
+{
+    my ($title,%xattr) = @_;
+
+    $xattr{Hotkey} ||= 0;
+
+    my $hotkey = "";
+    $hotkey = " --hotkey=".$xattr{Hotkey}
+        if $xattr{Hotkey};
+
+    print_indented("submenu$hotkey '$title' {\n");
+
+    my $theme = menu_theme();
+    push @menu_number, 1;
+
+    print_indented("set menu_color_normal=cyan/blue\n");
+    print_indented("set menu_color_highlight=white/blue\n");
+    print_set_theme($theme);
+}
+sub end_submenu ()
+{
+    pop @menu_number;
+    $menu_number[$#menu_number]++;
+    print_indented("}\n");
+}
+
+sub menuentry ($;%)
+{
+    my ($title,%xattr) = @_;
+
+    $xattr{ThirtyTwo} ||= 0;
+    $xattr{Graphical} ||= 0;
+
+    $xattr{Hotkey} ||= 0;
+
+    $xattr{Expert} ||= 0;
+    $xattr{Auto} ||= 0;
+    $xattr{Rescue} ||= 0;
+    $xattr{Speech} ||= 0;
+
+    $xattr{Quiet} = !$xattr{Expert} unless defined $xattr{Quiet};
+
+    return if $xattr{Graphical} && !$graphical;
+    return if $xattr{ThirtyTwo} && !$thirtytwo;
+
+    die "automated expert?" if $xattr{Expert} && $xattr{Auto};
+
+    my $kernel = $xattr{ThirtyTwo} ? $VARS{KERNEL32} : $VARS{KERNEL};
+    my $initrd = $xattr{Graphical} ? $VARS{INITRD_GTK} : $VARS{INITRD};
+    $initrd = $xattr{Graphical} ? $VARS{INITRD32_GTK} : $VARS{INITRD32}
+        if $xattr{ThirtyTwo};
+
+    die "no kernel" unless $kernel;
+    die "no initrd" unless $initrd;
+
+    my @cmdline;
+    # Ordering here is to allow diffing against previous versions of this file.
+    push @cmdline, "desktop=$xattr{Desktop}" if $xattr{Desktop};
+    push @cmdline, "priority=low" if $xattr{Expert};
+    push @cmdline, ("auto=true", "priority=critical") if $xattr{Auto};
+    push @cmdline, @OPTS;
+    push @cmdline, "rescue/enable=true" if $xattr{Rescue};
+    push @cmdline, "speakup.synth=soft" if $xattr{Speech};
+    push @cmdline, "---";
+    push @cmdline, "quiet" if $xattr{Quiet};
+
+    my $cmdline = join(" ", @cmdline);
+
+    my $hotkey = "";
+    $hotkey = " --hotkey=".$xattr{Hotkey}
+        if $xattr{Hotkey};
+
+    print_indented (<<EOE);
+menuentry$hotkey '$title' {
+    set background_color=black
+    linux    $kernel $cmdline
+    initrd   $initrd
+}
+EOE
+}
+
+if ( defined $VARS{HEADER} )
+{
+    open(HEADER, "<$VARS{HEADER}") or die "open header: $!";
+    print <HEADER> or die "write header: $!";
+    close(HEADER) or die "close header: $!";
+}
+
+print_set_theme(menu_theme());
+push @menu_number, 1;
+
+menuentry("Install");
+menuentry("Graphical install", Graphical => 1);
+
+start_submenu("Advanced options ...", Hotkey => 'a'); {
+    menuentry("... Graphical expert install", Graphical => 1, Expert => 1);
+    menuentry("... Graphical rescue mode", Graphical => 1, Rescue => 1);
+    menuentry("... Graphical automated install", Graphical => 1, Auto => 1);
+    menuentry("... Expert install", Expert => 1);
+    menuentry("... Rescue mode", Rescue => 1);
+    menuentry("... Automated install", Auto => 1);
+    menuentry("... Expert install with speech synthesis", Expert => 1, Speech => 1, Hotkey => 'x');
+    menuentry("... Rescue mode with speech synthesis", Rescue => 1, Speech => 1, Hotkey => 'r');
+    menuentry("... Automated install with speech synthesis", Auto => 1, Speech => 1, Hotkey => 'a');
+
+    start_submenu("... Desktop environment menu ..."); {
+
+        foreach ( ["GNOME", "gnome"], ["KDE Plasma", "kde"], ["LXDE", "lxde"] ) {
+            my ($desktop,$opt) = @{$_};
+
+            my $one = sub { my ($title, %xargs) = @_;
+                            $xargs{Desktop} = $opt;
+                            menuentry($title, %xargs);
+            };
+            start_submenu("... $desktop desktop boot menu ..."); {
+                $one->("... Install");
+                $one->("... Graphical install", Graphical => 1);
+
+                start_submenu("... $desktop advanced options ..."); {
+                    $one->("... Graphical expert install", Graphical => 1, Expert => 1);
+                    $one->("... Graphical automated install", Graphical => 1, Auto => 1);
+                    $one->("... Expert install", Expert => 1);
+                    $one->("... Automated install", Auto => 1);
+                    $one->("... Expert install with speech synthesis", Expert => 1, Speech => 1, Hotkey => 'x');
+                    $one->("... Automated install with speech synthesis", Auto => 1, Speech => 1, Hotkey => 'a');
+                } end_submenu(); # $desktop advanced
+
+                $one->("... Install with speech synthesis", Graphical => 1, Speech => 1, Hotkey => 's');
+                $one->("... 32 bit speech install", ThirtyTwo => 1, Graphical => 1, Speech => 1)
+                    if $thirtytwo;
+            } end_submenu(); # $desktop submenu
+        } # Desktop loop
+    } end_submenu(); # Desktop submenu
+} end_submenu(); # Advanced
+menuentry('Install with speech synthesis', Graphical => $graphical, Speech => 1, Hotkey => 's')

@@ -1,0 +1,25 @@
+This is a checklist of steps involved in updating d-i to use a new version
+of the kernel.
+
+ 1. Compare available modules in new kernel and add any that are useful for
+    installation to an appropriate udeb.
+ 2. New kernel package enters the archive.
+ 3. Update build/config/ KERNELVERSION to use new kernel (only commit once
+    udebs are accepted).
+ 4. Make sure images still build, as sometimes new kernels will overflow
+    space limits. If not, the kernel-wedge udeb configuration in the kernel
+    package needs to be revised.
+ 5. Do initial test installs, which must be done against unstable to
+    use the new kernel udebs from unstable or using hand-build CD
+    images.
+ 6. New kernel package enters testing.
+ 7. Test to make sure lowmem installs still work. New kernels and
+    added/changed modules sometimes break lowmem. Documentation on the
+    minimum memory requirements may need to be updated
+    (manual/build/arch-options/).
+ 8. Get new debian-cd uploaded and into testing.
+ 9. Full user testing, etc.
+10. Update kernel version in manual/build/arch-options for the
+    relevant kernel.
+11. Inform maintainer of Release Notes of the changes in kernel version
+    (or update ddp/manuals.sgml/release-notes/release-notes.ent in CVS).

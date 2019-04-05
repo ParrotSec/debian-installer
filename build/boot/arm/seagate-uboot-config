@@ -1,0 +1,15 @@
+setenv debian_kernel_addr 0x2000000
+setenv debian_initrd_addr 0x5100000
+setenv debian_dtb_addr 0x5000000
+setenv initrd_high 0xffffffff
+setenv fdt_high 0xffffffff
+setenv debian_boot_part 1
+setenv debian_kernel_img /uImage
+setenv debian_initrd_img /uInitrd
+setenv debian_dtb_img /dtb
+setenv debian_bootargs setenv bootargs ${console}
+setenv debian_load_image 'ext2load ${disk_iface} ${disk_num}:${boot_part} ${kern_addr} ${debian_kernel_img} && iminfo ${debian_kernel_addr}; ext2load ${disk_iface} ${disk_num}:${boot_part} ${debian_initrd_addr} ${debian_initrd_img}; ext2load ${disk_iface} ${disk_num}:${boot_part} ${debian_dtb_addr} ${debian_dtb_img}'
+setenv debian_boot 'hdd start; ide reset; setenv boot_part ${debian_boot_part}; for disk in ${disk_list}; do run disk_expand; echo Booting Debian from disk ${disk}...; run debian_load_image; run debian_bootargs; bootm ${debian_kernel_addr} ${debian_initrd_addr} ${debian_dtb_addr}; done'
+setenv bootcmd run debian_boot
+saveenv
+run bootcmd

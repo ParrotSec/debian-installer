@@ -1,0 +1,113 @@
+<!-- 
+  These are standard URLs for well-known resources on the Internet.
+  You can redefine these to your taste in your install.XX.xml.
+  The Debian URLs do content negotiation so it's not necessary there.
+ -->
+
+
+<!-- ******************************************
+  Standard Debian URLs
+  -->
+
+<!ENTITY salsa "salsa.debian.org">
+<!ENTITY url-salsa "https://&salsa;/">
+<!ENTITY salsa-account-page '<ulink url="https://salsa.debian.org/public">https://salsa.debian.org/public</ulink>'>
+
+<!ENTITY salsa-debian-auth "&lt;salsa_username&gt;@salsa.debian.org">
+<!ENTITY salsa-debian "salsa.debian.org">
+
+<!ENTITY git-debian-auth "&lt;salsa_username&gt;@salsa.debian.org">
+<!ENTITY git-debian "salsa.debian.org">
+
+<!ENTITY hosted-weblate "https://hosted.weblate.org/projects/debian-installer/">
+
+<!ENTITY irc-server "irc.debian.org">
+<!ENTITY irc-channel "#debian-boot on &irc-server;">
+
+<!ENTITY backports "backports.debian.org">
+<!ENTITY url-backports "https://&backports;/">
+
+<!ENTITY url-status "https://d-i.debian.org/l10n-stats">
+
+<!ENTITY url-languagelist "https://d-i.debian.org/doc/i18n/languages.html">
+
+<!ENTITY url-spellchecker-status "https://d-i.debian.org/l10n-spellcheck/">
+
+<!ENTITY url-d-i-translation-status "&url-status;/translation-status.html">
+
+<!ENTITY url-level1     "&url-status;/level1">
+<!ENTITY url-sublevel1-pot     "&url-status;/level1/POT/packages_po_sublevel1.pot">
+<!ENTITY url-sublevel2-pot     "&url-status;/level1/POT/packages_po_sublevel2.pot">
+<!ENTITY url-sublevel3-pot     "&url-status;/level1/POT/packages_po_sublevel3.pot">
+<!ENTITY url-sublevel4-pot     "&url-status;/level1/POT/packages_po_sublevel4.pot">
+<!ENTITY url-sublevel5-pot     "&url-status;/level1/POT/packages_po_sublevel5.pot">
+<!ENTITY url-sublevel1-po     "&url-status;/level1/files/&language;/packages_po_sublevel1_&language;.po">
+<!ENTITY url-sublevel2-po     "&url-status;/level1/files/&language;/packages_po_sublevel2_&language;.po">
+<!ENTITY url-sublevel3-po     "&url-status;/level1/files/&language;/packages_po_sublevel3_&language;.po">
+<!ENTITY url-sublevel4-po     "&url-status;/level1/files/&language;/packages_po_sublevel4_&language;.po">
+<!ENTITY url-sublevel5-po     "&url-status;/level1/files/&language;/packages_po_sublevel5_&language;.po">
+<!ENTITY url-sublevel1-pot-link     '<ulink url="&url-sublevel1-pot;">&url-sublevel1-pot;</ulink>'>
+<!ENTITY url-sublevel1-po-link     '<ulink url="&url-sublevel1-po;">&url-sublevel1-po;</ulink>'>
+<!ENTITY url-sublevel2-pot-link     '<ulink url="&url-sublevel2-pot;">&url-sublevel2-pot;</ulink>'>
+<!ENTITY url-sublevel2-po-link     '<ulink url="&url-sublevel2-po;">&url-sublevel2-po;</ulink>'>
+<!ENTITY url-sublevel3-pot-link     '<ulink url="&url-sublevel3-pot;">&url-sublevel3-pot;</ulink>'>
+<!ENTITY url-sublevel3-po-link     '<ulink url="&url-sublevel3-po;">&url-sublevel3-po;</ulink>'>
+<!ENTITY url-sublevel4-pot-link     '<ulink url="&url-sublevel4-pot;">&url-sublevel4-pot;</ulink>'>
+<!ENTITY url-sublevel4-po-link     '<ulink url="&url-sublevel4-po;">&url-sublevel4-po;</ulink>'>
+<!ENTITY url-sublevel5-pot-link     '<ulink url="&url-sublevel5-pot;">&url-sublevel5-pot;</ulink>'>
+<!ENTITY url-sublevel5-po-link     '<ulink url="&url-sublevel5-po;">&url-sublevel5-po;</ulink>'>
+
+<!ENTITY url-level2     "&url-status;/level2/files">
+<!ENTITY url-level2-pot     "&url-status;/level2/POT">
+<!ENTITY url-level2-po     "&url-status;/level2/files/&language;">
+<!ENTITY url-level2-pot-link     '<ulink url="&url-level2-pot;">&url-level2-pot;</ulink>'>
+<!ENTITY url-level2-po-link     '<ulink url="&url-level2-po;">&url-level2-po;</ulink>'>
+
+<!ENTITY url-level3     "&url-status;/level3/files">
+<!ENTITY url-level3-pot     "&url-status;/level3/POT">
+<!ENTITY url-level3-po     "&url-status;/level3/files/&language;">
+<!ENTITY url-level3-pot-link     '<ulink url="&url-level3-pot;">&url-level3-pot;</ulink>'>
+<!ENTITY url-level3-po-link     '<ulink url="&url-level3-po;">&url-level3-po;</ulink>'>
+
+<!ENTITY git-clone-d-i-repo "git clone git@salsa.debian.org:installer-team/d-i.git d-i">
+
+<!-- URLs for various files locations -->
+<!ENTITY git-level1 "git clone git@salsa.debian.org:installer-team/d-i.git">
+<!ENTITY git-level1-anon "git clone git@salsa.debian.org:installer-team/d-i.git">
+
+<!ENTITY git-tasksel-anon "git clone git@salsa.debian.org:installer-team/tasksel.git">
+<!ENTITY git-tasksel "git clone git@salsa.debian.org:installer-team/tasksel.git">
+<!ENTITY git-win32-loader-anon "git clone -q git@salsa.debian.org:installer-team/win32-loader.git">
+<!ENTITY git-win32-loader "git clone git@salsa.debian.org:installer-team/win32-loader.git">
+<!ENTITY git-iso-codes-anon "git clone git@salsa.debian.org:debian/iso-codes.git">
+<!ENTITY git-iso-codes "git clone git@salsa.debian.org:debian/iso-codes.git">
+<!ENTITY git-grub2 "git clone git@salsa.debian.org:grub-team/grub.git">
+<!ENTITY git-popcon "git clone git@salsa.debian.org:popularity-contest-team/popularity-contest.git">
+<!ENTITY git-debconf "git clone git@salsa.debian.org:pkg-debconf/debconf.git">
+<!ENTITY git-eject "git clone ssh://&git-debian;/git/collab-maint/eject"> <!-- FIXME: no upstream repo currently ??? -->
+<!ENTITY git-espeakup "git clone git@salsa.debian.org:a11y-team/espeakup.git">
+<!ENTITY git-newt "git clone git@salsa.debian.org:mckinstry/newt.git">
+
+<!-- Wiki page for fonts -->
+<!ENTITY wiki-fonts "https://wiki.debian.org/DebianInstaller/GUIFonts">
+
+
+
+
+<!ENTITY url-bts "https://bugs.debian.org/">
+<!ENTITY email-bts " <email>submit@bugs.debian.org</email>">
+
+<!ENTITY email-debian-boot-list "<email>debian-boot@lists.debian.org</email>">
+<!ENTITY email-debian-i18n-list "<email>debian-i18n@lists.debian.org</email>">
+
+<!ENTITY url-debian-list-archives "https://lists.debian.org/">
+
+<!ENTITY url-debian-l10n "https://www.debian.org/intl/l10n/">
+
+<!ENTITY url-tp "https://www.translationproject.org/">
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+End:
+-->

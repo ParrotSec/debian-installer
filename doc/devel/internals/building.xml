@@ -1,0 +1,515 @@
+<chapter id="build">
+<title>Building installer images</title>
+<para>
+
+This document only provides an introduction to building installer images
+using existing definitions. The README in <filename>installer/build</filename>
+in the SVN repository contains more detailed information about the build
+system and how to modify existing or define new images.
+
+</para><para>
+
+An image consists of:
+
+<itemizedlist>
+ <listitem>
+a kernel;
+ </listitem><listitem>
+an initrd, which is basically a collection of unpacked udebs;
+ </listitem><listitem>
+in some cases a boot loader and/or configuration files used for booting.
+ </listitem>
+</itemizedlist>
+
+</para><para>
+
+Most d-i images are <quote>ready for use</quote>. The exception are the
+cdrom images which form only the base (kernel and initrd) for creating
+the actual CD or DVD images. The package used for creating the CD/DVD
+images is <classname>debian-cd</classname>.
+
+</para><para>
+
+On some architectures there is one CD image that <emphasis>is</emphasis>
+ready for use: the <filename>mini.iso</filename>. This image is produced as
+a by-product of the netboot target. A mini.iso image does not really support
+installing from CD as it retrieves all additional udebs and packages over
+the network.
+
+</para><para>
+
+It is important to distinguish between building images for release and
+building images for development/testing use.
+
+</para><para>
+
+A release build is done, as for other packages that are to be uploaded,
+from the <filename>installer</filename> directory using
+<command>debian/rules</command>.
+This will create a binary package (needed for uploading) containing some
+documentation, but the important bit is a tarball containing all installer
+images. After the upload this tarball needs BYHAND processing<footnote>
+
+<para>
+This entails unpacking the tarball into the correct location on the master
+mirror server and creating/updating the correct symlinks. See for example
+<ulink url="http://ftp.debian.org/debian/dists/sid/main/installer-i386/"/>.
+</para>
+
+</footnote> by FTP-masters before the buildds will pick up the upload for
+other architectures.
+Nowadays the BYHAND processing for <classname>debian-installer</classname>
+(and also for <classname>tasksel</classname>) is automated.
+
+</para><para>
+
+Building images for development and testing is done from the
+<filename>installer/build</filename> directory<footnote>
+
+<para>
+This includes the daily built images available from
+<ulink url="http://www.debian.org/devel/debian-installer"/>. These are
+generated and uploaded from machines run by d-i porters using the
+<filename>daily-build</filename> script.
+</para>
+
+</footnote> using
+<command>fakeroot make &lt;<replaceable>target</replaceable>&gt;</command>.
+
+</para>
+
+   <sect1><title>The standard D-I and CD images</title>
+<para>
+
+An important difference between release and development builds is that
+release builds will use udebs for the same suite as the target system
+being installed, while development builds will by default install testing,
+but use udebs from unstable.
+This allows to mostly avoid the occasional breakage of the base system and
+tasks in unstable while using the most recent udebs.
+
+</para>
+
+    <sect2><title>Debian Installer images</title>
+
+<itemizedlist>
+ <listitem>
+daily D-I builds are built in unstable and use udebs from unstable
+ </listitem><listitem>
+regular D-I uploads to the archive are built in unstable and use udebs
+from testing
+ </listitem><listitem>
+D-I uploads to stable are built in stable and use udebs from
+stable + proposed-updates
+ </listitem>
+</itemizedlist>
+
+<para>
+
+The two config variables that determine this are:
+
+<variablelist>
+  <varlistentry>
+    <term>USE_UDEBS_FROM</term>
+    <listitem><para>
+Defines the suite or codename from where udebs are taken. The default is
+set to <literal>unstable</literal> in <filename>./config/common</filename> for
+SVN/trunk. For official uploads the value of this variable is overruled in
+<filename>debian/rules</filename>.
+    </para><para>
+The value in <filename>./config/common</filename> should be changed to the
+correct codename for RC release uploads (after branching) to ensure correct
+builds from the branch post-release.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>DEBIAN_RELEASE</term>
+    <listitem><para>
+Defines the <emphasis>codename</emphasis> of the Debian release that should
+be installed by default. It gets included in /etc/default-release in most
+initrds and is read by various components during installation.
+    </para><para>
+Because this is set to a codename, the value is correct for the whole
+lifetime of a Debian release and helps ensure the correct suite gets
+installed even when a release becomes <quote>oldstable</quote> or gets
+archived.
+    </para><para>
+Some installation methods allow this value to be overruled by choosing a
+different suite during mirror selection or passing the <literal>suite=</literal>
+option boot parameter.
+    </para></listitem>
+  </varlistentry>
+</variablelist>
+
+</para>
+    </sect2>
+
+    <sect2><title>CD and DVD images</title>
+
+<itemizedlist>
+ <listitem>
+daily <quote>sid_d-i</quote> CD images are built using daily D-I builds,
+udebs from unstable and regular packages from testing
+ </listitem><listitem>
+daily <quote>stretch_d-i</quote> CD/DVD images are built using the current
+D-I release in testing, udebs from testing and regular packages from testing
+ </listitem><listitem>
+weekly CD builds are built using the current D-I release in testing, udebs from
+testing and regular packages from testing
+ </listitem><listitem>
+official CD/DVD builds use everything from stable and thus can only be
+built <emphasis>after</emphasis> the archive has already been updated to
+a new stable (point) release
+ </listitem>
+</itemizedlist>
+
+<para>
+
+The <quote>sid_d-i</quote> CDs are what's normally linked as the daily
+built images from the D-I project page; when preparing for a release
+those will link to <quote>stretch_d-i</quote> CDs to facilitate pre-release
+testing.
+
+</para>
+    </sect2>
+   </sect1>
+
+   <sect1><title>Requirements for building</title>
+<para>
+
+For both release and development builds the build dependencies as listed
+in <filename>installer/debian/control</filename> need to be satisfied.
+
+</para><para>
+
+To build installer images from SVN trunk, the build machine needs to be
+running unstable or you need to set up a sid chroot to build in. (To build
+images from one of the older release branches of the repository, the build
+machine needs to run or have a chroot for that release.)
+
+</para><para>
+
+During the build, the needed udebs will be retrieved from a mirror. By default
+this mirror is based on your <filename>/etc/apt/sources.list</filename> (see
+the generated file <filename>build/sources.list.udeb</filename>). To use a
+different source, create a file <filename>sources.list.udeb.local</filename>.
+
+</para>
+   </sect1>
+
+   <sect1><title>Build targets</title>
+<para>
+
+To see which targets are available, run <command>make</command>. This will
+result in a list of some 130 targets, most of which are not really relevant.
+A more useful list can be obtained with <command>make | grep ^build</command>.
+The table below has the most often used targets for x86.
+
+<informaltable><tgroup cols='2'><tbody>
+  <row>
+    <entry><userinput>build_all</userinput></entry>
+    <entry>Builds all images</entry>
+  </row><row>
+    <entry><userinput>build_cdrom_isolinux</userinput></entry>
+    <entry>Builds the cdrom images</entry>
+  </row><row>
+    <entry><userinput>build_netboot</userinput></entry>
+    <entry>Builds the netboot images and the mini.iso</entry>
+  </row><row>
+    <entry><userinput>reallyclean</userinput></entry>
+    <entry>Completely cleans the build environment</entry>
+  </row>
+</tbody></tgroup></informaltable>
+
+The <userinput>reallyclean</userinput> target is often needed when changes
+are made between builds because otherwise udebs or information may be
+retrieved from temporary or cache directories and the changes will not take
+effect. The <filename>rebuild_*</filename> targets clean some of this, but
+not always enough.
+
+</para>
+   </sect1>
+
+   <sect1><title>The build system explained</title>
+<para>
+
+The easiest way to start is with the purpose of the subdirectories in the
+<filename>installer/build</filename> directory.
+
+</para>
+
+<itemizedlist>
+ <listitem><para>
+<filename>util</filename>: contains helper scripts called from the Makefile
+ </para></listitem>
+ <listitem><para>
+<filename>config</filename>: defines the available targets (per architecture)
+ </para></listitem>
+ <listitem><para>
+<filename>pkg-lists</filename>: defines which udebs are included in an image
+(per image type)
+ </para></listitem>
+ <listitem><para>
+<filename>boot</filename>: contains configuration files and make targets used
+to make images bootable
+ </para></listitem>
+ <listitem><para>
+<filename>localudebs</filename>: allows using (versions of) udebs not
+available on the mirror you use
+ </para></listitem>
+</itemizedlist>
+
+<para>
+
+Two files containing important configuration info are
+<filename>config/dir</filename> and <filename>config/common</filename>.
+However, normally there should be no need to modify any of the variables
+defined in these files.
+
+</para><para>
+
+Both the <filename>config</filename> and <filename>pkg-lists</filename>
+directories have a tree structure with general configuration defined in
+the root and more specific configuration defined in branches and leaves.
+Branches are defined in directories that have the same name as a config
+file on the higher level. The <filename>config</filename> directory
+contains Makefile snippets.
+
+</para>
+
+    <sect2><title>config</title>
+<para>
+
+For example, the definition for i386 images starts with
+<filename>config/i386.cfg</filename> which, besides the current kernel
+versions, defines the media supported with the line:
+
+<informalexample><screen>
+MEDIUM_SUPPORTED = cdrom cdrom-xen netboot netboot-xen hd-media
+</screen></informalexample>
+
+</para><para>
+
+These media correspond to the main targets for i386 and are further defined
+in <filename>config/i386</filename>. The <filename>hd-media.cfg</filename>
+file in that directory contains, amongst others, the following lines:
+
+<informalexample><screen>
+FLAVOUR_SUPPORTED = "" gtk
+EXTRATARGETS = build_hd-media_gtk
+</screen></informalexample>
+
+</para><para>
+
+The first line defines that the netboot image has two flavors: the default one
+(for the newt frontend), and a second one for the gtk frontend. The latter is
+further defined in the <filename>config/i386/hd-media/gtk.cfg</filename> file.
+The second line ensures that the gtk image will always be built together with
+the newt image.
+
+</para><para>
+
+The files in config are processed recursively to dynamically generate the
+build targets, so in this example you get a <userinput>hd-media</userinput>,
+a <userinput>hd-media_gtk</userinput> target and targets for the other media.
+
+</para><para>
+
+The structure of the config files can get quite complex and it can be hard
+to keep track of the exact role of the different variables set in them.
+
+</para>
+    </sect2>
+
+    <sect2><title>pkg-lists</title>
+<para>
+
+The list of udebs to be included in an image is built by the
+<command>util/pkg-list</command> script based on definitions in the
+<filename>pkg-lists</filename> directory. Again, processing can be quite
+complex. Let's take the netboot target for i386 as an example to explain it.
+
+</para><para>
+
+First the file <filename>pkg-lists/netboot/i386.cfg</filename> is considered
+and all udebs listed in it are added. Some example lines from that file:
+
+<informalexample><screen>
+console-keymaps-at
+nic-modules-${kernel:Version}
+mmc-modules-${kernel:Version} ?
+</screen></informalexample>
+
+</para><para>
+
+The variable <literal>${kernel:Version}</literal> is expanded to match the
+package name of the udeb based on the kernel version and flavor. If the
+name of a udeb is followed by a question mark it is skipped if the package
+is not available (without the question mark an error would be generated).
+
+</para><para>
+
+The <command>pkg-list</command> script will also look for the presence of
+files named <filename>common</filename> and <filename>local</filename>
+and thus <filename>pkg-lists/netboot/common</filename> is processed next.
+This file exists and lists a number of udebs that belong in any netboot
+image, independent of the architecture. This file contains two include
+directives which result in the specified files being processed next:
+
+<informalexample><screen>
+#include "base"
+#include "kernel"
+</screen></informalexample>
+
+</para><para>
+
+Thus, udebs listed in <filename>pkg-lists/base</filename> (containing udebs
+common to all images) and <filename>pkg-lists/kernel</filename> (included
+in all bootable images) are also processed.
+
+</para><para>
+
+The file <filename>pkg-lists/netboot/local</filename> does not normally
+exist as it is intended for the inclusion of non-standard udebs. It is also
+very useful for testing as it can be used to temporarily add udebs not
+normally included in an image without the need to modify the regular files.
+
+</para><para>
+
+Finally, the script will check for <filename>pkg-lists/local</filename>
+and <filename>pkg-lists/exclude</filename>. The latter exists and contains
+some udebs otherwise pulled in by dependencies, but that should not be
+included because of library reduction, which is covered in the next section.
+Note that the exclusion is not triggered by the file name, but rather by the
+dash after the name of the udebs.
+
+</para><para>
+
+All dependencies of udebs listed in <filename>pkg-lists</filename> will
+also be automatically included in the image.
+
+</para><para>
+
+To see how the package list is built for a particular image, set
+<code>my $debug=1;</code> in the <command>util/pkg-list</command> script.
+
+</para>
+    </sect2>
+   </sect1>
+
+   <sect1><title>Result of the build</title>
+<para>
+
+If the build is successful, the images that were built can be found under
+the <filename>build/dest</filename> directory. Depending on the type of
+build you will also find manifest and log files there.
+
+</para><para>
+
+Before the image is created, its contents are assembled in the directory
+<filename>build/tmp/&lt;<replaceable>target</replaceable>&gt;</filename>.
+The <filename>tree</filename> subdirectory there contains the full contents
+of the initrd; other subdirectories are used for different purposes.
+
+</para>
+   </sect1>
+
+   <sect1><title>Library reduction</title>
+<para>
+
+Library reduction (relinking a library leaving out unused symbols) is used
+as yet another method to minimize the size of initrds. The downside of
+library reduction is that this requires the <classname>dev</classname> and
+<classname>pic</classname> packages for the libraries to be reduced to be
+installed on the build system which also means that their version needs to
+match the version of the libraries in the udebs.
+
+</para><para>
+
+The size reduction is most significant for libc (40%) and libm (90%). Other
+libraries that are reduced include libresolv, libslang and libnewt. The
+reduction is done by calling <command>mklibs</command> from the main
+<filename>Makefile</filename>.
+
+</para><para>
+
+As only the executables that are included in an image are taken into account
+during the library reduction, we have to provide for executables in components
+that are installed later as they would fail if they use symbols that have
+been taken out.
+
+</para><para>
+
+This is the reason that the udebs containing reduced libraries are excluded
+in <filename>pkg-lists/exclude</filename> which results in the udeb not
+being listed in the <filename>/var/lib/dpkg/status</filename> file in the
+intrd. If no udebs that are installed later depend on the library, all is
+well. If a udeb that does depend on it is installed later,
+<classname>anna</classname> (or rather <command>udpkg</command>) will see
+that the dependency is not satisfied, and will install the udeb so the
+unreduced library replaces the reduced version.
+
+</para><para>
+
+Note that library reduction is only done after unpacking udebs for inclusion
+in an image; the libraries included in udebs are never reduced.
+
+</para>
+   </sect1>
+
+   <sect1><title>Using localudebs</title>
+<para>
+
+The <filename>localudebs</filename> directory allows to use a different
+version of udebs than is available from the mirror you use. This can be
+used to test a new version of a udeb or to run the installer with a debug
+version of a udeb. It can also be used to build an image with a custom udeb.
+
+</para><para>
+
+To use a local udeb, just copy it into the directory.
+A <filename>Packages</filename> file will be generated automatically. Your
+udeb should have a version equal to or greater than the udeb currently on
+the mirror you use.
+
+</para><para>
+
+Note that local udebs will only be included in the image if the udeb would
+be included in a normal build too. So it has to be selected by the
+<command>pkg-list</command> script. Create a
+<filename>pkg-lists/local</filename> or
+<filename>pkg-lists/&lt;<replaceable>image</replaceable>&gt;/local</filename>
+to add udebs to the image that would not normally be included.
+
+</para><para>
+
+Some things to keep in mind when using localudebs.
+
+</para>
+
+<itemizedlist>
+ <listitem><para>
+If you add an extra udeb, its dependencies will be included too. If those
+dependencies include virtual packages, the result is not always what you'd
+expect.
+ </para></listitem>
+ <listitem><para>
+Adding extra udebs will increase the size of the initrd; some architectures
+have limits for initrd size.
+ </para></listitem>
+ <listitem><para>
+If you use a <filename>sources.list.udeb.local</filename>, make sure to add
+as the first line:
+
+<informalexample><screen>
+deb copy:&lt;<replaceable>path-from-root-to</replaceable>&gt;/installer/build/ localudebs/
+</screen></informalexample>
+
+ </para></listitem>
+ <listitem><para>
+Don't forget to clean up after you're finished.
+ </para></listitem>
+</itemizedlist>
+
+   </sect1>
+</chapter>

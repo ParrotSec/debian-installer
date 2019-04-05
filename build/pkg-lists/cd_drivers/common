@@ -1,0 +1,5 @@
+load-cdrom
+cdrom-retriever
+disk-detect
+cdrom-detect
+file-preseed

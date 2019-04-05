@@ -1,0 +1,318 @@
+<appendix id="git-basics"><title>Some basic notions about <acronym>git</acronym></title>
+
+<sect1>
+<title>Getting an account on &salsa;
+</title>
+
+<para>
+<acronym>git</acronym> commit access requires the creation of an account on the &salsa;
+server. This is as simple as opening &url-salsa; and clicking on <quote>Sign in / Register</quote>
+in the top right corner.
+</para>
+
+<para>
+Official Debian developers will probably use the same login as their
+Debian login, but must go through the account creation process
+anyway. Non-Debian developers should be aware that the login they
+will choose on &salsa; will be followed by <quote>-guest</quote>. This has
+absolutely no meaning of any kind of <emphasis>second class
+citizens</emphasis>, but is just an easy way for &salsa; system
+administrators to know who is an official Debian developer.
+</para>
+
+</sect1>
+
+<sect1>
+<title>
+Installing <acronym>git</acronym> and <acronym>myrepos</acronym>
+</title>
+
+<para>
+Translators need to install <acronym>git</acronym>
+on their system. Just do <command>apt install git</command>
+</para>
+
+<para>
+&d-i; contributors who want to work on the code of the installer (so not just translation
+work), additionally need to install <acronym>myrepos</acronym>
+by <command>apt install myrepos</command>
+</para>
+
+<para>
+Users of non-Debian Linux distributions will probably easily find
+installation sources for git and myrepos in their distribution packages
+list.
+</para>
+
+
+</sect1>
+
+<sect1>
+<title>
+Using <acronym>git</acronym> to get and commit files
+</title>
+
+<para>
+Once their account is allowed to write to the project, translators
+can download the translation files using the
+checkout commands mentioned in <xref linkend="translators"/>.
+</para>
+
+<para>
+Developers can download the full project source tree using
+git and mr commands as detailed in <xref linkend="maintainers"/>.
+Note, that this is not necessary for translators!
+</para>
+
+<!--
+<para>
+For doing <filename>svn+ssh</filename> connections (mandatory for
+being able to commit files later), users must have an account on
+&salsa; and be authorized for commit to the repository they want to
+checkout. Replace <emphasis>salsa_username</emphasis> by this login
+name before using the GIT pseudo-URLS.
+</para>
+-->
+
+<para>
+<filename>ssh</filename> connections require you to use RSA key-based
+authentication to connect to &salsa;.
+</para>
+
+<para>
+If you don't have an existing SSH keypair on your local system, you must create
+one with the <command>ssh-keygen</command> command:
+</para>
+
+<informalexample>
+<screen>
+spongebob@mykerinos:~$ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/spongebob/.ssh/id_dsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/spongebob/.ssh/id_rsa.
+Your public key has been saved in /home/spongebob/.ssh/id_rsa.pub.
+The key fingerprint is:
+8d:6d:14:72:72:07:01:6a:85:de:97:d3:aa:b2:ee:4a spongebob@mykerinos
+</screen>
+</informalexample>
+
+<para>
+In the example above, the user <emphasis>spongebob</emphasis> creates a SSH RSA
+keypair, which is saved in a directory named <filename>.ssh</filename> in his/her home directory.
+</para>
+
+<para>
+This keypair is protected by a passphrase. The passphrase has to be entered each
+time the keypair will be used to connect to a remote host. Take care to choose a non
+trivial passphrase.
+</para>
+
+<para>
+After doing so, the public part of that keypair must be put in your account on &salsa;.
+<!--
+For this, you need to output the contents of <filename>.ssh/id_rsa.pub</filename> and
+paste it in the relevant field of the account management page on &salsa; (&salsa-account-page;),
+in the section named <emphasis>Shell account informations</emphasis>, by clicking on
+<emphasis>Edit keys</emphasis>.
+-->
+</para>
+
+
+<para>
+In case users have problems with <acronym>GIT</acronym> checkouts/commits, they can ask
+for help, either on IRC, &irc-channel; or by mail with the
+&i18n-coords;.</para>
+
+</sect1>
+
+<sect1>
+<title>
+Core &d-i; and various levels packages repositories checkout command
+lines
+</title>
+
+<para>
+Typical non anonymous and anonymous checkout command lines for &d-i;
+and related packages are listed in <xref linkend="translators"/>.
+</para>
+
+<para>
+Below is an example of a checkout of the d-i GIT repository,
+containing the po files for level 1:
+</para>
+
+<informalexample>
+<screen>
+user@host:~$ &git-clone-d-i-repo;
+Cloning into 'd-i'...
+remote: Counting objects: 405013, done.
+remote: Compressing objects: 100% (72424/72424), done.
+remote: Total 405013 (delta 316140), reused 404965 (delta 316098)
+Receiving objects: 100% (405013/405013), 187.52 MiB | 199.00 KiB/s, done.
+Resolving deltas: 100% (316140/316140), done.
+user@host:~$ 
+</screen>
+<para>
+After this the <filename>d-i</filename> directory contains all
+files from the repository. Updating this directory later needs running <command>git pull</command>:
+</para>
+<screen>
+user@host:~$ cd d-i
+user@host:~/d-i$ git pull
+Already up-to-date.
+user@host:~/d-i$
+</screen>
+
+<para>
+Now find the po translation files in the subdirectories under
+<emphasis>packages/po</emphasis>.
+
+<screen>
+user@host:~/d-i$ cd packages/po/sublevel1
+user@host:~/d-i/packages/po/sublevel1$
+</screen>
+
+Just update the local copy:
+</para>
+<screen>
+user@host:~/d-i/packages/po/sublevel1$ lokalize fr.po
+.../...
+</screen>
+<para>
+(Use Lokalize or any other gettext utility, see <xref linkend="gettext-tools"/> for
+details about gettext files handling, editing and maintenance tools.)
+</para>
+<para>
+Once you have saved the modified version of the file, the status can be
+displayed with the <command>git status</command> command:
+</para>
+<screen>
+user@host:~/d-i/packages/po/sublevel1$ git status -s
+ M  fr.po
+user@host:~/d-i/packages/po/sublevel1$
+</screen>
+<para>
+The above means that <filename>fr.po</filename> includes uncommited
+modifications. The changed files need to be added to the staging area
+by <command>git add filename</command>.
+Then commit the modifications by using the
+<command>git commit</command> command:
+</para>
+<screen>
+user@host:~/d-i/packages/po/sublevel1$ git add fr.po
+user@host:~/d-i/packages/po/sublevel1$ git commit -m "Insert a senseful commit message here, like 'Updated french translation'"
+</screen>
+<para>
+Now you need to push your changings to the remote <acronym>GIT</acronym> repository:
+</para>
+<screen>
+user@host:~/d-i/packages/po/sublevel1$ git push
+</screen>
+</informalexample>
+
+<para>
+In general, a few recommendations can be made to translators:
+</para>
+
+<itemizedlist>
+<listitem>
+<para>Always use the <command>git pull</command> before working on a
+file or directory. This will minimize <emphasis>conflicts</emphasis>
+in case a file is changed in the repository while they work on it;
+</para>
+</listitem>
+<listitem>
+<para>
+Always use the <command>git status</command> command before committing
+changes, to be sure that only relevant changes are committed.
+</para>
+</listitem>
+</itemizedlist>
+
+</sect1>
+
+<sect1>
+<title>Changelog entries handling
+</title>
+<para>
+When committing translations directly to <acronym>GIT</acronym>
+repositories for Debian packages (except for level 1 translations),
+translators must update the <filename>debian/changelog</filename> file
+accordingly.
+</para>
+
+<para>
+This <emphasis>does not</emphasis> apply to level 1 translations, that
+is the &d-i; <emphasis>core</emphasis> packages translations. For
+these translations, no changelog updates are needed.
+</para>
+
+<para>
+Each change in Debian packages must be documented in the
+<filename>debian/changelog</filename> file.
+</para>
+
+<para>
+Below is an excerpt of the <filename>changelog</filename> file for
+&base-config;:
+</para>
+
+<informalexample>
+<screen>
+base-config (2.39) UNRELEASED; urgency=low
+
+  * Updated translations: 
+    - Croatian by Krunoslav Gernhard
+
+ -- Christian Perrier &lt;bubulle@debian.org&gt;  Sat, 24 Jul 2004 08:14:13 +0200
+
+base-config (2.38) unstable; urgency=high
+.../...
+</screen>
+</informalexample>
+
+<para>This gives the following information:
+</para>
+
+<itemizedlist>
+<listitem>
+<para>
+the last released version of the package is 2.38. The <acronym>GIT</acronym> repository
+  currently contains the future unpublished 2.39 release;
+</para>
+</listitem>
+<listitem>
+<para>
+the only change which occurred since 2.38 is the update of the Croatian
+  translation (made by Krunoslav Gernhard);
+</para>
+</listitem>
+<listitem>
+<para>
+the committer of this change was Christian Perrier.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+Different Debian packages may use slightly different methods and
+styles for <filename>changelog</filename> maintenance. When working
+with <acronym>GIT</acronym> repositories, using
+<emphasis>UNRELEASED</emphasis> for the last entry is highly recommended
+for new unpublished changes.
+</para>
+
+<para>
+Using the <command>debchange</command> utility from the
+<emphasis>devscripts</emphasis> Debian package for handling
+<filename>changelog</filename> entries maintenance is also highly
+recommended..
+</para>
+
+
+</sect1>
+
+
+</appendix>

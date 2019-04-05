@@ -1,0 +1,21 @@
+if test -z "${fdtfile}"; then
+  echo 'fdtfile environment variable not set. Aborting boot process.'
+  exit 0
+fi
+
+# Some i.MX6-based systems do not encode the baudrate in the console variable
+if test "${console}" = "ttymxc0" && test -n "${baudrate}" ; then
+  setenv console "${console},${baudrate}"
+fi
+
+if test -n "${console}"; then
+  setenv bootargs "${bootargs} console=${console}"
+fi
+
+setenv installer-path "/debian-installer/armhf/"
+
+tftpboot ${fdt_addr_r} ${installer-path}dtbs/${fdtfile} \
+&& tftpboot ${kernel_addr_r} ${installer-path}vmlinuz \
+&& tftpboot ${ramdisk_addr_r} ${installer-path}initrd.gz \
+&& echo "Booting the Debian installer..." \
+&& bootz ${kernel_addr_r} ${ramdisk_addr_r}:${filesize} ${fdt_addr_r}
