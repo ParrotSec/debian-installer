@@ -1,3 +1,9 @@
+debian-installer (20190312+parrot3) testing; urgency=medium
+
+  * Bump kernel version 4.19.28.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 14 Apr 2019 07:23:21 +0200
+
 debian-installer (20190312+parrot2) testing; urgency=medium
 
   * Rebuild with updated rootskel-gtk udeb.
