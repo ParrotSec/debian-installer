@@ -1,3 +1,106 @@
+debian-installer (20190410+parrot1) testing; urgency=medium
+
+  * Import new Debian release.
+  * Import Parrot configs.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 16 Apr 2019 23:26:31 +0200
+
+debian-installer (20190410) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Bump debhelper build-dep and compat from 7 to 11. Finally!
+  * Fix “build-depends-on-1-revision build-depends u-boot-rockchip”,
+    thanks to lintian.
+  * Set dpkg source format explicitly as both dpkg-source and lintian
+    are being excessively noisy.
+  * Drop source.lintian-overrides: the only override was about the
+    e2fsprogs build-dependency when it was still “Essential: yes”; as
+    anticipated it's now only “Priority: required”.
+  * Bump Standards-Version from 3.9.5 to 4.3.0; no changes required, with
+    the usual exception regarding network access.
+  * Review and merge Chris Lamb's work making d-i build reproducibly
+    (Closes: #900918), with many thanks! Remaining issues seem related to
+    fontconfig's cache and xorriso calls.
+  * gen-tarball: specify the complete gzip command through a tar option
+    instead of using the now-deprecated GZIP environment variable.
+  * gen-tarball: use pigz if available, reducing build time.
+  * Bump Linux kernel ABI from 4.19.0-1 to 4.19.0-4
+  * Update translation-status for the release.
+
+  [ Chris Lamb ]
+  * Set BUILD_DATE based on SOURCE_DATE_EPOCH, rather than the other way
+    around.
+  * Ensure the GRUB memdisk images do not vary on filesystem ordering.
+  * Ensure the GRUB memdisk images do not vary on filesystem timestamps.
+  * Ensure that generated EFI images have a determinstic FAT volume ID.
+  * When generating CPIO archives (initramfs, etc), ensure they are
+    reproducible.
+  * build/Makefile: Add a clamp_mtimes utility to avoid DRY violations.
+  * 'clamp' the mtimes of various files before they are added to archives
+    or media.
+  * Specify --invariant to mkfs.fat(8) to ensure deterministic filesystem
+    timestamps.
+  * Increase the BUILD_DATE resolution to include the seconds component.
+  * Clamp mtimes of the final build results in the destination directory.
+  * Ensure that running the 'release' target does not alter the mtimes
+    under dest/.
+  * debian/control: Document that #900409 and #900410 are required for a
+    reproducible build.
+  * Ensure build is reproducible regardless of the user's
+    umask(2). (Closes: #920631)
+  * Ensure build is reproducible regardless of the underlying filesystem
+    ordering. (Closes: #920676)
+
+  [ John Paul Adrian Glaubitz ]
+  * config: Set DEBIAN_RELEASE to unstable for all architectures
+    in Debian Ports. (Closes: #920353)
+  * pkg-lists: Add debian-ports-archive-keyring-udeb package for all
+    architectures in Debian Ports for cdrom and netboot images.
+
+  [ Holger Wansing ]
+  * Add dark theme shortcut (Closes: #820911)
+
+  [ Samuel Thibault ]
+  * Rework dark theme shortcut.
+  * Introduce dark menu theme.
+  * Fix loading background image on netboot grub.
+
+  [ Ben Hutchings ]
+  * armel: Delete unused package list for ixp4xx (Closes: #921951)
+
+  [ Vagrant Cascadian ]
+  * [armhf] Add images for Novena.
+  * Update versioned Build-Depends on u-boot-imx.
+  * [armhf] Add images for BananaPiM2Berry. Thanks to Lucas Nussbaum.
+  * Update versioned Build-Depends on u-boot-sunxi.
+
+  [ Steve McIntyre ]
+  * Switch to using buster artwork for the splash screen
+
+ -- Cyril Brulebois <kibi@debian.org>  Wed, 10 Apr 2019 20:55:32 +0200
+
+debian-installer (20190118) unstable; urgency=medium
+
+  [ Vagrant Cascadian ]
+  * [arm64] Use arm-trusted-firmware instead of atf-allwinner to build
+    pine64_plus and pinebook images.
+
+  [ John Paul Adrian Glaubitz ]
+  * alpha: Clean up formatting of build configuration file.
+  * alpha: Remove fb-modules from cdrom and netboot package lists.
+  * hppa: Clean up formatting of build configuration file.
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel ABI from 4.18.0-3 to 4.19.0-1
+  * Update translation-status for the release.
+
+  [ Vagrant Cascadian ]
+  * [armhf] Re-enable Firefly-RK3288 image.
+  * [armhf] Update Build-Depends for u-boot-rockchip.
+  * Add u-boot-rockchip to Built-Using.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 18 Jan 2019 21:43:12 +0100
+
 debian-installer (20190312+parrot4) testing; urgency=medium
 
   * Bump new kernel revision.

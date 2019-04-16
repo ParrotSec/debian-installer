@@ -30,6 +30,15 @@ platform="$2"
 efi_name="$3"
 netboot_prefix="$4"
 
+# Should we be using already-built and already-signed monolithic grub
+# and shim binaries? If not, fall back to old code and generate
+# non-signed grub here. So far, we only have shim-signed for amd64 so
+# that's the only architecture where we do things differently.
+signed=0
+if [ "$platform"x = "x86_64-efi"x ]; then
+	signed=1
+fi
+
 memdisk_img=
 workdir=
 
@@ -60,25 +69,71 @@ mkdir -p "$outdir/boot/grub/$platform"
  done; \
  echo "source /boot/grub/grub.cfg") >"$outdir/boot/grub/$platform/grub.cfg"
 
-# Build the core image.
-(cd "$workdir"; tar -cf - boot) >"$memdisk_img"
-grub-mkimage -O "$platform" -m "$memdisk_img" \
-	-o "$workdir/boot$efi_name.efi" -p '(memdisk)/boot/grub' \
-	search iso9660 configfile normal memdisk tar part_msdos part_gpt fat
+if [ $signed = 1 ]; then
+	# Just copy existing binaries into place
+	# First, the binaries we use for disc or CD boot
+	echo "$0: Using pre-signed grub-efi binaries for $efi_name"
+	cp /usr/lib/grub/$platform-signed/grub$efi_name.efi.signed \
+		$workdir/grub$efi_name.efi
+	cp /usr/lib/shim/shim$efi_name.efi.signed \
+		$workdir/boot$efi_name.efi
 
-grub-mkimage -O "$platform" \
-	-o "$outdir/bootnet$efi_name.efi" -p "$netboot_prefix/grub" \
-	search configfile normal efinet tftp net
+	# Now the binaries for netboot. These are *not* used to
+	# generate the image here, but will be picked up later on in
+	# the d-i build. Hence the different output directory.
+	cp /usr/lib/shim/shim$efi_name.efi.signed \
+		$outdir/bootnet$efi_name.efi
+	cp /usr/lib/grub/$platform-signed/grubnet$efi_name.efi.signed \
+		$outdir/grub$efi_name.efi
+else
+	# Build the core image for disc/CD boot
+	echo "$0: Building non-signed grub-efi binaries for $efi_name"
+	find "$workdir" -newermt "@$SOURCE_DATE_EPOCH" -print0 \
+		| xargs -0r touch --no-dereference --date="@$SOURCE_DATE_EPOCH"
+	(cd "$workdir"; find boot -print0 | LC_ALL=C sort -z | tar --null -T - -cf -) >"$memdisk_img"
+	grub-mkimage -O "$platform" -m "$memdisk_img" \
+		-o "$workdir/boot$efi_name.efi" -p '(memdisk)/boot/grub' \
+		search iso9660 configfile normal memdisk tar part_msdos part_gpt fat
 
-# Stuff it into a FAT filesystem, making it as small as possible.  32KiB
-# headroom seems to be enough; (x+31)/32*32 rounds up to multiple of 32.
-mkfs.msdos -v -C "$outdir/efi.img" \
-	$(( ($(stat -c %s "$workdir/boot$efi_name.efi") / 1024 + 1 + 32 + 31) \
-	    / 32 * 32 ))
+	# Now the image for netboot. This is *not* used to generate
+	# the image here, but will be picked up later on in the d-i
+	# build. Hence the different output directory.
+	grub-mkimage -O "$platform" \
+		-o "$outdir/bootnet$efi_name.efi" -p "$netboot_prefix/grub" \
+		search configfile normal efinet tftp net
+fi
+
+# Stuff it into a FAT filesystem, making it as small as
+# possible. Count up the sizes of all the files we need to fit in there.
+#
+# 32KiB headroom seems to be enough; (x+31)/32*32 rounds up to multiple of 32.
+size=0
+for file in $(find $workdir -type f -name *.efi -o -name grub.cfg); do
+	this_size=$(( ($(stat -c %s $file) / 1024 + 1 + 32 + 31) / 32 * 32 ))
+	size=$(($size + $this_size))
+done
+
+# Specify a deterministic volume ID; we use DOS_VOLUME_ID here for
+# consistency.
+mkfs.msdos --invariant -v -i deb00001 -C "$outdir/efi.img" $size
+
 mmd -i "$outdir/efi.img" ::efi
 mmd -i "$outdir/efi.img" ::efi/boot
 mcopy -i "$outdir/efi.img" "$workdir/boot$efi_name.efi" \
 	"::efi/boot/boot$efi_name.efi"
+
+if [ $signed = 1 ]; then
+	# In this case, also add the grub binary
+	mcopy -i "$outdir/efi.img" "$workdir/grub$efi_name.efi" \
+		"::efi/boot/grub$efi_name.efi"
+
+	# And finally the skeleton grub.cfg - the signed grub binaries
+	# will have prefix set to "/EFI/debian", so put this there to
+	# redirect to the correct location.
+	mmd -i "$outdir/efi.img" ::efi/debian
+	mcopy -i "$outdir/efi.img" "$workdir/boot/grub/grub.cfg" \
+		"::efi/debian/grub.cfg"
+fi
 
 grub-cpmodules "$outdir" "$platform"
 

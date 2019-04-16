@@ -18,7 +18,7 @@ KERNEL_FLAVOUR ?= di
 
 # List here any extra udebs that are not in the list file but that
 # should still be included on the system.
-EXTRAS ?= ca-certificates-udeb parrot-archive-keyring-udeb
+EXTRAS ?=
 
 # This variable can be used to copy in additional files from the system
 # that is doing the build. Useful if you need to include strace, or gdb,
@@ -44,13 +44,13 @@ MIRROR = http://deb.parrotsec.org/parrot
 DPKG_UNPACK_OPTIONS = --force-overwrite
 
 # The codename of the Debian release that should be installed by default.
-DEBIAN_RELEASE = $(USE_UDEBS_FROM)
+DEBIAN_RELEASE = parrot
 
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
 DEBIAN_VERSION = 4.6 (stable)
-DEBIAN_VERSION ?= buster
+DEBIAN_VERSION ?= stable
 
 # Define here from what release (codename!) components (udebs) should be taken
 # to build debian-installer. By default this is set to 'unstable' for building
@@ -60,11 +60,19 @@ USE_UDEBS_FROM ?= testing
 # Archive components from which to fetch debian-installer modules.
 UDEB_COMPONENTS ?= main/debian-installer
 
-# The date the installer is built.
-BUILD_DATE ?= $(shell date -u '+%Y%m%d-%H:%M')
 # The date the installer source was last changed;  we prefer that the
 # caller defines a meaningful value, but below is a safe fallback.
 SOURCE_DATE_EPOCH ?= $(shell date '+%s')
+
+# The date the installer was built. We use second-level resolution to ensure
+# the generated image implicitly contains the SOURCE_DATE_EPOCH value required
+# to reproduce the build.
+BUILD_DATE ?= $(shell date -u '+%Y%m%d-%H:%M:%S' -d '@$(SOURCE_DATE_EPOCH)')
+
+# Set consistent file creation modes for a reproducible build, taking care
+# not to modify existing executable bits on files.
+DIR_MODE = 755
+FILE_MODE = u+rw,g+r-w,o+r-w
 
 # Produce a beep at boot menu
 BOOTMENU_BEEP ?= n
@@ -90,7 +98,7 @@ TYPE = $(MEDIUM)
 
 # Used to write a /etc/lsb-release file in the installer initrd.
 LSB_DISTRIB_ID=Debian
-LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) installer"
+LSB_DISTRIB_DESCRIPTION="Parrot OS installer"
 # Inlude the build date of the installer in here.
 LSB_DISTRIB_RELEASE="$(DEBIAN_VERSION) - installer build $(BUILD_DATE)"
 

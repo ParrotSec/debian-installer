@@ -1,5 +1,0 @@
-# The following was already stated in debian/control:
-#  * genext2fs doesn't produce perfect filesystems, so we fsck them.
-#  * Lintian: Yes, we know it's essential. We prefer not to count on it
-#    remaining so.
-build-depends-on-essential-package-without-using-version build-depends: e2fsprogs

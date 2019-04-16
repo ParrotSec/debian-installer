@@ -8,21 +8,14 @@ SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f
 
 # Daily builds vs. uploads to unstable:
 ifeq (${SUITE},UNRELEASED)
-USE_UDEBS_FROM=testing
+USE_UDEBS_FROM=unstable
 TRANSSTATUS=
 BOOTMENU_BEEP=n
 else
-USE_UDEBS_FROM=parrot
+USE_UDEBS_FROM=buster
 USE_PROPOSED_UPDATES=0
 TRANSSTATUS=translation-status
 BOOTMENU_BEEP=y
-endif
-
-# Don't integrate SSL certs in armel, the size limits will be missed
-ifeq ($(ARCH),armel)
-SSL_CERTS=
-else
-SSL_CERTS=/usr/share/ca-certificates/mozilla/*
 endif
 
 # Adjust for non-released ports if needed:
@@ -49,16 +42,11 @@ clean:
 
 # Must run as root, so is not run as part of regular build.
 build-images:
-ifeq ($(SSL_CERTS),)
-	# Drop wget-udeb only needed for SSL certs
-	sed -i -e '/^wget-udeb/ d' build/pkg-lists/base
-endif
 	$(MAKE) -C build all_build stats release \
 		USE_UDEBS_FROM=$(USE_UDEBS_FROM) BUILD_DATE=$(DATE) \
 		USE_PROPOSED_UPDATES=$(USE_PROPOSED_UPDATES) \
 		USE_UNRELEASED=$(USE_UNRELEASED) \
-		TRANSSTATUS=$(TRANSSTATUS) BOOTMENU_BEEP=$(BOOTMENU_BEEP) \
-		SSL_CERTS=$(SSL_CERTS)
+		TRANSSTATUS=$(TRANSSTATUS) BOOTMENU_BEEP=$(BOOTMENU_BEEP)
 
 build: build-arch build-indep
 build-arch: build-stamp

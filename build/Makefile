@@ -139,7 +139,16 @@ define recurse
 endef
 
 define mkinitramfs
-  (cd $(TREE) && find . | sort | cpio --quiet -o -H newc) > 
+  (cd $(TREE) && find . | sort | cpio --reproducible --quiet -o -H newc) >
+endef
+
+define clamp_mtimes
+  find $(1) -newermt "@$(SOURCE_DATE_EPOCH)" -print0 | xargs -0r touch --no-dereference --date="@$(SOURCE_DATE_EPOCH)"
+endef
+
+define normalise_permissions
+  find $(1) -type d -print0 | xargs -0r chmod $(DIR_MODE)
+  find $(1) -not -type d -and -not -type l -print0 | xargs -0r chmod $(FILE_MODE)
 endef
 
 # Limit on mfsroot size. It is determined by NKPT (in <machine/pmap.h).
@@ -287,6 +296,8 @@ build_%:
 _build:
 	@[ -n "$(SUBARCH) $(MEDIUM) $(FLAVOUR)" ] || { echo "invalid target"; false; }
 	@$(submake) tree_umount $(EXTRATARGETS) $(TARGET)
+	# Ensure build results have reproducible mtimes
+	@$(clamp_mtimes) $(BASE_DEST)
 
 # Convenience rules to clean and build.
 .PHONY: rebuild_%
@@ -304,6 +315,9 @@ release:
 	rm -f $(BASE_DEST)/MD5SUMS $(BASE_DEST)/SHA256SUMS
 	cd $(BASE_DEST) && md5sum `find -L . -type f | sort` > MD5SUMS # XXX remove this
 	cd $(BASE_DEST) && sha256sum `find -L . -type f | sort` > SHA256SUMS
+	# We have just modified files
+	$(clamp_mtimes) $(BASE_DEST)
+	$(normalise_permissions) $(BASE_DEST)
 
 # The general tree target.
 $(STAMPS)tree-unpack-$(targetstring)-stamp: $(STAMPS)get_udebs-$(targetstring)-stamp
@@ -462,11 +476,7 @@ endif
 
 ifdef PRESEED
 	# Copy in preseed file.
-	sed -e 's/@DEBIAN_RELEASE@/$(DEBIAN_RELEASE)/g' \
-	    -e 's/@USE_UDEBS_FROM@/$(USE_UDEBS_FROM)/g' \
-	    -e 's/@DEBIAN_VERSION@/$(DEBIAN_VERSION)/g' \
-	    -e 's/@LINUX_KERNEL_ABI@/$(LINUX_KERNEL_ABI)/g' \
-	    $(PRESEED) >$(TREE)/preseed.cfg
+	cp -a $(PRESEED) $(TREE)/preseed.cfg
 endif
 
 ifndef OMIT_LSB
@@ -645,6 +655,11 @@ endif
 	# Remove extra udebs now that we're done with them.
 	rm -rf $(EXTRAUDEBSDIR)
 
+	# Clamp timestamps to be no later than SOURCE_DATE_EPOCH and normalise
+	# file modes before they get added to media.
+	$(clamp_mtimes) $(TREE)
+	$(normalise_permissions) $(TREE)
+
 	# Tree target ends here. Whew!
 	@touch $@
 
@@ -667,9 +682,6 @@ sources.list.udeb:
 	echo "deb [trusted=yes] copy:$(shell pwd)/ $(LOCALUDEBDIR)/"; \
 	if [ "$(MIRROR)x" != "x" ]; then \
 		echo "deb $(MIRROR) $(USE_UDEBS_FROM) $(UDEB_COMPONENTS)"; \
-		if [ "$(USE_PROPOSED_UPDATES)" = 1 ]; then  \
-			echo "deb $(MIRROR) $(USE_UDEBS_FROM)-proposed-updates $(UDEB_COMPONENTS)"; \
-		fi; \
 		if [ "$(USE_UNRELEASED)" = 1 ]; then \
 			echo "deb $(MIRROR) unreleased $(UDEB_COMPONENTS)"; \
 		fi \
@@ -743,6 +755,11 @@ ifeq ($(DEB_HOST_ARCH_OS),hurd)
 		$(submake) $(TREE)/lib/unifont.bdf; \
 	fi
 endif
+
+	# We may have modified $(TREE)/lib, so re-clamp and normalise before
+	# placing these files into archives.
+	$(clamp_mtimes) $(TREE)/lib
+	$(normalise_permissions) $(TREE)/lib
 
 	install -d $(TEMP)
 

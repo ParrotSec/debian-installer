@@ -94,9 +94,6 @@ for mirror in $MIRRORS; do
 		if [ "$USE_PROPOSED_UPDATES" = 1 ]; then
 			echo "$mirror $SUITE-proposed-updates $UDEB_COMPONENTS"
 		fi
-		if [ "$USE_KALI_EXPERIMENTAL" = 1 ]; then
-			echo "$mirror kali-experimental $UDEB_COMPONENTS"
-		fi
 	fi
 
 done | perl -ne 'print unless $seen{$_}; $seen{$_}=1'

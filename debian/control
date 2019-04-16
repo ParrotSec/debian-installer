@@ -1,14 +1,14 @@
 Source: debian-installer
 Section: devel
 Priority: optional
-Maintainer: Parrot Dev Team <team@parrotsec.org>
-Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
-Standards-Version: 3.9.5
-Vcs-Git: https://nest.parrotsec.org/debian-packages/debian-installer/debian-installer.git
-Vcs-Browser: https://nest.parrotsec.org/debian-packages/debian-installer/debian-installer
+Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
+Uploaders: Cyril Brulebois <kibi@debian.org>
+Standards-Version: 4.3.0
+Vcs-Git: https://salsa.debian.org/installer-team/debian-installer.git
+Vcs-Browser: https://salsa.debian.org/installer-team/debian-installer
 Build-Depends:
 # Base build dependencies:
-	debhelper (>= 7.0.0),
+	debhelper (>= 11),
 #		Of course.
 	apt (>= 0.8.16),
 # 		Used for downloading udebs.
@@ -17,7 +17,6 @@ Build-Depends:
 	gnupg,
 #		New versions of apt need gnupg for security checks.
 	debian-archive-keyring (>= 2006.11.22),
-	parrot-archive-keyring,
 #		To provide the archive key for security checks.
 	dctrl-tools,
 #		Various manipulations of the udeb Packages files.
@@ -33,8 +32,6 @@ Build-Depends:
 #		The d-i internals manual is in DocBook XML.
 	libbogl-dev,
 #		For bdftobogl used in font reduction.
-	ca-certificates,
-#		To embed CA certificates to verify https connections
 #	
 # Library build dependencies:
 	libgcc1 [i386 amd64],
@@ -65,8 +62,8 @@ Build-Depends:
 #		Of course i386/amd64 use this for floppies, CDs etc.
 #		m68k uses it for atari floppies
 #		armhf uses it for building bootable SD card images
-	cpio,
-#		For creating initramfs images.
+	cpio (>= 2.11+dfsg-6),
+#		For creating (reproducible) initramfs images.
 	xz-utils,
 #		For compressing initramfs images.
 	devio [armeb armel],
@@ -111,17 +108,20 @@ Build-Depends:
 	emile [m68k],
 	emile-bootblocks [m68k],
 #		Bootloader for m68k/mac machines.
-	grub-efi-amd64-bin [amd64], grub-efi-arm64-bin [arm64], grub-efi-ia32-bin [i386],
+	shim-signed [amd64], grub-efi-amd64-signed [amd64],
+#	        Signed bootloader components for UEFI Secure Boot
+	grub-efi-arm64-bin [arm64],
+	grub-efi-ia32-bin [i386],
 	grub-efi-arm-bin [armhf],
 	grub-common [amd64 arm64 i386], xorriso,
 #		Used to make EFI bootable images
 	grub-ieee1275-bin [ppc64el],
 #		IEEE1275 bootloader support.
-	u-boot-imx [armhf],
+	u-boot-imx (>= 2019.01+dfsg-3) [armhf],
 	u-boot-omap (>= 2016.09~rc1) [armhf],
-	u-boot-sunxi (>= 2018.09) [armhf],
+	u-boot-sunxi (>= 2019.01+dfsg-3) [armhf],
 	u-boot-sunxi (>= 2018.11+dfsg-2) [arm64],
-	u-boot-rockchip (>= 2017.07+dfsg1-3) [armhf],
+	u-boot-rockchip (>= 2019.01+dfsg-1~) [armhf],
 #		U-boot binaries for armhf systems without u-boot in flash memory
 	arm-trusted-firmware [arm64],
 	device-tree-compiler [arm64],
@@ -136,7 +136,9 @@ Build-Depends:
 #		DOS.
 	mtools [i386 m68k amd64 armhf arm64 kfreebsd-i386 kfreebsd-amd64 hurd-i386],
 #		mcopy is used to put files onto FAT filesystems w/o
-#		mounting them.
+#		mounting them. Note that patches from #900409 and #900410
+#		are required for a reproducible build (available since
+#		4.0.18-2.1).
 # 
 	kmod [linux-any],
 #		depmod.

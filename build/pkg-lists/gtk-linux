@@ -1,4 +1,5 @@
 console-setup-pc-ekmap
+fb-modules-${kernel:Version} ?
 
 # Exclude screen support
 screen-udeb -
