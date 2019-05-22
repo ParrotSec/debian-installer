@@ -108,7 +108,7 @@ Build-Depends:
 	emile [m68k],
 	emile-bootblocks [m68k],
 #		Bootloader for m68k/mac machines.
-	shim-signed | shim-unsigned [amd64], grub-efi | grub-efi-amd64-signed [amd64],
+	shim-unsigned [amd64] | shim-signed [amd64], grub-efi [amd64] | grub-efi-amd64-signed [amd64],
 #	        Signed bootloader components for UEFI Secure Boot
 	grub-efi-arm64-bin [arm64],
 	grub-efi-ia32-bin [i386],
