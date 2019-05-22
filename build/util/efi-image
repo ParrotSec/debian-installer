@@ -35,9 +35,9 @@ netboot_prefix="$4"
 # non-signed grub here. So far, we only have shim-signed for amd64 so
 # that's the only architecture where we do things differently.
 signed=0
-if [ "$platform"x = "x86_64-efi"x ]; then
-	signed=1
-fi
+#if [ "$platform"x = "x86_64-efi"x ]; then
+#	signed=1
+#fi
 
 memdisk_img=
 workdir=

@@ -1,3 +1,9 @@
+debian-installer (20190522+parrot2) testing; urgency=medium
+
+  * Exclude signed grub.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 22 May 2019 14:39:23 +0200
+
 debian-installer (20190522+parrot1) testing; urgency=medium
 
   * Update kernel package.
