@@ -1,3 +1,9 @@
+debian-installer (20190712+parrot3) stable; urgency=medium
+
+  * Fix debian release in netinstall images.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 13 Jul 2019 16:02:14 +0200
+
 debian-installer (20190712+parrot2) testing; urgency=medium
 
   * Rebuild debian installer
