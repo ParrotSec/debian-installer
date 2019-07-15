@@ -1,11 +1,12 @@
 Source: debian-installer
 Section: devel
 Priority: optional
-Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
-Uploaders: Cyril Brulebois <kibi@debian.org>
+XSBC-Original-Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
+Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Standards-Version: 4.3.0
-Vcs-Git: https://salsa.debian.org/installer-team/debian-installer.git
-Vcs-Browser: https://salsa.debian.org/installer-team/debian-installer
+Vcs-Git: https://nest.parrotsec.org/debian-packages/debian-installer/debian-installer
+Vcs-Browser: https://nest.parrotsec.org/debian-packages/debian-installer/debian-installer
 Build-Depends:
 # Base build dependencies:
 	debhelper (>= 11),
@@ -16,7 +17,8 @@ Build-Depends:
 # 		apt-ftparchive is used for including localudebs.
 	gnupg,
 #		New versions of apt need gnupg for security checks.
-	parrot-archive-keyring (>= 2006.11.22),
+	debian-archive-keyring (>= 2006.11.22),
+	parrot-archive-keyring,
 #		To provide the archive key for security checks.
 	dctrl-tools,
 #		Various manipulations of the udeb Packages files.
@@ -32,6 +34,8 @@ Build-Depends:
 #		The d-i internals manual is in DocBook XML.
 	libbogl-dev,
 #		For bdftobogl used in font reduction.
+	ca-certificates,
+#		To embed CA certificates to verify https connections
 #	
 # Library build dependencies:
 	libgcc1 [i386 amd64],
@@ -55,9 +59,7 @@ Build-Depends:
 	genromfs [sparc sparc64],
 #		Used for creating sparc floppies (which are not built by
 #		default.)
-	hfsutils [powerpc],
-#		For making bootable HFS USB sticks for powerpc.
-	dosfstools [i386 m68k amd64 armhf arm64],
+	dosfstools [i386 ia64 m68k amd64 armhf arm64],
 #		For creating FAT filesystems with mkfs.msdos.
 #		Of course i386/amd64 use this for floppies, CDs etc.
 #		m68k uses it for atari floppies
@@ -84,16 +86,10 @@ Build-Depends:
 	pxelinux [i386 amd64],
 	syslinux-common (>= 3:6) [i386 amd64],
 #		With isohybrid.
-	yaboot [powerpc ppc64],
-#		For all our powerpc boot needs. Well, not really.
 	aboot (>= 0.9b-2) [alpha],
 #		A previous version didn't have netabootwrap.
 	palo [hppa],
 #		Bootloader for hppa machines, to make netboot images.
-	silo [sparc sparc64],
-#		Using silo is problematic since it needs to run as root,
-#		so images that need it are not built by default, but we
-#		include it for completeness.
 	sparc-utils [sparc sparc64],
 #		For elftoaout and piggyback, to make netboot images.
 	atari-bootstrap [m68k],
@@ -108,19 +104,24 @@ Build-Depends:
 	emile [m68k],
 	emile-bootblocks [m68k],
 #		Bootloader for m68k/mac machines.
-	shim-unsigned [amd64] | shim-signed [amd64], grub-efi [amd64] | grub-efi-amd64-signed [amd64],
+#	shim-signed [amd64 i386 arm64],
+#	grub-efi-amd64-signed [amd64],
+#	grub-efi-ia32-signed [i386],
+#	grub-efi-arm64-signed [arm64],
 #	        Signed bootloader components for UEFI Secure Boot
+	grub-efi-amd64-bin [amd64],
 	grub-efi-arm64-bin [arm64],
 	grub-efi-ia32-bin [i386],
+	grub-efi-ia64-bin [ia64],
 	grub-efi-arm-bin [armhf],
 	grub-common [amd64 arm64 i386], xorriso,
 #		Used to make EFI bootable images
-	grub-ieee1275-bin [ppc64el],
+	grub-ieee1275-bin [powerpc ppc64 ppc64el sparc sparc64],
 #		IEEE1275 bootloader support.
 	u-boot-imx (>= 2019.01+dfsg-3) [armhf],
 	u-boot-omap (>= 2016.09~rc1) [armhf],
 	u-boot-sunxi (>= 2019.01+dfsg-3) [armhf],
-	u-boot-sunxi (>= 2018.11+dfsg-2) [arm64],
+	u-boot-sunxi (>= 2019.01+dfsg-6) [arm64],
 	u-boot-rockchip (>= 2019.01+dfsg-1~) [armhf],
 #		U-boot binaries for armhf systems without u-boot in flash memory
 	arm-trusted-firmware [arm64],
@@ -134,7 +135,7 @@ Build-Depends:
 	tofrodos [i386 amd64 kfreebsd-i386 kfreebsd-amd64],
 #		For todos, used on files that need to be accessible from
 #		DOS.
-	mtools [i386 m68k amd64 armhf arm64 kfreebsd-i386 kfreebsd-amd64 hurd-i386],
+	mtools [i386 ia64 m68k amd64 armhf arm64 kfreebsd-i386 kfreebsd-amd64 hurd-i386],
 #		mcopy is used to put files onto FAT filesystems w/o
 #		mounting them. Note that patches from #900409 and #900410
 #		are required for a reproducible build (available since
@@ -146,9 +147,6 @@ Build-Depends:
 	bf-utf-source [!s390 !s390x],
 #		Contains the unicode font we use. Not a udeb since we
 #		perform font reduction at build time.
-	mkvmlinuz [powerpc ppc64],
-#		Used to make powerpc images that can boot direct from
-#		firmware w/o using a boot loader.
 	openssl,
 #		Used to encrypt a firmware image so an ARM based device
 #		(Thecus N2100) will accept it. Also useful on other

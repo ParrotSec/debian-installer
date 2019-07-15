@@ -1,32 +1,78 @@
-debian-installer (20190712+parrot3) stable; urgency=medium
+debian-installer (20190702+parrot1) parrot; urgency=medium
 
-  * Fix debian release in netinstall images.
+  * Import new Debian release.
+  * Bump new Parrot kernel.
+  * Re-apply Parrot patches.
+  * Rebuild with updated udebs.
+  * Start making d-i Parrot LTS aware.
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 13 Jul 2019 16:02:14 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 15 Jul 2019 22:03:48 +0200
 
-debian-installer (20190712+parrot2) testing; urgency=medium
+debian-installer (20190702) unstable; urgency=medium
 
-  * Rebuild debian installer
+  [ Cyril Brulebois ]
+  * Rebuild to pick up the last changes for D-I Buster RC 3.
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 12 Jul 2019 19:46:08 +0200
+  [ John Paul Adrian Glaubitz ]
+  * ia64: Add grub stub configuration file grub-efi.cfg.
+  * sparc: Remove VERSIONED_SYSTEM_MAP from config file.
+  * sparc64: Remove VERSIONED_SYSTEM_MAP from config file.
 
-debian-installer (20190701+parrot1) testing; urgency=medium
+ -- Cyril Brulebois <kibi@debian.org>  Tue, 02 Jul 2019 00:39:57 +0200
 
-  * Switch back to Linux 4.19 (with security updates).
+debian-installer (20190623) unstable; urgency=medium
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 01 Jul 2019 02:32:35 +0200
+  [ Cyril Brulebois ]
+  * Add haveged-udeb [linux] to the pkg-lists/base, so that entropy
+    starvation issues can be avoided (Closes: #923675). To be used
+    by S50entropy-source in rootskel.
+  * Bump Linux kernel ABI from 4.19.0-4 to 4.19.0-5
+  * Drop volatile.debian.{net,org} exclusion from gen-sources.list.udeb,
+    they went away with Squeeze(!).
+  * Update translation-status for the release.
 
-debian-installer (20190522+parrot2) testing; urgency=medium
+  [ Samuel Thibault ]
+  * Make hurd-i386 use debian-ports keyring and include
+    debian-ports-archive-keyring-udeb.
+  * Add œŒ glyphs for the french translation.
+  * Make hurd and kfreebsd boot menu use new theme.
+  * Update size limits.
+  * Relabel "dark theme" entry to "accessible high contrast" entry
+    (Closes: #930569)
 
-  * Exclude signed grub.
+  [ John Paul Adrian Glaubitz ]
+  * alpha: Add pata-modules to cdrom package list.
+  * ia64: Add sata-modules to cdrom package list.
+  * ia64: Switch bootloader from elilo to grub-efi-ia64.
+  * powerpc: Switch bootloader from yaboot to grub-ieee1275.
+  * ppc64: Switch bootloader from yaboot to grub-ieee1275.
+  * sh4: Set KERNELVERSION to LINUX_KERNEL_ABI.
+  * sparc: Strip KERNELVERSION suffix from KERNELNAME.
+  * sparc: Switch bootloader from silo to grub-ieee1275.
+  * sparc64: Strip KERNELVERSION suffix from KERNELNAME.
+  * sparc64: Switch bootloader from silo to grub-ieee1275.
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 22 May 2019 14:39:23 +0200
+  [ Vagrant Cascadian ]
+  * [arm64] Add u-boot images for a64-olinuxino, orangepi_zero_plus2 and
+    teres_i.
+  * [arm64] Update Build-Depends to u-boot-sunxi (>= 2019.01+dfsg-5).
+  * [armhf] Compress u-boot images with "gzip -n" to avoid embedding
+    timestamps which cause reproducibility issues.
 
-debian-installer (20190522+parrot1) testing; urgency=medium
+  [ Domenico Andreoli ]
+  * Add support for NanoPi NEO2
 
-  * Update kernel package.
+  [ Vagrant Cascadian ]
+  * [arm64] Add support for netboot SD-card-images.
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 22 May 2019 01:47:11 +0200
+  [ Steve McIntyre ]
+  * Add Build-Depends on shim-signed and grub-efi-ARCH-signed for
+    amd64/i386/arm64
+  * Use the signed shim and grub for all 3 arches for EFI images
+  * efi-image: use an extra command-line arg to track if we should be
+    using signed grub and shim etc.
+
+ -- Cyril Brulebois <kibi@debian.org>  Sun, 23 Jun 2019 21:53:21 +0200
 
 debian-installer (20190410+parrot2) parrot; urgency=medium
 

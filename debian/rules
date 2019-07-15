@@ -6,23 +6,38 @@ DATE=$(shell echo $(VERSION) | cut -d '.' -f 1)
 SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
 SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
 
+# Special treatment for Parrot OS
+ifneq ($(filter parrot testing rolling rolling-testing,$(SUITE)),)
+SUITE=rolling
+USE_UDEBS_FROM=rolling
+TRANSSTATUS=
+BOOTMENU_BEEP=y
+else
 # Daily builds vs. uploads to unstable:
 ifeq (${SUITE},UNRELEASED)
-USE_UDEBS_FROM=stable
+USE_UDEBS_FROM=lts-updates
+USE_PROPOSED_UPDATES=0
 TRANSSTATUS=
 BOOTMENU_BEEP=n
 else
-USE_UDEBS_FROM=stable
+USE_UDEBS_FROM=lts
 USE_PROPOSED_UPDATES=0
-TRANSSTATUS=
+TRANSSTATUS=translation-status
 BOOTMENU_BEEP=y
+endif
+endif
+
+# Don't integrate SSL certs in armel, the size limits will be missed
+ifeq ($(ARCH),armel)
+SSL_CERTS=
+else
+SSL_CERTS=/usr/share/ca-certificates/mozilla/*
 endif
 
 # Adjust for non-released ports if needed:
 RELEASE_ARCHES=amd64 arm64 armel armhf i386 mips mips64el mipsel ppc64el s390x
 ifeq (,$(filter $(ARCH), $(RELEASE_ARCHES)))
-USE_UNRELEASED=1
-USE_UDEBS_FROM=stable
+USE_UDEBS_FROM=parrot
 endif
 
 ARCHIVEDIR=debian/tmp/installer-$(ARCH)
@@ -42,11 +57,16 @@ clean:
 
 # Must run as root, so is not run as part of regular build.
 build-images:
+ifeq ($(SSL_CERTS),)
+	# Drop wget-udeb only needed for SSL certs
+	sed -i -e '/^wget-udeb/ d' build/pkg-lists/base
+endif
 	$(MAKE) -C build all_build stats release \
 		USE_UDEBS_FROM=$(USE_UDEBS_FROM) BUILD_DATE=$(DATE) \
 		USE_PROPOSED_UPDATES=$(USE_PROPOSED_UPDATES) \
 		USE_UNRELEASED=$(USE_UNRELEASED) \
-		TRANSSTATUS=$(TRANSSTATUS) BOOTMENU_BEEP=$(BOOTMENU_BEEP)
+		TRANSSTATUS=$(TRANSSTATUS) BOOTMENU_BEEP=$(BOOTMENU_BEEP) \
+		SSL_CERTS=$(SSL_CERTS)
 
 build: build-arch build-indep
 build-arch: build-stamp

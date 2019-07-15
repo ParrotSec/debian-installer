@@ -1,5 +1,0 @@
-
-This subarchitecture is currently not supported by Debian.
-Only 64-bit systems are supported (sparc64).
-
-The last Debian release to support sparc32 (sun4m) was Etch (4.0).

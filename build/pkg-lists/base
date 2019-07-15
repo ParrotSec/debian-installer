@@ -20,9 +20,11 @@ pciutils-udeb
 screen-udeb
 wget-udeb
 ca-certificates-udeb
-parrot-archive-keyring-udeb
 
 #include "udev"
 
 libkmod2-udeb [linux]
 kldutils-udeb [kfreebsd]
+
+# Avoid entropy starvation issues (#923675):
+haveged-udeb [linux]

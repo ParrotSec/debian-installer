@@ -44,18 +44,18 @@ MIRROR = http://deb.parrotsec.org/parrot
 DPKG_UNPACK_OPTIONS = --force-overwrite
 
 # The codename of the Debian release that should be installed by default.
-DEBIAN_RELEASE = stalbe
+DEBIAN_RELEASE = rolling
 
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 4.7 (stable)
-DEBIAN_VERSION ?= stable
+DEBIAN_VERSION = 4.7 (rolling)
+DEBIAN_VERSION ?= parrot
 
 # Define here from what release (codename!) components (udebs) should be taken
 # to build debian-installer. By default this is set to 'unstable' for building
 # daily images. For official builds this is overruled in debian/rules.
-USE_UDEBS_FROM ?= stable
+USE_UDEBS_FROM ?= parrot
 
 # Archive components from which to fetch debian-installer modules.
 UDEB_COMPONENTS ?= main/debian-installer
@@ -98,7 +98,7 @@ TYPE = $(MEDIUM)
 
 # Used to write a /etc/lsb-release file in the installer initrd.
 LSB_DISTRIB_ID=Debian
-LSB_DISTRIB_DESCRIPTION="Parrot OS installer"
+LSB_DISTRIB_DESCRIPTION="Parrot $(shell uname -o) installer"
 # Inlude the build date of the installer in here.
 LSB_DISTRIB_RELEASE="$(DEBIAN_VERSION) - installer build $(BUILD_DATE)"
 
