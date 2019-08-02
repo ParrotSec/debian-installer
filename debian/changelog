@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot3) rolling; urgency=medium
+
+  * Increase version number to overwrite precedent experimental builds.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 02 Aug 2019 17:49:45 +0200
+
 debian-installer (20190702+parrot2) rolling; urgency=medium
 
   * Bump new Parrot kernel.
