@@ -11,7 +11,7 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.19.37-parrot1
+LINUX_KERNEL_ABI ?= 4.19.37-6parrot2
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -50,12 +50,12 @@ DEBIAN_RELEASE = rolling
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
 DEBIAN_VERSION = 4.7 (rolling)
-DEBIAN_VERSION ?= parrot
+DEBIAN_VERSION ?= rolling
 
 # Define here from what release (codename!) components (udebs) should be taken
 # to build debian-installer. By default this is set to 'unstable' for building
 # daily images. For official builds this is overruled in debian/rules.
-USE_UDEBS_FROM ?= parrot
+USE_UDEBS_FROM ?= rolling
 
 # Archive components from which to fetch debian-installer modules.
 UDEB_COMPONENTS ?= main/debian-installer

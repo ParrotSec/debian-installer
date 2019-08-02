@@ -37,7 +37,7 @@ endif
 # Adjust for non-released ports if needed:
 RELEASE_ARCHES=amd64 arm64 armel armhf i386 mips mips64el mipsel ppc64el s390x
 ifeq (,$(filter $(ARCH), $(RELEASE_ARCHES)))
-USE_UDEBS_FROM=parrot
+USE_UDEBS_FROM=rolling
 endif
 
 ARCHIVEDIR=debian/tmp/installer-$(ARCH)
