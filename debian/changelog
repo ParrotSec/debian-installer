@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot4) rolling; urgency=medium
+
+  * Rebuild installer with latest kernel build.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 06 Aug 2019 03:06:26 +0200
+
 debian-installer (1:20190702+parrot3) rolling; urgency=medium
 
   * Increase version number to overwrite precedent experimental builds.

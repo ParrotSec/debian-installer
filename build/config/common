@@ -11,7 +11,7 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 4.19.37-6parrot2
+LINUX_KERNEL_ABI ?= 4.19.0-6parrot3
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -36,7 +36,7 @@ MKLIBS = mklibs-copy
 # Normally the sources.list for building d-i will be derived from your
 # "normal" sources.list. However, you can specify a mirror here to override
 # this. You can use copy:/ to use a local mirror
-MIRROR = http://deb.parrotsec.org/parrot
+MIRROR = http://deb.parrot.sh/parrot
 
 # Options to pass to dpkg when it is unpacking the udebs to create the
 # image. None should be needed, but --force-overwrite might need to be
