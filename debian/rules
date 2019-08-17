@@ -10,6 +10,7 @@ SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f
 ifneq ($(filter parrot testing rolling rolling-testing,$(SUITE)),)
 SUITE=rolling
 USE_UDEBS_FROM=rolling
+USE_PROPOSED_UPDATES=0
 TRANSSTATUS=
 BOOTMENU_BEEP=y
 else

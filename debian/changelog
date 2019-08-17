@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot5) rolling; urgency=medium
+
+  * Import new Linux 5.2 kernel.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 17 Aug 2019 23:41:38 +0200
+
 debian-installer (1:20190702+parrot4) rolling; urgency=medium
 
   * Rebuild installer with latest kernel build.
