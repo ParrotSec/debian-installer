@@ -1,3 +1,10 @@
+debian-installer (1:20190702+parrot7) rolling; urgency=medium
+
+  * Include new choose-mirror package.
+  * Remove debian-tor group from default user.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 19 Aug 2019 17:06:24 +0200
+
 debian-installer (1:20190702+parrot6) rolling; urgency=medium
 
   * Rebuild package to include the latest debian-installer-utils version.
