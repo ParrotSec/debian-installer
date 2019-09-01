@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot8) rolling; urgency=medium
+
+  * Include new kernel revision (5.2.9).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 01 Sep 2019 02:40:36 +0200
+
 debian-installer (1:20190702+parrot7) rolling; urgency=medium
 
   * Include new choose-mirror package.
