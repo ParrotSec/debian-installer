@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot9) rolling; urgency=medium
+
+  * Bump new Linux 5.3.0-1parrot1 version.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 11 Nov 2019 00:43:26 +0100
+
 debian-installer (1:20190702+parrot8) rolling; urgency=medium
 
   * Include new kernel revision (5.2.9).
