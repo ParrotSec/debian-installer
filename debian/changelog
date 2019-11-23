@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot11) rolling; urgency=medium
+
+  * Fix kernel package version.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 23 Nov 2019 03:23:53 +0100
+
 debian-installer (1:20190702+parrot10) rolling; urgency=medium
 
   * Bump new inux 5.3.0-3parrot2.
