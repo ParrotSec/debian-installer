@@ -11,7 +11,7 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 5.3.0-1parrot1
+LINUX_KERNEL_ABI ?= 5.3.0-3parrot2
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
@@ -49,7 +49,7 @@ DEBIAN_RELEASE = rolling
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 4.7 (rolling)
+DEBIAN_VERSION = 4.8 (rolling)
 DEBIAN_VERSION ?= rolling
 
 # Define here from what release (codename!) components (udebs) should be taken
@@ -108,7 +108,7 @@ KEYRING=/usr/share/keyrings/parrot-archive-keyring.gpg
 
 # All images that include cdebconf should include symbols needed by these
 # plugins.
-EXTRAUDEBS=cdebconf-newt-entropy cdebconf-text-entropy
+EXTRAUDEBS=cdebconf-newt-entropy cdebconf-text-entropy partman-swapfile
 
 # List of languages only supported with the graphical cdebconf frontend.
 GI_LANGS = '(am|bn|dz|ka|gu|hi|km|ml|mr|ne|pa|ta)'

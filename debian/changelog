@@ -1,3 +1,11 @@
+debian-installer (1:20190702+parrot10) rolling; urgency=medium
+
+  * Bump new inux 5.3.0-3parrot2.
+  * Import new partman udebs.
+  * Add partman-swapfile.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 23 Nov 2019 02:03:12 +0100
+
 debian-installer (1:20190702+parrot9) rolling; urgency=medium
 
   * Bump new Linux 5.3.0-1parrot1 version.
