@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot12) rolling; urgency=medium
+
+  * Bump new Linux 5.4.0-2parrot1.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 15 Jan 2020 23:11:57 +0100
+
 debian-installer (1:20190702+parrot11) rolling; urgency=medium
 
   * Fix kernel package version.
@@ -6,7 +12,7 @@ debian-installer (1:20190702+parrot11) rolling; urgency=medium
 
 debian-installer (1:20190702+parrot10) rolling; urgency=medium
 
-  * Bump new inux 5.3.0-3parrot2.
+  * Bump new Linux 5.3.0-3parrot2.
   * Import new partman udebs.
   * Add partman-swapfile.
 
