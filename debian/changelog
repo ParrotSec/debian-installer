@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot13) rolling; urgency=medium
+
+  * Bump new Linux 5.4.0-3parrot1.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 02 Feb 2020 20:14:03 +0100
+
 debian-installer (1:20190702+parrot12) rolling; urgency=medium
 
   * Bump new Linux 5.4.0-2parrot1.
