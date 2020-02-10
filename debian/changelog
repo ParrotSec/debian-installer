@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot14) rolling; urgency=medium
+
+  * Rebuild package with new udebs.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 10 Feb 2020 03:43:36 +0100
+
 debian-installer (1:20190702+parrot13) rolling; urgency=medium
 
   * Bump new Linux 5.4.0-3parrot1.

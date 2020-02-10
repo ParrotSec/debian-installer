@@ -18,7 +18,7 @@ KERNEL_FLAVOUR ?= di
 
 # List here any extra udebs that are not in the list file but that
 # should still be included on the system.
-EXTRAS ?=
+EXTRAS ?= partman-swapfile
 
 # This variable can be used to copy in additional files from the system
 # that is doing the build. Useful if you need to include strace, or gdb,
@@ -36,7 +36,7 @@ MKLIBS = mklibs-copy
 # Normally the sources.list for building d-i will be derived from your
 # "normal" sources.list. However, you can specify a mirror here to override
 # this. You can use copy:/ to use a local mirror
-#MIRROR = http://deb.parrot.sh/parrot
+MIRROR = http://mirror.parrot.sh/mirrors/parrot
 
 # Options to pass to dpkg when it is unpacking the udebs to create the
 # image. None should be needed, but --force-overwrite might need to be
@@ -108,7 +108,7 @@ KEYRING=/usr/share/keyrings/parrot-archive-keyring.gpg
 
 # All images that include cdebconf should include symbols needed by these
 # plugins.
-EXTRAUDEBS=cdebconf-newt-entropy cdebconf-text-entropy partman-swapfile
+EXTRAUDEBS=cdebconf-newt-entropy cdebconf-text-entropy
 
 # List of languages only supported with the graphical cdebconf frontend.
 GI_LANGS = '(am|bn|dz|ka|gu|hi|km|ml|mr|ne|pa|ta)'
