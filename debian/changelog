@@ -1,6 +1,12 @@
+debian-installer (1:20190702+parrot17) rolling; urgency=medium
+
+  * Rebuild installer using new udebs.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 11 Apr 2020 20:58:08 +0200
+
 debian-installer (1:20190702+parrot16) rolling; urgency=medium
 
-  * mport new Linux 5.4.0-4parrot1.
+  * Import new Linux 5.4.0-4parrot1.
 
  -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 28 Feb 2020 03:40:09 +0100
 
