@@ -111,17 +111,11 @@ if [ "$TYPE" != "deb" ]; then
 	# currently have udebs, or which udebs still depend on for various
 	# reasons.
 	echo -n > $APTDIR/state/status
-	# dpkg -s needs to be passed arch-qualified package names to
-	# avoid ambiguity.
-	if dpkg --assert-multi-arch; then
-		arch_qualifier=:$DEB_HOST_ARCH
-	fi
-	# Some archs have libc6, others have libc6.1. libgcc1 is not used
-	# on all architectures.
+	# libgcc1 and libgcc-s1 are not used on all architectures.
 	# NOTE: Please keep the edos udeb checker in sync with this list:
-	for i in libc0.1 libc0.3 libc6 libc6.1 libnewt0.52 libgcc1; do
-		if dpkg -s $i$arch_qualifier >/dev/null 2>&1; then
-			dpkg -s $i$arch_qualifier | grep -v Depends: >> $APTDIR/state/status
+	for i in libgcc1:$DEB_HOST_ARCH libgcc-s1:$DEB_HOST_ARCH; do
+		if dpkg -s $i >/dev/null 2>&1; then
+			dpkg -s $i | grep -v Depends: >> $APTDIR/state/status
 			echo >> $APTDIR/state/status
 		fi
 	done

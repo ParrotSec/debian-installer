@@ -116,7 +116,7 @@ $(basename $0) - bootable harddisk image generator
 
 SYNOPSIS:
 
-$(basename $0) -o output_image_name [-s image_size] [-i sourcedir] [-t fstype] [-p partition_offset] [-b build_type] [-z|-j|-J] [-h] [[bootloader_image bootloader_offset] ...]
+$(basename $0) -o output_image_name [-s image_size] [-i sourcedir] [-t fstype] [-d partid] [-p partition_offset] [-b build_type] [-z|-j|-J] [-h] [[bootloader_image bootloader_offset] ...]
 
 DESCRIPTION:
 
@@ -134,7 +134,7 @@ OPTIONS
        Specify the type of image to build. Valid options are:
 
        - complete:   complete harddisk image (MBR/firmware + partition)
-       - firmware:   only MBR/firmware/bootloader image
+       - firmware:   only MBR/firmware/bootloader imaged
        - partition:  only partition image
 
        The default is building a complete harddisk image.
@@ -185,6 +185,11 @@ OPTIONS
        Generating large ext2 images can be very slow (ca. 5
        minutes for a 1GB image on a 1GHz Cortex-A7).
 
+  -d partid
+
+       Create a partition table entry of a specified partition
+       id for the bootloader_image.
+
   -v
 
        Verbose output.
@@ -213,7 +218,7 @@ EOF
 # -z/-j/-J gzip/bzip2/xz compression
 # -v verbose
 
-while getopts "hi:o:s:t:p:b:zjJv" option; do
+while getopts "hi:o:s:t:d:p:b:zjJv" option; do
   case ${option} in
     h)
       usage
@@ -247,6 +252,9 @@ while getopts "hi:o:s:t:p:b:zjJv" option; do
           exit 1
           ;;
       esac
+      ;;
+    d)
+      BOOTLOADER_PARTID="${OPTARG}"
       ;;
     p)
       PARTOFFSET="${OPTARG}"
@@ -315,9 +323,6 @@ case "${BUILDTYPE}" in
     log "Building partition table ..."
     TEMP_HD_IMAGEFILE=$(mktemp)
     dd 2>/dev/null if=/dev/zero bs=1k of="${TEMP_HD_IMAGEFILE}" seek=$((${IMAGESIZE}-1)) count=1
-    sfdisk --force -u S "${TEMP_HD_IMAGEFILE}" 1>/dev/null 2>/dev/null <<EOF
-${PARTOFFSET}, ,${PARTID},*,
-EOF
     while [ "$#" -ge "2" ]
     do
       if [ -n "$1" ]; then
@@ -333,6 +338,10 @@ EOF
       clean_tempfiles
       exit 1
     fi
+    sfdisk --force -u S "${TEMP_HD_IMAGEFILE}" 1>/dev/null 2>/dev/null <<EOF
+${BOOTLOADER_PARTID:+${BOOTLOADER_OFFSET}, $((${PARTOFFSET}-${BOOTLOADER_OFFSET})),${BOOTLOADER_PARTID},*,}
+${PARTOFFSET}, ,${PARTID},*,
+EOF
     ;;
 esac
 

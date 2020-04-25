@@ -1,3 +1,12 @@
+debian-installer (20200423+parrot1) rolling; urgency=medium
+
+  * Import new Debian release.
+  * Buuild for Linux Kernel 5.5.0-1parrot1.
+  * Build with new udebs.
+  * Update preseed file. 
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 25 Apr 2020 23:30:44 +0200
+
 debian-installer (1:20190702+parrot18) rolling; urgency=medium
 
   * Rebuild installer using new udebs.

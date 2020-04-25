@@ -119,6 +119,7 @@ sub start_submenu ($;%)
         print_indented("set menu_color_highlight=white/blue\n");
     }
     print_set_theme($theme);
+    print_indented("set gfxpayload=keep\n");
 }
 sub end_submenu ()
 {

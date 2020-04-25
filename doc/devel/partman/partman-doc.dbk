@@ -1,0 +1,1751 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- -*- DocBook -*- -->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!-- Include entity definition file by uncommenting the following -->
+<!-- <!ENTITY % versiondata SYSTEM "version.ent"> %versiondata;   -->
+]>
+
+<book lang="en">
+
+<title>Partition Management for the Debian Installer</title>
+
+<bookinfo>
+
+<authorgroup>
+<author><personname>Anton Zinoviev</personname><email>anton@lml.bas.bg</email></author>
+
+</authorgroup>
+<releaseinfo></releaseinfo>
+
+<pubdate><!-- put date --></pubdate>
+
+
+<copyright><year> 2003,2004,2007</year><holder>Anton Zinoviev</holder></copyright>
+<legalnotice>
+<para>
+This manual is free software; you may redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2, or (at your option) any later version.
+</para>
+<para>
+This is distributed in the hope that it will be useful, but <emphasis>without
+any warranty</emphasis>; without even the implied warranty of merchantability
+or fitness for a particular purpose.  See the GNU General Public License for
+more details.
+</para>
+<para>
+A copy of the GNU General Public License is available as
+<literal>/usr/share/common-licenses/GPL</literal> in the Debian GNU/Linux
+distribution or on the World Wide Web at the <ulink
+url="http://www.gnu.org/copyleft/gpl.html">GNU website</ulink>.  You can also
+obtain it by writing to the Free Software Foundation, Inc., 51 Franklin St,
+Fifth Floor, Boston, MA 02110-1301, USA.
+</para>
+</legalnotice>
+
+</bookinfo>
+
+
+<chapter id="ch1"><title>Introduction</title>
+<para>
+There are many wishlist features that we might desire from any installer of
+GNU/Linux and that are related to partitioning:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+The partitioner should support different file systems.  Some of them need more
+care than only libraries and suitable arguments for <command>mount</command>.
+</para>
+</listitem>
+<listitem>
+<para>
+It should support not only regular partitions but also software RAID and LVM as
+well as encrypted file systems.
+</para>
+</listitem>
+<listitem>
+<para>
+It should be able to partition disks automatically and allow the user to
+inspect and customise the automatic partitioning later.
+</para>
+</listitem>
+<listitem>
+<para>
+It should be able to resize partitions and move their contents from one place
+to another.
+</para>
+</listitem>
+<listitem>
+<para>
+The users should be protected from mistakes – by allowing them to undo their
+partitioning operations.
+</para>
+</listitem>
+<listitem>
+<para>
+The partitioner should discover that there is already some installed GNU/Linux
+system and analyse its <command>fstab</command>, <command>passwd</command>,
+etc.  in order to provide an automatic upgrade from the old already installed
+GNU/Linux system to the new one.
+</para>
+</listitem>
+</itemizedlist>
+<para>
+One nice feature of the Debian installer is that it is modular.  Its components
+are packaged in separate udebs and they can have relatively independent
+development process.  This document describes how we can solve all mentioned
+tasks keeping the Debian installer as modular as it is now.  Ideally in order
+to add some new feature only a few new udebs must be all that is needed – no
+changes in the existing udebs and no recompilation would be required.
+</para>
+<para>
+The script <filename>partman</filename> from the package <systemitem
+role="package">partman-base</systemitem> opens the main partitioning menu; it
+may look like this one:
+</para>
+<screen>
++------------------+ [!!] Partition the storage devices +-----------------+
+|             Partition, free space or device to be modified              |
+|                                                                         |
+|        IDE1 master - Seagate U Series 40810 (40.0 GB)                   |
+|                 #3 primary    2.1 GB B F ext3       /                   |
+|                    pri/log    4.4 GB     FREE SPACE                     |
+|                 #5 logical    3.6 GB                                    |
+|                 #7 logical   10.0 GB   F ext3       /usr                |
+|                 #8 logical   19.9 GB   K ext2       /home               |
+|        IDE2 master - Maxtor 6Y120L0 (122.9 GB)                          |
+|                 #7 logical    1.0 GB     linux-swap                     |
+|                    logical  114.5 GB     FREE SPACE                     |
+|                 #5 logical    5.5 GB     reiserfs                       |
+|                 #6 logical    1.9 GB                                    |
+|                                                                         |
+|        Undo changes to partitions                                       |
+|        Finish partitioning and write changes to disk                    |
+|                                                                         |
+|      &lt;Go Back&gt;                                          &lt;Continue&gt;      |
+|                                                                         |
++-------------------------------------------------------------------------+
+</screen>
+<para>
+When the users choose some free space they are offered to create a new
+partition just like they are in <command>cfdisk</command>.  When users choose a
+partition they are offered with a menu with various editing operations:
+</para>
+<screen>
++------------------+ [!!] Partition the storage devices +-----------------+
+|                    Settings on the partition:                           |
+|                                                                         |
+|           Usage method:          format the partition                   |
+|           File system:           ext3                                   |
+|           Mount point:           /var/mail                              |
+|           Mount options:         noatime,nodev,nosuid,noexec,usrquota   |
+|           Bootable flag:         off                                    |
+|           Size:                  995.2 MB                               |
+|                                                                         |
+|           Finished setting up partition                                 |
+|           Delete the partition                                          |
+|                                                                         |
+|      &lt;Go Back&gt;                                          &lt;Continue&gt;      |
+|                                                                         |
++-------------------------------------------------------------------------+
+</screen>
+<para>
+All udebs are allowed to add items to this menu as well as to several other
+menus.  They can add new items in the list of devices such as software RAID and
+LVM devices, networked file systems, encrypted partitions, etc.  The package
+<systemitem role="package">partman-partitioning</systemitem> is responsible for
+pure partitioning operations such as creation of new partitions and deletion.
+The packages <systemitem role="package">partman-target</systemitem> and
+<systemitem role="package">partman-basicmethods</systemitem> are responsible
+for the items `Choose how this partition should be used' and `Choose a file
+system'.  The package <systemitem
+role="package">partman-basicfilesystems</systemitem> adds support for
+<literal>ext2</literal>, <literal>linux-swap</literal>,
+<literal>fat16</literal> and <literal>fat32</literal>.  The package <systemitem
+role="package">partman-ext3</systemitem> adds support for
+<literal>ext3</literal>.
+</para>
+</chapter>
+
+<chapter id="ch2"><title>Changes in partman since 2005</title>
+<para>
+This chapter documents important changes in the sctructure of partman.  It is
+provided as a test if you need to reread some of the sections in this document.
+</para>
+<itemizedlist>
+<listitem>
+<para>
+New directory <command>check.d</command> with some of the scripts formerly in
+<command>finish.d</command>
+</para>
+</listitem>
+<listitem>
+<para>
+New directory <command>display.d</command> with different methods to do the
+partitioning (manual, automatic, etc.)
+</para>
+</listitem>
+<listitem>
+<para>
+New command GET_LABEL_TYPE in parted_server
+</para>
+</listitem>
+</itemizedlist>
+</chapter>
+
+<chapter id="ch3"><title>Package interrelations</title>
+<section id="basics"><title>Basics</title>
+<para>
+The GNU Parted disk partitioning library provides high-level, architecture
+independent functions for operations such as creating, deleting, resizing and
+moving of partitions.  Most of the functions of libparted work in a
+nondestructive way.  The partition table is written in data structures and any
+change in the partition table happens only in these data structures rather than
+directly on the disk.  This makes possible to implement partitioning tools
+based on <systemitem role="package">libparted</systemitem> that support undoing
+of the editing operations.
+</para>
+<para>
+However we have to solve two problems.  The first is that we want to use as
+much as possible shell scripts rather than C programs.  The second is that
+different programs have to operate with same instance of libparted structures.
+For example the user can use some tool for automatic partitioning, then correct
+or customise the automatic partitioning, perform some other arbitrary
+operations being still allowed to undo everything.
+</para>
+<para>
+There is one obvious solution of these two problems – we keep the data
+structures of libparted in a daemon process and communicate with it in order to
+make changes in these data structures.  This process is
+<filename>/bin/parted_server</filename> from the package <systemitem
+role="package">partman-base</systemitem>.
+</para>
+<para>
+The scripts from <filename>/lib/partman/init.d/</filename> are executed before
+all partitioning operations.  They can be used to initialise the partitioning
+system.  The scripts may be invoked more than once in which case they should
+behave properly.  For example this directory can contain a script to discover
+the existing hard drives.  If invoked for second time the script must either do
+nothing or check if there is some new kernel module giving access to new still
+undiscovered device.
+</para>
+<para>
+Any udeb may install a script in this directory.  For example the script
+<filename>/lib/partman/init.d/30parted</filename> from the package <systemitem
+role="package">partman-base</systemitem> is responsible for running
+<command>parted_server</command>.  Notice that the scripts are prefixed by a
+two-digit number.  This number determines the order the scripts are executed.
+If any of the scripts exit with non-zero exit code the partitioning will be
+aborted.  This means that in almost all cases these scripts must end with
+exit-code 0.
+</para>
+<para>
+When the initialisation completes, the scripts from
+<filename>/lib/partman/display.d</filename> are executed.  These scripts are
+supposed to make the actual partitioning interactively or non-interactively.
+The exit code <replaceable>code</replaceable> of these scripts is interpreted
+as follows:
+</para>
+<variablelist>
+<varlistentry>
+<term><replaceable>code</replaceable> = 0</term>
+<listitem>
+<para>
+The script did nothing, move to the next script in
+<command>display.d</command>.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>1 &lt;= <replaceable>code</replaceable> &lt;= 99</term>
+<listitem>
+<para>
+Restart the partitioning (move again to the first script in
+<command>display.d</command>).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>100 &lt;= <replaceable>code</replaceable> &lt;= 254</term>
+<listitem>
+<para>
+The script successfully partitioned the disks, do not execute the following
+scripts in <command>display.d</command>.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><replaceable>code</replaceable> = 255</term>
+<listitem>
+<para>
+Abort the partitioning.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<para>
+When the disks become ready, the scripts in
+<filename>/lib/partman/check.d</filename> are executed.  They have to check if
+everything is OK to proceed with commiting the changes on the disks, mounting
+file systems, etc.  For example the package <systemitem
+role="package">partman-target</systemitem> installs there a script to check if
+there is a root file system.  If a script in <command>check.d</command> exits
+with non-zero exit code then the scripts in <command>display.d</command> are
+executed again and as a result the user is allowed to fix the partitioning.
+</para>
+<para>
+The directory <command>check.d</command> is remarkable with the fact that some
+of the scripts in it are installed by non-partman packages.  The packages for
+the various bootloaders (lilo, grub, palo, etc.) install there scripts to
+ensure the partitioning scheme conforms to their requirements.
+</para>
+<para>
+While the user is modifying the partitions this happens only in the memory of
+the computer and not in the edited devices.  This is because almost all changes
+happen either in the data-structures of <command>parted_server</command> or in
+files in the installer's ram-disk.  That's why we can provide the user with the
+option to undo everything.  When the user chooses to undo the scripts in the
+directory <filename>/lib/partman/undo.d/</filename> are executed.  Any udeb may
+install a script in this directory.  For example the script
+<filename>/lib/partman/undo.d/30parted</filename> is responsible for restoring
+the contents of the data structures of <command>parted_server</command>.  In
+most cases the scripts from <command>undo.d</command> must exit with exit-code
+0.  If any of the scripts exit with non-zero exit code the partitioning will be
+aborted.
+</para>
+<para>
+In order to perform the editing operations on the storage devices (and in
+particular to transfer the partitions from the internal data-structures of
+<command>parted_server</command> to the hard disks) the scripts from the
+directory <filename>/lib/partman/commit.d/</filename> are executed.  The order
+in which these scripts are executed is determined again by two-digit prefixes
+in the script names.  Every script from <command>commit.d</command> is
+guaranteed that the scripts ordered before it have been already executed.
+However if any of the scripts exit with non-zero exit-code the execution of the
+scripts in <command>commit.d</command> will be stopped.  In this case the
+partitioning will continue and the user is expected to fix the problem.  If any
+script exits with non-zero exit code it is supposed to inform the user what
+went wrong using debconf.
+</para>
+<para>
+There are two cases when the scripts from <command>commit.d</command> are
+executed.  The first case is when the user wants to commit the changes to the
+disks but continue partitioning.  The second case is when the partitioning
+ends.  In the first case if none of the scripts fails the scripts from
+<command>init.d</command> will be also executed and the user will be returned
+to the partitioning dialog.  In the second case the scripts from
+<command>finish.d</command> will be executed.  In both cases if any of the
+scripts in <command>commit.d</command> fail the user will be returned
+immediately back to the partitioning dialog.
+</para>
+<para>
+The scripts from <filename>/lib/partman/finish.d/</filename> are responsible
+for final tasks such as to mount partitions on <filename>/target</filename>,
+generate of <command>fstab</command>, stop <command>parted_server</command>
+etc.<footnote><para> What tasks will be performed depends on what udebs are
+unpacked.  If the packages responsible for mounting partitions and creating
+fstab are not unpacked we have only a simple partitioner providing <systemitem
+role="package">partitioned-harddrives</systemitem>.  If they are unpacked they
+provide also <systemitem role="package">made-filesystems</systemitem> and
+<systemitem role="package">mounted-partitions</systemitem>.  </para>
+</footnote> If any of these scripts exit with non-zero exit-code the execution
+of the scripts will be stopped.  If the exit-code was 1 then the user will be
+returned back to the partitioning dialog and is expected to correct the
+problem.  If the exit-code was neither 0 nor 1 then the partitioning will be
+aborted.
+</para>
+<para>
+For every hard disk in the system the script
+<filename>/lib/partman/init.d/30parted</filename> creates a subdirectory in
+<filename>/var/lib/partman/devices/</filename> and informs
+<command>parted_server</command> that the device is to be edited (`opens' the
+device).  All udebs that provide storage device (software RAID, LVM, encrypted
+partitions) must do the same.  This subdirectory must contain at least three
+files – <command>device</command>, <command>model</command> and
+<command>size</command>.  The first contains the name of a device file (for
+example <filename>/dev/ide/host0/bus0/target0/lun0/disc</filename>).  The
+second contains the name of the device (for example `Maxtor 6Y120L0').  The
+third contains the physical size of the storage device (in bytes, for example
+`122942324736').  <footnote><para> Please notice that udebs that provide
+support for storage `devices' that cannot be partitioned (such as networked
+file systems) should not create a subdirectory in
+<filename>/var/lib/partman/devices</filename> and certainly cannot provide the
+device to the management of <command>parted_server</command>.  </para>
+</footnote> The subdirectories of
+<filename>/var/lib/partman/devices/</filename> can but are not obligated to
+contain additional information.  We call these subdirectories <emphasis>device
+directories</emphasis>.
+</para>
+<para>
+Every partition in a device managed by <command>parted_server</command> is
+given a unique name having the form
+<replaceable>first_byte</replaceable>-<replaceable>last_byte</replaceable>.
+This name can be used to determine where the partition starts and where it
+ends.<footnote><para> Unlike one can suppose <command>parted_server</command>
+always measures sizes and places in bytes rather than in sectors.
+<replaceable>Last_byte</replaceable> is the number of the last byte of the last
+sector of the partition.  </para> </footnote> If the device directory contains
+a subdirectory named
+<command><replaceable>first_byte</replaceable>-<replaceable>last_byte</replaceable></command>
+then this subdirectory stores information about the partition.  We call this
+subdirectory <emphasis>directory of the partition</emphasis>.  We call the
+string<replaceable>first_byte</replaceable>-<replaceable>last_byte</replaceable>
+`<emphasis>id</emphasis>' of the partition.
+</para>
+</section>
+
+<section id="menudirs"><title>Menu-directories</title>
+<para>
+There are several menus involved in partitioning.  In order to keep the Debian
+installer modular and extensible we want to allow every udeb to install items
+in these menus.  Let us be more specific.  When the users decide to format some
+existing partition we need a menu with an item for every supported file system.
+Obviously we don't want to hardwire the list of the supported file systems
+anywhere in our installer.  If we want to add support to the installer say for
+XFS or UMSDOS file systems, only a few new udebs must be all that is needed.
+</para>
+<para>
+In order to achieve this flexibility the package <systemitem
+role="package">partman-base</systemitem> provides support for the so-called
+menu-directories.  Every such directory contains files named
+<command>question</command> and <command>priority</command>.  They contain the
+name of a Debconf template and the priority of the question correspondingly.
+The template must have exactly the following type and choices fields:
+</para>
+<screen>
+Type: select
+Choices-C: ${CHOICES}
+Choices: ${DESCRIPTIONS}
+</screen>
+<para>
+All other files in the menu directory are subdirectories.  Any udeb can install
+such a subdirectory in order to add items to the menu.  For example the udebs
+for software RAID volumes can install in the menu of the editing operations an
+item to resize the chosen partition to have the same size as another.  These
+subdirectories must contain two scripts – <command>choices</command> and
+<command>do_option</command>.  The purpose of the first script is to print menu
+items.  For every menu item <command>choices</command> must print a line having
+the form
+</para>
+<screen>
+<replaceable>menu_item_id</replaceable>&lt;TAB&gt;The text for the user
+</screen>
+<para>
+The script <command>choices</command> is allowed to print nothing.  In this
+case no item for the menu is created.  Here <literal>&lt;TAB&gt;</literal> is
+ASCII 9.  The text `The text for the user' will be presented to the users.  If
+they choose this particular menu item the script <command>do_option</command>
+will be invoked.
+</para>
+<para>
+The script <command>choices</command> may be given some arguments depending on
+the particular menu-directory.  The first argument given to
+<command>do_option</command> is always the
+<replaceable><literal>menu_item_id</literal></replaceable> of the chosen menu
+item.  The rest of the arguments are the same as the arguments given to
+<command>choices</command>.
+</para>
+<para>
+Let we take as an example the menu that the users see when they choose to edit
+some particular partition.  The file <command>question</command> in the
+menu-directory for this menu contains the text
+<literal>partman/active_partition</literal>.  This is the name of a
+Debconf-template with type `select' and description `Please choose what to do
+with this partition'.  The package <systemitem
+role="package">partman-partitioning</systemitem> installs in this
+menu-directory some subdirectories – <command>62change_name</command>,
+<command>65toggle_bootable</command> and <command>85delete</command>.  The
+script <filename>62change_name/choices</filename> is given two arguments –
+the hard disk we edit and the id of the partition.  It checks if the type of
+the partition table supports partition names in which case it prints the line
+</para>
+<screen>
+setname&lt;TAB&gt;Set the name of the partition
+</screen>
+<para>
+If the partition table doesn't support names, then this script prints nothing.
+When the user chooses to `set the name of the partition' the script
+<filename>62change_name/do_option</filename> is invoked.  Its first argument is
+<literal>setname</literal> (this is the first part of the line printed by
+<command>choices</command>) and the other arguments are the same to the
+arguments given to the script <command>choices</command>.  In our case the
+script <command>do_option</command> ignores its first argument.  The script
+<command>do_option</command> can use its first argument in order to determine
+which menu item the user has chosen in cases when <command>choices</command>
+has printed several.
+</para>
+<para>
+Notice that the names of the subdirectories in any menu-directory start with
+two digits.  They are used to determine the order of the items in the menu.
+</para>
+</section>
+
+<section id="s3.3"><title>Partitioning</title>
+<para>
+The partitioning starts with the menu of the menu-directory
+<filename>/lib/partman/choose_partition</filename>.  This is the main
+partitioning menu.  Every udeb is allowed to install new items in it.  If the
+script <command>do_option</command> exits with exit-code 0 the user will be
+shown again the main partitioning menu.  If the script exits with exit-code 100
+this means that the partitioning should be finished.  In this case the scripts
+from <command>commit.d</command> and <command>finish.d</command> will be
+executed as described in <xref linkend="basics"/>.  If the script
+<command>do_option</command> exits with exit code 255 the partitioning will be
+aborted immediately.
+</para>
+<para>
+The main partitioning menu always contains an item for every partitioned
+storage device, an item for every partition and an item for every free space.
+</para>
+<para>
+If the user chooses a storage device the menu of the menu-directory
+<filename>/lib/partman/storage_device</filename> will be opened.  The first
+argument given to <command>choices</command> is the device
+directory<footnote><para> We are not going to describe the arguments given to
+<command>do_option</command>.  Look at <xref linkend="menudirs"/>.  </para>
+</footnote>.
+</para>
+<para>
+If the user chooses a free space the menu-directory
+<filename>/lib/partman/free_space</filename> will be opened.  The first
+argument given to <command>choices</command> is the device directory.  The
+second argument is the id of the free space.
+</para>
+<para>
+If the user chooses an active partition the menu-directory
+<filename>/lib/partman/active_partition</filename> will be opened.  The first
+argument given to <command>choices</command> is the device directory.  The
+second argument is the id of the chosen partition.  If the script
+<command>do_option</command> exits with exit-code 0 the user will be shown
+again the menu <command>active_partition</command> for the same partition.  If
+the script <command>do_option</command> exits with exit-code 100 or 255 the
+user will be returned back to the main partitioning menu.  This should happen
+when the id of the partition is invalidated, for example when the partition is
+deleted or resized.
+</para>
+<para>
+In the main partitioning menu the partitions are presented by lines of this
+kind:
+</para>
+<screen>
+#8 primary   19.9 GB   K ext2       /home
+</screen>
+<para>
+Notice that it is useless to indicate that the partition is primary if the type
+of the partition table is `mac' as this partition table doesn't support logical
+partitions.  On the other hand this partition table supports partition names.
+We see that we need a flexible way to determine how the partitions are
+presented in the main partitioning menu.
+</para>
+<para>
+The directory <filename>/lib/partman/visual.d</filename> contains scripts that
+print the parts of the partition line.  For example the script
+<filename>/lib/partman/visual.d/filesystem</filename> prints strings like
+`ext3' or `FREE SPACE'.  These scripts usualy start with the following cliche:
+</para>
+<screen>
+cd $1
+
+num=$2
+id=$3
+size=$4
+type=$5
+fs=$6
+path=$7
+shift; shift; shift; shift; shift; shift; shift
+name=$*
+</screen>
+<para>
+$1 is the device directory.  $num is the number of the partition (for example
+<filename>/dev/hda6</filename> has number 6).  $id is the id of the partition.
+$size is the size of the partition (in bytes).  If this is an active partition
+then $type is either `primary' or `logical'.  If this is a free space then
+$type shows what partition can be created in it and $type can be `primary',
+`logical', `pri/log' or `unusable'.  $fs is `free' if this is a free space.
+Otherwise $fs is the type of the file system of this partition as known to
+<command>parted_server</command>.  $path is a device name for the partition,
+for example <filename>/dev/ide/host0/bus0/target0/lun0/part6</filename>.  $name
+is the name of the partition or the empty string if the partition table doesn't
+support partition names.
+</para>
+<para>
+The script <filename>/lib/partman/commit.d/30parted</filename> transfers the
+partition tables from the internal structures of
+<command>parted_server</command> to the disks.  The script
+<filename>/lib/partman/finish.d/80parted</filename> stops
+<command>parted_server</command>.
+</para>
+<para>
+The package <systemitem role="package">partman-base</systemitem> installs in
+<command>update.d</command> (see <xref linkend="update-partitions"/>) a script
+to ensure that for every partition that contains some file system there is a
+file <command>detected_filesystem</command> in the directory of the partition
+whose contents is the type of the detected file system as returned by
+<command>parted_server</command>.
+</para>
+</section>
+
+<section id="s3.4"><title>Setup <filename>/target</filename></title>
+<para>
+Without the package <systemitem role="package">partman-target</systemitem> the
+packages <systemitem role="package">partman-base</systemitem> and <systemitem
+role="package">partman-partitioning</systemitem> provide only the regular
+partitioning operations.  However if the package <systemitem
+role="package">partman-target</systemitem> is also unpacked then the user will
+be provided with options to choose file systems for the partitions, specify
+wether they should be formatted and select mount points.  The package
+<systemitem role="package">partman-target</systemitem> adds to the menu
+directory <filename>/lib/partman/active_partition</filename> the item `Usage
+method:'.  If the user chooses this item the menu directory
+<filename>/lib/partman/choose_method</filename> will be opened.  The scripts
+<command>choices</command> from <command>choose_method</command> are given the
+device directory as first argument and the partition id as second argument.
+</para>
+<para>
+The package <systemitem role="package">partman-basicmethods</systemitem> adds
+in the menu of the menu directory <command>choose_method</command> three items:
+`Do not use the partition', `Format the partition' and `Keep and use the
+existing data in the partition' (the last only if some file system is
+detected).  Other udebs can provide another methods to use partitions.
+</para>
+<para>
+Every partition that is to be used somehow in the future Debian system should
+have a file named `method' in its directory (what is `directory of a partition'
+is described in <xref linkend="basics"/>).  The scripts
+<command>do_option</command> of the menu directory
+<command>choose_method</command> manage the file <command>method</command>.  It
+contains the name of the usage method chosen by the user.  For example if the
+user chooses to `format the partition' the contents of this file will be
+`format' and if the user chooses to `keep and use the existing data' the
+contents of this file will be `keep'.  Partitions that won't be used do not
+have a file <command>method</command>.
+</para>
+<para>
+The udebs providing methods may provide also translatable names of the methods
+for the user interface using debconf templates named
+<command>partman/method_long/<replaceable>some_method</replaceable></command>
+and
+<command>partman/method_short/<replaceable>some_method</replaceable></command>.
+For example the package <systemitem role="package">partman-palo</systemitem>
+providing method <command>palo</command> can provide also the following debconf
+templates:
+</para>
+<screen>
+Template: partman/method_long/palo
+Type: text
+_Description: Palo boot partition
+
+Template: partman/method_short/palo
+Type: text
+_Description: Palo
+</screen>
+<para>
+Another job for the scripts <command>do_option</command> of the menu directory
+<command>choose_method</command> is to create or remove a file named
+<command>use_filesystem</command> in the directory of the partitions.  This
+file is created when the usage method requires the partition to be used
+together with some file system.  Otherwise it is removed.  Example methods that
+are used together with a file system are `format the partition' and `keep and
+use the existing data'.  Example methods that are not used together with a file
+system are `LVM physical volume' and `PALO boot partition'.
+</para>
+<para>
+Finaly, the scripts <command>do_option</command> of the menu directory
+<command>choose_method</command> have to create or remove a file named `format'
+in the directory of the partitions.  If the partition directory contains a file
+named <command>format</command> then it will be formatted.  Otherwise it will
+not be formatted.  For example if the user chooses to `format the partition'
+the script <command>do_option</command> will create a file
+<command>format</command>.  If the user chooses to `keep and use the existing
+data' the file <command>format</command> will be removed if it exists.
+</para>
+<para>
+The menu item `Choose a file system' in the menu directory
+<command>active_partition</command> is also provided by the package <systemitem
+role="package">partman-target</systemitem>.  If the user chooses it the menu
+<command>choose_filesystem</command> will be opened.  This menu however is not
+produced using a menu directory.
+</para>
+<para>
+Packages that provide support for some file system should install a script in
+the directory <filename>/lib/partman/valid_filesystems</filename>.  The first
+argument given to this script is some device directory, the second argument is
+the id of some partition and the third argument is one of the strings
+`formatable' and `existing'.  If it is `formatable' then the job of the script
+is to check if the specified partition can be formatted and used.  If the third
+argument is `existing' then the job of the script is to check if the partition
+can be used without formatting.  In either case if the partition can be used
+then the script should print a line with the identifier of the type of the file
+system.
+</para>
+<para>
+Packages that provide support for some file systems use the directory
+<filename>/lib/partman/parted_names</filename> to define a mapping from the
+unique file system type identifiers to the names used by
+<command>parted_server</command>.  Suppose for example that the package
+providing support for UMSDOS file system chooses the string `umsdos' as unique
+identifier for the file system.  Then this package must install in this
+directory a file named <command>umsdos</command> whose contents is the string
+`fat16'.  This means that <command>parted_server</command> will know UMSDOS
+file systems as being fat16 file systems.
+</para>
+<para>
+The udebs providing file systems may provide also translatable names of the
+file systems for the user interface using debconf templates named
+<command>partman/filesystem_long/<replaceable>some_filesystem</replaceable></command>
+and
+<command>partman/filesystem_short/<replaceable>some_filesystem</replaceable></command>.
+For example the package <systemitem role="package">partman-ext3</systemitem>
+providing file system with unique identifier <command>ext3</command> can
+provide also the following debconf templates:
+</para>
+<screen>
+Template: partman/filesystem_long/ext3
+Type: text
+_Description: Extended 3
+
+Template: partman/filesystem_short/ext3
+Type: text
+_Description: Ext3
+</screen>
+<para>
+Most of the packages that provide support for a file system will have to add an
+item `Mount point:' to the menu <command>active_partition</command>.  Of course
+this item should be shown only when the contents of the file
+<command>acting_filesystem</command> is appropriate.  The mount point chosen by
+the user should be written in a file named <command>mountpoint</command>
+situated in the directory of the partition.  If the user chooses not to mount
+this file system then the file <command>mountpoint</command> should be removed
+(if it exists).
+</para>
+<para>
+In order to be able to mount file systems and generate fstab the directories
+<filename>/lib/partman/fstab.d/</filename> and
+<filename>/lib/partman/mount.d/</filename> are used.  The scripts from
+<command>fstab.d</command> should print lines in a form similar to that of
+<filename>/etc/fstab</filename>:
+</para>
+<screen>
+<replaceable>file_system</replaceable>   <replaceable>mount_point</replaceable>   <replaceable>type</replaceable>    <replaceable>options</replaceable>  <replaceable>dump</replaceable>  <replaceable>pass</replaceable>
+</screen>
+<para>
+The first field (<replaceable><literal>file_system</literal></replaceable>) is
+the name of a device that can be accessed by the installer.  For example this
+can be <filename>/dev/ide/host0/bus0/target0/lun0/part5</filename> despite that
+in the future system this device will be named <filename>/dev/hda5</filename>.
+On the other hand the other five fields should look exactly the same way as in
+the <command>fstab</command> to be generated.  For example
+<replaceable><literal>options</literal></replaceable> can contain options such
+as <literal>quota</literal> that are senseless for the installer.
+</para>
+<para>
+The scripts from <command>mount.d</command> are used to mount file systems.  A
+string having the same form as the lines output by the scripts from
+<command>fstab.d</command> should be given as first argument to any script from
+<command>mount.d</command>.  Any script from <command>mount.d</command> checks
+if it can mount the requested file system.  If it cannot then the script exits
+with some non-zero exit code.  Otherwise the script must mount the file system
+in the proper place in the hierarchy over <filename>/target</filename>, print
+on its standard output a command that should be used in order to unmount the
+file system and exit with exit code 0.
+</para>
+<para>
+The scripts in the directories <command>fstab.d</command> and
+<command>mount.d</command> are installed by the udebs that provide support for
+file systems.
+</para>
+<para>
+Packages that provide support for file systems install in
+<command>commit.d</command> a script to format the partitions that the user has
+requested to be formatted.  The package <systemitem
+role="package">partman-target</systemitem> installs in
+<command>finish.d</command> a script to mount the partitions on
+<filename>/target</filename>.  The packages that provide support for storage
+devices (RAID, LVM, etc.) install in <command>finish.d</command> a script to
+add in <filename>/target/etc/fstab</filename> the necessary lines.
+</para>
+<para>
+The package <systemitem role="package">partman-target</systemitem> installs in
+<command>update.d</command> (see <xref linkend="update-partitions"/>) a script
+to ensure that for every partition that is to be used there is a file
+<command>acting_filesystem</command> in the directory of the partition whose
+contents is the identifier of the type of file system under which the partition
+should be used.
+</para>
+</section>
+
+</chapter>
+
+<chapter id="ch4"><title><filename>/lib/partman/lib/*</filename></title>
+<para>
+Various scripts in partman make use of <emphasis>function libraries</emphasis>:
+separate files, mostly containing shell functions, that are sourced by scripts
+so they can make use of common functions and code duplication can be avoided.
+</para>
+<para>
+The main function library is <filename>base.sh</filename>, provided by
+<systemitem role="package">partman-base</systemitem>.  This file is sourced by
+most scripts in partman as it defines a lot of useful variables and common
+functions.  Some of these are documented in the remainder of this chapter.
+<footnote><para> The script <filename>base.sh</filename> has become somewhat
+too long and this probably makes its sourcing slow.  Although some
+reorganization has already taken place, it could be a good idea to split it up
+further.  </para> </footnote>
+</para>
+<para>
+Other packages provide more targeted function libraries.  In most cases their
+scope and use can easily be determined from their name.
+</para>
+<section id="s4.1"><title>Environment</title>
+<para>
+The variables <literal>TAB</literal> and <literal>NL</literal> have values
+ASCII 9 and ASCII 10 correspondingly.  They can be used as temporary values
+for the variable <literal>IFS</literal>.  The function
+<command>restore_ifs</command> restores the variable <literal>IFS</literal> its
+original value.
+</para>
+<para>
+The function library <command>base.sh</command> also contains simple
+reimplementations of <command>basename</command> and <command>dirname</command>
+so that busybox doesn't have to provide them.
+</para>
+</section>
+
+<section id="s4.2"><title>Menus</title>
+<para>
+The function <command>debconf_select</command> is a high level function to ask
+user with a menu using a Debconf question with type `select'.  Synopsis:
+</para>
+<screen>
+debconf_select <replaceable>priority</replaceable> <replaceable>template</replaceable> <replaceable>choices</replaceable> <replaceable>default</replaceable>
+</screen>
+<para>
+The first argument is the debconf-priority of the question and the second is
+the name of the template to be used.  The third argument is a newline-separated
+list of items for the menu.  Each item has the form
+</para>
+<screen>
+<replaceable>menu_item_id</replaceable>&lt;TAB&gt;The text for the user
+</screen>
+<para>
+Here <literal>&lt;TAB&gt;</literal> is ASCII 9.  The text `The text for the
+user' is the text of the menu item.  If
+<replaceable><literal>menu_item_id</literal></replaceable> of some menu-item is
+identical with the fourth argument given to <command>debconf_select</command>
+then this menu-item will be default.
+</para>
+<para>
+If the user cancels the question <command>debconf_select</command> returns with
+exit-code 255.  Otherwise the value of the variable <literal>RET</literal> will
+be the <replaceable><literal>menu_item_id</literal></replaceable> of the chosen
+menu item.  If the chosen menu item was chosen by the user then the exit-code
+is 0.  If the item was chosen automatically (due to the debconf-priority or to
+some other reason) the exit-code is 1.
+</para>
+<para>
+The function <command>debconf_select</command> doesn't care to
+<command>db_fset</command> <literal>$template</literal> <literal>seen</literal>
+<literal>false</literal>.  The template must have exactly the following type
+and choices fields:
+</para>
+<screen>
+Type: select
+Choices-C: ${CHOICES}
+Choices: ${DESCRIPTIONS}
+</screen>
+<para>
+The udebs that generate menus using menu-directories use the function
+<command>ask_user</command> instead of <command>debconf_select</command>.
+Synopsis:
+</para>
+<screen>
+ask_user <replaceable>a_menu_directory</replaceable> <replaceable>additional_optional_arguments</replaceable>...
+</screen>
+<para>
+This function displays the menu for
+<literal><replaceable>a_menu_directory</replaceable></literal>.  The first
+argument is a menu-directory (see <xref linkend="menudirs"/>).  If the user
+cancels the dialog then <command>ask_user</command> returns with exit code 255.
+Otherwise it returns with the exit code of the script
+<command>do_option</command>.
+</para>
+<para>
+If <command>ask_user</command> is called re-entrantly from within a
+<command>do_option</command> script, then the calling
+<command>do_option</command> script should typically be careful to handle or
+discard exit code 255 itself (and sometimes other codes, depending on the
+protocol in force) to avoid a backup operation inadvertently backing up out of
+several nested menus at once.
+</para>
+<para>
+The script <command>choices</command> is invoked with
+<replaceable><literal>additional_optional_arguments</literal></replaceable> as
+arguments.  The first argument given to <command>do_option</command> is the
+<replaceable><literal>menu_item_id</literal></replaceable> of the chosen menu
+item and the other arguments are again
+<replaceable><literal>additional_optional_arguments</literal></replaceable>.
+</para>
+<para>
+To set the default selected item in a menu-directory, use the function
+<command>menudir_default_choice</command>.  Synopsis:
+</para>
+<screen>
+menudir_default_choice <replaceable>a_menu_directory</replaceable> <replaceable>subdirectory</replaceable> <replaceable>menu_item_id</replaceable>
+</screen>
+<para>
+Where the <replaceable><literal>subdirectory</literal></replaceable> is the
+name of a subdirectory in the menu-directory with the leading sequence number
+stripped off and <replaceable><literal>menu_item_id</literal></replaceable> is
+the id of a menu-item printed by
+<filename><replaceable>a_menu_directory</replaceable>/??<replaceable>subdirectory</replaceable>/choices</filename>.
+The specified item is set as default not forever but only for the next
+invocation of <command>ask_user</command>.  It is not an error to set as
+default non-existing item; in this case the first item in the menu will be
+default.
+</para>
+<para>
+The function <command>partition_tree_choices</command> prints a sequence of
+lines in the form
+</para>
+<screen>
+<replaceable>menu_item_id</replaceable>&lt;TAB&gt;The text for the user
+</screen>
+<para>
+– one for every storage device and one for every partition.  The
+<replaceable><literal>menu_item_id</literal></replaceable> of the storage
+devices is their storage directory.  The
+<replaceable><literal>menu_item_id</literal></replaceable> of the partitions
+has the form
+<replaceable>storage_directory</replaceable>//<replaceable>partition_id</replaceable>.
+The output of <command>partition_tree_choices</command> can be given as third
+argument to <command>debconf_select</command>.
+</para>
+</section>
+
+<section id="s4.3"><title>Long numbers</title>
+<para>
+Notice that the sizes of most of the present storage devices are so large that
+we cannot measure them using 32-bit integers.  Consequently we cannot use the
+usual shell arithmetic.  The functions <command>longint_le</command>,
+<command>longint2human</command>, <command>human2longint</command> and
+<command>valid_human</command> exist in order to deal with such big numbers.
+</para>
+<para>
+The function <command>longint_le</command> is used to compare two big numbers.
+</para>
+<screen>
+longint_le <replaceable>number1</replaceable> <replaceable>number2</replaceable>
+</screen>
+<para>
+returns with exit code 0 if the first number is less or equal to the second
+and returns 1 otherwise.
+</para>
+<para>
+The function <command>longint2human</command> accepts in its first argument
+some number of bytes, converts it to something that is more meaningful for
+humans and outputs the result.  For example
+</para>
+<screen>
+longint2human 1234567890
+</screen>
+<para>
+gives <literal>1.2 GB</literal>.  Notice that this function rounds its
+argument.
+</para>
+<para>
+The function <command>human2longint</command> is used for the opposite
+convertion:
+</para>
+<screen>
+human2longint 1.234Gb
+</screen>
+<para>
+gives <literal>1234000000</literal>.
+</para>
+<para>
+The function <command>valid_human</command> returns with exit code 0 when its
+first argument is a string that is suitable to be given to
+<command>human2longint</command>.  Otherwise it returns with exit code 1.
+</para>
+</section>
+
+<section id="update-partitions"><title>Updating partition directories</title>
+<para>
+Different components of the installer may need to get information about the
+partitions.  They can communicate with <command>parted_server</command> in
+order to know the characteristics of the partition.  However not everything can
+be known from <command>parted_server</command>.  Imagine an udeb that provides
+the user with the option to upgrade some existing GNU/Linux installation.  This
+udeb analyses the <command>fstab</command> and knows that some partition is
+used as <filename>/home</filename> and should not be formatted.  This sort of
+information has nothing to do with <command>parted_server</command>.  The udeb
+stores it in a subdirectory of the device directory named after the id of the
+partition.
+</para>
+<para>
+But now a problem arises.  Suppose that the user chooses to format some
+partition as ext2 and mount it on <filename>/home</filename>.  The udebs
+responsible for formatting and mounting create the directories
+<command>filesystem</command> and <command>mountpoint</command> in the
+partition.  What will happen if the users change their mind and decide to use
+the same partition as swap space?  Swap spaces have no mount points and the
+file <command>mountpoint</command> should be removed.  Who is responsible for
+removing it?  The udeb that allows the user to choose a file system for the
+partition doesn't have to know that swap-spaces have no mount points, only the
+udeb that provides support for swap-spaces can know that the file
+<command>mountpoint</command> should be removed.
+</para>
+<para>
+In order to solve this difficulty every script that makes changes to some
+partition should invoke the function <command>update_partition</command> from
+<command>base.sh</command>.  Synopsis:
+</para>
+<screen>
+update_partition <replaceable>device_directory</replaceable> <replaceable>partition_id</replaceable>
+</screen>
+<para>
+In order to update the contents of the directory
+<filename><replaceable>device_directory</replaceable>/<replaceable>partition_id</replaceable></filename>
+the function <command>update_partition</command> executes the scripts from the
+directory <filename>/lib/partman/update.d/</filename>.  Every udeb is allowed
+to install scripts in this directory.  Their names are prefixed by two-digit
+numbers that control the order of the execution.  The scripts from
+<command>update.d</command> are given several arguments.  $1 is the
+<replaceable>device_directory</replaceable>.  $2 is the number of the partition
+(<filename>/dev/hda6</filename> will have number 6).  $3 is the id of the
+partition.  $4 is the length of the partition (in bytes).  $5 is the type of
+the partition, it can be either `primary' or `logical'.  $6 is the type of the
+file system as known to <command>parted_server</command>, in most cases you
+should ignore this argument.  $7 is the device name (for example
+<filename>/dev/ide/host0/bus0/target0/lun0/part6</filename>).
+"$8 $9 $10 $11 ..."  is the name of the partition in partition tables that
+support partition names.  Otherwise $8, $9, $10,...  are not defined.
+</para>
+</section>
+
+<section id="s4.5"><title>Communication with <command>parted_server</command></title>
+<para>
+The package <systemitem role="package">partman-base</systemitem> creates two
+FIFOs – <filename>/var/lib/partman/infifo</filename> and
+<filename>/var/lib/partman/outfifo</filename>.
+<command>Parted_server</command> reads instructions from
+<command>infifo</command> and responds by writting to
+<command>outfifo</command>.  Consequently the clients write to
+<command>infifo</command> and read from <command>outfifo</command>.  The
+function library <command>base.sh</command> contain several functions to make
+the communication with <command>parted_server</command> easier.  Here we will
+omit the details, if you want to know the exact communication protocol please
+read how these functions are implemented.
+</para>
+<para>
+The functions <command>open_infifo</command>, <command>close_infifo</command>,
+<command>open_outfifo</command> and <command>close_outfifo</command> are called
+without arguments.  They open and close <command>infifo</command> and
+<command>outfifo</command> assigning them file descriptors 6 and 7
+correspondingly.  You do not need to use these low-level functions.
+</para>
+<para>
+The function <command>write_line</command> prints its arguments to
+<command>outfifo</command>.
+</para>
+<para>
+The function <command>read_line</command> reads from <command>infifo</command>
+a line, splits it in fields according to <literal>$IFS</literal> and assigns
+these fields to variables whose names are given to <command>read_line</command>
+as arguments.  For example
+</para>
+<screen>
+read_line x y z
+</screen>
+<para>
+reads a line from <command>infifo</command>, splits it and assigns the first
+field to the variable <literal>x</literal>, the second field to the variable
+<literal>y</literal> and the rest to the variable <literal>z</literal>.  You
+see that <command>read_line</command> is used the same way as the shell
+operator <command>read</command>.
+</para>
+<para>
+The function <command>read_paragraph</command> reads consequently lines from
+<command>infifo</command> until it reaches an empty line.  It prints the read
+lines with the exception of the last empty line.
+</para>
+<para>
+The function <command>read_list</command> reads lines the same way as the
+function <command>read_paragraph</command>.  However the function
+<command>read_list</command> always prints only one line that is a
+comma-separated sequence of the lines read from <command>infifo</command>.  If
+<command>read_paragraph</command> prints
+</para>
+<screen>
+This is the first line
+This is the second line
+This is the third line
+</screen>
+<para>
+<command>read_list</command> prints
+</para>
+<screen>
+This is the first line, This is the second line, This is the third line
+</screen>
+<para>
+In order to initiate a communication dialog with
+<command>parted_server</command> you will use the function
+<command>open_dialog</command>.  You will invoke it in the device directory of
+the device you want to issue command about.  The first argument of
+<command>open_dialog</command> is a command for
+<command>parted_server</command>.  The rest arguments are arguments for the
+command.
+</para>
+<para>
+You use the function <command>close_dialog</command> in order to terminate the
+communication dialog.
+</para>
+<para>
+When you send <command>parted_server</command> an order to do some long
+operation (e.g.  resize a file system) the user will be shown a progress bar.
+You may give a name to it by the function <command>name_progress_bar</command>.
+It may be used right before the command <command>open_dialog</command> and
+accepts only one argument – a template with type text that describes what is
+being done.
+</para>
+<para>
+The function <command>log</command> appends its arguments to the file
+<filename>/var/log/partman</filename>.  This file is used as log-file also by
+<command>parted_server</command>.
+</para>
+</section>
+
+</chapter>
+
+<chapter id="ch5"><title>The commands of <command>parted_server</command></title>
+<para>
+You should be very careful when you communicate with the
+<command>parted_server</command>.  If <command>parted_server</command> detects
+any error it will exit immediately.  This is safer approach then to try to
+resolve somehow the error.  However this also means that the user will not be
+shown any information about what happened and why the installer freezed.  The
+log-file <filename>/var/log/partman</filename> can be used to see the reasons
+why <command>parted_server</command> exited.
+</para>
+<section id="s5.1"><title>Open a new device</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog OPEN <replaceable>device_name</replaceable>
+read_line status
+close_dialog
+case $status in
+    OK)
+        # The device has been opened successfully
+        ;;
+    failed)
+        # We wasn't able to open the device
+        ;;
+esac
+</screen>
+<para>
+Here <replaceable><literal>device_name</literal></replaceable> can be for
+example <filename>/dev/ide/host0/bus0/target0/lun0/disc</filename>.
+</para>
+</section>
+
+<section id="s5.2"><title>Close a device</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog CLOSE
+close_dialog
+</screen>
+<para>
+After this command you may not issue commands regarding the device of
+<replaceable><literal>device_directory</literal></replaceable>.  This command
+does <emphasis role="strong">not</emphasis> invoke the command COMMIT.
+</para>
+</section>
+
+<section id="s5.3"><title>Does the partition exist on the disk?</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog VIRTUAL <replaceable>partition_id</replaceable>
+read_line virtuality
+close_dialog
+case $virtuality in
+    yes)
+        # the partition does not exist on the disk
+        # probably because it is newly created
+        ;;
+    no)
+        # the partition exists on the disk
+        ;;
+esac
+</screen>
+</section>
+
+<section id="s5.4"><title>Remember the partition table as unchanged</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog DISK_UNCHANGED
+close_dialog
+</screen>
+<para>
+After this command <command>parted_server</command> will know that the
+partition table in its onw internal data structures is the same as the
+partition table actualy existing on the device.  The main purpose of this
+command is to be used for partition tables with type <literal>loop</literal>.
+</para>
+</section>
+
+<section id="s5.5"><title>Report whether the partition table is changed</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog IS_CHANGED
+read_line changed
+close_dialog
+case $changed in
+    yes)
+        # the partition table is changed
+        ;;
+    no)
+        # the partition table is not changed
+        ;;
+esac
+</screen>
+</section>
+
+<section id="s5.6"><title>Dump the partitions</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog DUMP
+close_dialog
+</screen>
+<para>
+This command prints in <filename>/var/log/partition_dump</filename> all the
+data regarding the device.  It is used for debugging.
+</para>
+</section>
+
+<section id="s5.7"><title>Write partitioning to the disk</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog COMMIT
+close_dialog
+</screen>
+<para>
+This command transfers the partitions in the device of
+<replaceable><literal>device_directory</literal></replaceable> from the
+internal structures of <command>parted_server</command> to the disk.
+</para>
+</section>
+
+<section id="s5.8"><title>Undo the changes</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog UNDO
+close_dialog
+</screen>
+<para>
+This command destroys the internal data structures in
+<command>parted_server</command> for a device and then rereads them from the
+device.
+</para>
+</section>
+
+<section id="s5.9"><title>Get the partitions</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog PARTITIONS
+while { read_line num id size type fs path name; [ "$id" ]; }; do
+    # do something for this partition
+done
+close_dialog
+</screen>
+<para>
+The body of the loop is executed for every partition and free space.  $num is
+the number of the partition (for example <filename>/dev/hda6</filename> has
+number 6).  $id is the id of the partition.  $size is the size of the partition
+(in bytes).  If this is an active partition then $type is either `primary' or
+`logical'.  If this is a free space then $type shows what partition can be
+created in it.  In this case $type can be `primary', `logical', `pri/log' or
+`unusable'.  $fs is `free' if this is a free space.  Otherwise $fs is the type
+of the file system of this partition as known to
+<command>parted_server</command>.  $path is a device name for the partition,
+for example <filename>/dev/ide/host0/bus0/target0/lun0/part6</filename>.  $name
+is the name of the partition or the empty string if the partition table doesn't
+support partition names.
+</para>
+<para>
+Notice that in the loop-body you may not initiate another dialog with
+<command>parted_server</command>.  If you need this you can use the following
+construction instead:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog PARTITIONS
+partitions=$(read_paragraph)
+close_dialog
+
+echo "$partitions" |
+while { read num id size type fs path name; [ "$id" ]; }; do
+    # do something for this partition
+done
+</screen>
+</section>
+
+<section id="s5.10"><title>Getting info about a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog PARTITION_INFO <replaceable>partition_id</replaceable>
+read_line num id size type fs path name
+close_dialog
+</screen>
+<para>
+Here <replaceable><literal>partition_id</literal></replaceable> is the id of
+the partition to get info.  The meaning of the variables are the same as in the
+command PARTITIONS.
+</para>
+</section>
+
+<section id="s5.11"><title>Getting cylinder/head/sector geometry of a partition/free space</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog GET_CHS <replaceable>partition_id</replaceable>
+read_line start_cyl start_head start_sector end_cyl end_head end_sector
+close_dialog
+</screen>
+</section>
+
+<section id="s5.12"><title>Getting the supported partition table types</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog LABEL_TYPES
+supported=$(read_list)
+close_dialog
+</screen>
+<para>
+For the result of this command
+<replaceable><literal>device_directory</literal></replaceable> is irrelevant.
+Despite this <replaceable><literal>device_directory</literal></replaceable>
+must be a valid device directory.
+</para>
+<para>
+This command is used to read which types partition tables are supported by
+<command>parted_server</command> (i.e.  by libparted).  $supported is a
+comma-separated list of the supported types.  At the time of writting the
+following types are supported: bsd, gpt, mac, dvh, msdos, pc98, sun and loop.
+</para>
+</section>
+
+<section id="s5.13"><title>Get the type of the disk label</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog GET_LABEL_TYPE
+read_line label_type
+close_dialog
+if [ "$label_type" = unknown ]; then
+    echo "The disk is unknown or it has no disk label
+          or the disk label is unknown"
+else
+    echo "The type of the disk label is:" "$label_type"
+fi
+</screen>
+<para>
+This command returns the type of the disk label (i.e.  the partition table) of
+a disk.  It can be used to check if there is a partition table (if not, then it
+is safe to create a new partition table or to use the entire disk for RAID,
+LVM, encrypted unit, etc).
+</para>
+</section>
+
+<section id="s5.14"><title>Create a new empty partition table</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog NEW_LABEL <replaceable>partition_table_type</replaceable>
+close_dialog
+</screen>
+<para>
+This command creates in the device a new empty partition table with type
+<replaceable><literal>partition_table_type</literal></replaceable>.  (Of course
+it won't be written to the disk if you don't use the command COMMIT.)
+</para>
+</section>
+
+<section id="s5.15"><title>Getting the meaningful flags for a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog VALID_FLAGS <replaceable>partition_id</replaceable>
+meaningful_flags=$(read_list)
+close_dialog
+</screen>
+<para>
+$meaningful_flags is a comma-separated list of the flags that are meaningful
+for the partition with id
+<replaceable><literal>partition_id</literal></replaceable>.
+</para>
+<para>
+In order to check wether some particular flag xyz is meaningful you can use
+this code:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+xyz_is_meaningful=no
+open_dialog VALID_FLAGS <replaceable>partition_id</replaceable>
+while { read_line flag; [ "$flag" ]; }; do
+    if [ "$flag" = xyz ]; then
+        xyz_is_meaningful=yes
+        # you may not use break here
+    fi
+done
+close_dialog
+</screen>
+</section>
+
+<section id="s5.16"><title>Getting the active flags of a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog GET_FLAGS <replaceable>partition_id</replaceable>
+active_flags=$(read_list)
+close_dialog
+</screen>
+<para>
+$active_flags is a comma-separated list of the flags of the partition with id
+<replaceable><literal>partition_id</literal></replaceable> that are in state 1.
+This is a sublist of the list returned by the command VALID_FLAGS.
+</para>
+<para>
+In order to check if some partition is denoted as bootable you can use this
+code:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+is_bootable=no
+open_dialog GET_FLAGS <replaceable>partition_id</replaceable>
+while { read_line flag; [ "$flag" ]; }; do
+    if [ "$flag" = boot ]; then
+        is_bootable=yes
+        # you may not use break here
+    fi
+done
+close_dialog
+</screen>
+</section>
+
+<section id="s5.17"><title>Set the flags of a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog SET_FLAGS <replaceable>partition_id</replaceable>
+for flag in $all_flags_that_should_be_active; do
+    write_line $flag
+done
+write_line NO_MORE
+close_dialog
+</screen>
+<para>
+If you want to denote some partition as non-bootable you can use the following
+code:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog GET_FLAGS <replaceable>partition_id</replaceable>
+new_flags=$(
+    while { read_line flag; [ "$flag" ]; }; do
+        if [ "$flag" != boot ]; then
+            echo $flag
+        fi
+    done
+) 
+close_dialog
+
+open_dialog SET_FLAGS $id
+write_line "$new_flags"
+write_line NO_MORE
+close_dialog
+</screen>
+</section>
+
+<section id="s5.18"><title>Check if partition names are supported</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog USES_NAMES
+read_line supported
+close_dialog
+case $supported in
+    yes)
+        # the partition table supports partition names
+        ;;
+    no)
+        # the partition table doesn't support partition names
+        ;;
+esac
+</screen>
+</section>
+
+<section id="s5.19"><title>Set the name of a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog SET_NAME <replaceable>partition_id</replaceable> <replaceable>new_name</replaceable>
+close_dialog
+</screen>
+<para>
+After this command the name of
+<replaceable><literal>partition_id</literal></replaceable> will be
+<replaceable><literal>new_name</literal></replaceable>.  It is an error to use
+this command with a partition table that doesn't support partition names.
+</para>
+</section>
+
+<section id="s5.20"><title>Get the maximum number of primary partitions</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog GET_MAX_PRIMARY
+read_line primaries
+close_dialog
+logger "This disk may contain up to $primaries primary partitions"
+</screen>
+</section>
+
+<section id="s5.21"><title>Check if extended and logical partitions are supported</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog USES_EXTENDED
+read_line supported
+close_dialog
+case $supported in
+    yes)
+        # the partition table supports extended and logical partitions
+        ;;
+    no)
+        # the partition table doesn't support extended and logical partitions
+        ;;
+esac
+</screen>
+</section>
+
+<section id="s5.22"><title>Get the known to <command>parted_server</command> file systems</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog FILE_SYSTEM_TYPES
+known_filesystems=$(read_list)
+close_dialog
+</screen>
+<para>
+$known_filesystems is a comma-separated list of the file systems that are known
+to <command>parted_server</command>.  You probably won't need to use this
+command.
+</para>
+</section>
+
+<section id="s5.23"><title>Try to detect the file system in a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog GET_FILE_SYSTEM <replaceable>partition_id</replaceable>
+read_line filesystem
+close_dialog
+if [ "$filesystem" = none ]; then
+    # no known file system is detected
+else
+    # a file system of type $filesystem is detected 
+fi
+</screen>
+</section>
+
+<section id="s5.24"><title>Change the filesystem of a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog CHANGE_FILE_SYSTEM <replaceable>partition_id</replaceable> <replaceable>new_filesystem</replaceable>
+close_dialog
+</screen>
+<para>
+libparted assigns every partition some file system.  This command can be used
+to change this file system.  The file system assigned to the partition is not
+necessarily the same as the actual file system.  Libparted uses it to determine
+automatically the type of the partition in some partition tables.  For example
+with msdos partition tables the partitions with file system `ext2' receive type
+83.  The partitions that are swap spaces receive type 82.
+</para>
+</section>
+
+<section id="s5.25"><title>Create a new partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog NEW_PARTITION $type $fs $freespace $position $length
+read_line num id size type fs path name
+close_dialog
+if [ "$id" ]; then
+    # the partition is successfully created
+else
+    # wasn't able to create the partition
+fi
+</screen>
+<para>
+$type is either primary or logical.  $fs is the type of the file system to be
+assigned to the partition.  $freespace is the id of some free space.  $position
+is either `full', `beginning' or `end' and determines where in $freespace to
+create the new partition.  If $position is not `full' then $length is the
+length that the new partition should have (in bytes).
+</para>
+<para>
+If the new file system is successfully created $num is tne number of the
+created partition (for example <filename>/dev/hda6</filename> has number 6).
+$id is the id of the new partition.  $size is the size of the new partition.
+$size is approximately $length but not necessarily the same.  $type and $fs
+don't change their values.  $path is a device name, for example
+<filename>/dev/ide/host0/bus0/target0/lun0/part6</filename>.  $name is the name
+of the new partition or an empty string if the partition table doesn't support
+partition names.
+</para>
+</section>
+
+<section id="s5.26"><title>Delete a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog DELETE_PARTITION <replaceable>partition_id</replaceable>
+close_dialog
+</screen>
+</section>
+
+<section id="s5.27"><title>Resize a partition</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+name_progress_bar <replaceable>some/debconf/template</replaceable>
+open_dialog RESIZE_PARTITION <replaceable>partition_id</replaceable> <replaceable>new_size</replaceable>
+read_line new_id
+close_dialog
+</screen>
+<para>
+This command resizes a partition.  As usualy
+<replaceable><literal>new_size</literal></replaceable> is measured in bytes.
+$new_id is the new id that the partition receives.  The resizing is not
+supported always.  If it fails $new_id will be the same as
+<replaceable><literal>partition_id</literal></replaceable>.
+</para>
+<para>
+If the partition exists on the storage device and contains some file system,
+then the data in the partition will be preserved and the new partition table
+<emphasis>will be written on the storage device</emphasis>.  When it is
+impossible to resize the file system, the partition will be left unresized.
+When the partition doesn't exist on the storage device, the new version of the
+partition table will not be written to it.
+</para>
+<para>
+This command doesn't move the start of the partition but only its end.
+</para>
+<para>
+The command <command>name_progress_bar</command> may be omitted.  The debconf
+template must have type text.  It will be used to give the user information of
+what is being done.
+</para>
+</section>
+
+<section id="s5.28"><title>Get resize range</title>
+<para>
+Synopsis:
+</para>
+<screen>
+cd <replaceable>device_directory</replaceable>
+open_dialog GET_RESIZE_RANGE <replaceable>partition_id</replaceable>
+read_line minimal_size current_size maximal_size
+close_dialog
+</screen>
+<para>
+This command returns the minimal and the maximal size that can be achieved by
+using the command RESIZE_PARTITION.  $minimal_size, $current_size and
+$maximal_size are measured in bytes.
+</para>
+</section>
+
+</chapter>
+
+<chapter id="ch6"><title>Bugs and limitations</title>
+<para>
+All files and directories are assumed to not contain spaces in their names.
+</para>
+<para>
+If the partition table supports extended and logical partitions the user won't
+be shown free spaces whose size is less than one cylinder.
+</para>
+</chapter>
+
+
+</book>
+

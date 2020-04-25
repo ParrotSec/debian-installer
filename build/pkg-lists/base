@@ -20,7 +20,6 @@ pciutils-udeb
 screen-udeb
 wget-udeb
 ca-certificates-udeb
-partman-swapfile
 
 #include "udev"
 

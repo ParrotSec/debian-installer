@@ -2,21 +2,22 @@ Source: debian-installer
 Section: devel
 Priority: optional
 XSBC-Original-Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
-Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+Maintainer: Parrot Dev Team <team@parrotsec.org>
 Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Standards-Version: 4.3.0
-Vcs-Git: https://nest.parrotsec.org/debian-packages/debian-installer/debian-installer
-Vcs-Browser: https://nest.parrotsec.org/debian-packages/debian-installer/debian-installer
+Vcs-Git: https://nest.parrotsec.org/packages/installer/debian-installer.git
+Vcs-Browser: https://nest.parrotsec.org/packages/installer/debian-installer
 Build-Depends:
 # Base build dependencies:
 	debhelper (>= 11),
 #		Of course.
 	apt (>= 0.8.16),
-#		Used for downloading udebs.
+# 		Used for downloading udebs.
 	apt-utils,
-#		apt-ftparchive is used for including localudebs.
+# 		apt-ftparchive is used for including localudebs.
 	gnupg,
 #		New versions of apt need gnupg for security checks.
+	debian-archive-keyring (>= 2006.11.22),
 	parrot-archive-keyring,
 #		To provide the archive key for security checks.
 	dctrl-tools,
@@ -25,23 +26,14 @@ Build-Depends:
 #		Used to test validity of mirrors.
 	bc,
 #		Used for some image size calculations.
-	debiandoc-sgml,
-#		partman's manual is in debiandoc.
 	xsltproc,
 	docbook-xml,
 	docbook-xsl,
-#		The d-i internals manual is in DocBook XML.
+#		The d-i partman-doc and internals manual is in DocBook XML 4.x.
 	libbogl-dev,
 #		For bdftobogl used in font reduction.
 	ca-certificates,
-#		To embed CA certificates to verify https connections
-#	
-# Library build dependencies:
-	libgcc1 [i386 amd64],
-#		On x86 we need to include /lib/libgcc_s.so.1 in g-i initrds to
-#		work around #373253 until upstream can remove pthread_cancel()
-#		calls in directfb. For now, this is done by setting EXTRAFILES.
-# 
+#               To embed CA certificates to verify https connections
 # Filesystem tools:
 	genext2fs (>= 1.3-7.1),
 #		For creating ext2 filesystems without being root.
@@ -58,7 +50,7 @@ Build-Depends:
 	genromfs [sparc sparc64],
 #		Used for creating sparc floppies (which are not built by
 #		default.)
-	dosfstools [i386 ia64 m68k amd64 armhf arm64],
+	dosfstools [hurd-i386 i386 ia64 m68k amd64 armhf arm64],
 #		For creating FAT filesystems with mkfs.msdos.
 #		Of course i386/amd64 use this for floppies, CDs etc.
 #		m68k uses it for atari floppies
@@ -74,7 +66,7 @@ Build-Depends:
 #		For building firmware images for the D-Link DNS-32(0|3).
 	u-boot-tools [armel armhf arm64],
 #		For creating u-boot images
-# 
+#
 # Boot loaders:
 #	On many arches boot loaders are copied onto or ran on the boot
 #	images in one way or another. There's a reason our mailing list is
@@ -110,7 +102,7 @@ Build-Depends:
 #	        Signed bootloader components for UEFI Secure Boot
 	grub-efi-amd64-bin [amd64],
 	grub-efi-arm64-bin [arm64],
-	grub-efi-ia32-bin [i386],
+	grub-efi-ia32-bin [hurd-i386 i386],
 	grub-efi-ia64-bin [ia64],
 	grub-efi-arm-bin [armhf],
 	grub-common [amd64 arm64 i386], xorriso,
@@ -121,7 +113,8 @@ Build-Depends:
 	u-boot-omap (>= 2016.09~rc1) [armhf],
 	u-boot-sunxi (>= 2019.01+dfsg-3) [armhf],
 	u-boot-sunxi (>= 2019.01+dfsg-6) [arm64],
-	u-boot-rockchip (>= 2019.01+dfsg-1~) [armhf],
+	u-boot-rockchip (>= 2020.04+dfsg-1~) [armhf],
+	u-boot-rockchip (>= 2020.04+dfsg-2~) [arm64],
 #		U-boot binaries for armhf systems without u-boot in flash memory
 	arm-trusted-firmware [arm64],
 	device-tree-compiler [arm64],
@@ -129,7 +122,7 @@ Build-Depends:
 #		u-boot-sunxi to produce bootable arm64 images.
 	u-boot (>= 2016.01+dfsg1-1~) [armel],
 #		U-boot binaries for armel systems
-# 
+#
 # Architecture specific build dependencies:
 	tofrodos [i386 amd64 kfreebsd-i386 kfreebsd-amd64],
 #		For todos, used on files that need to be accessible from
@@ -139,10 +132,10 @@ Build-Depends:
 #		mounting them. Note that patches from #900409 and #900410
 #		are required for a reproducible build (available since
 #		4.0.18-2.1).
-# 
+#
 	kmod [linux-any],
 #		depmod.
-# 
+#
 	bf-utf-source [!s390 !s390x],
 #		Contains the unicode font we use. Not a udeb since we
 #		perform font reduction at build time.
@@ -158,6 +151,8 @@ Build-Depends:
 #		Used as the CD-ROM's bootloader
 	xorriso (>= 1.3.2-1~) [kfreebsd-i386 kfreebsd-amd64 hurd-i386],
 #               Used by grub-pc to create the CD-ROM images
+	debian-ports-archive-keyring [alpha hppa ia64 m68k powerpc powerpcspe ppc64 riscv64 sh4 sparc64 x32],
+#		Used for architectures hosted on debian-ports.org
 	librsvg2-bin [any-amd64 any-i386],
 #		Used to convert splash SVG to splash PNG during build
 	fdisk [armhf] | util-linux (<< 2.29.2-3~) [armhf],

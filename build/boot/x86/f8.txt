@@ -12,7 +12,7 @@ Set keyboard map                        0fbootkbd=es07
 Select the desktop                      0fdesktop=kde07
 
 Accessibility options (last 2 options not available for all images):
-  Use high contrast theme               0ftheme=dark07
+  Use dark contrast theme               0ftheme=dark07
   Use Braille tty                       0fbrltty=driver,device,texttable07
   Use Speakup                           0fspeakup.synth=driver07
 

@@ -11,14 +11,14 @@
 
 # Default kernel ABI version to use. Append a kernel flavour to
 # produce KERNELVERSION.
-LINUX_KERNEL_ABI ?= 5.4.0-4parrot1
+LINUX_KERNEL_ABI ?= 5.5.0-1parrot1
 
 # Always "di" these days
 KERNEL_FLAVOUR ?= di
 
 # List here any extra udebs that are not in the list file but that
 # should still be included on the system.
-EXTRAS ?= partman-swapfile
+EXTRAS ?=
 
 # This variable can be used to copy in additional files from the system
 # that is doing the build. Useful if you need to include strace, or gdb,
@@ -44,13 +44,12 @@ MIRROR = http://mirror.parrot.sh/mirrors/parrot
 DPKG_UNPACK_OPTIONS = --force-overwrite
 
 # The codename of the Debian release that should be installed by default.
-DEBIAN_RELEASE = rolling
+DEBIAN_RELEASE = $(USE_UDEBS_FROM)
 
 # The version (number and codename) of the Debian release targeted by the
 # installation images. (Only the codename is used while the version number
 # has not yet been determined.)
-DEBIAN_VERSION = 4.8 (rolling)
-DEBIAN_VERSION ?= rolling
+DEBIAN_VERSION = rolling
 
 # Define here from what release (codename!) components (udebs) should be taken
 # to build debian-installer. By default this is set to 'unstable' for building

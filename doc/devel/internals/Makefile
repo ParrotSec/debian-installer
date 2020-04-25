@@ -1,4 +1,4 @@
-all: *.xsl *.xml
+all:
 	@./build.sh
 
 clean:
