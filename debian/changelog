@@ -1,3 +1,9 @@
+debian-installer (1:20190702+parrot18) rolling; urgency=medium
+
+  * Rebuild installer using new udebs.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 25 Apr 2020 02:34:52 +0200
+
 debian-installer (1:20190702+parrot17) rolling; urgency=medium
 
   * Rebuild installer using new udebs.
