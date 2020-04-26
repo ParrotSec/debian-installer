@@ -1,3 +1,9 @@
+debian-installer (20200423+parrot2) rolling; urgency=medium
+
+  * Fix dirty line in d/rules.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 26 Apr 2020 02:53:09 +0200
+
 debian-installer (20200423+parrot1) rolling; urgency=medium
 
   * Import new Debian release.
