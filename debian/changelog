@@ -1,3 +1,9 @@
+debian-installer (20200423+parrot3) rolling; urgency=medium
+
+  * Rebuild using latest debootstrap.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 28 Apr 2020 22:41:47 +0200
+
 debian-installer (20200423+parrot2) rolling; urgency=medium
 
   * Fix dirty line in d/rules.
