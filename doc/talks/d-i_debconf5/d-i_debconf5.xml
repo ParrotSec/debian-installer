@@ -171,7 +171,7 @@ not installable on a standard debian system) build from the same source as the
 
 Due to the use of debconf (the tool, not the conference) it is possible to have
 various frontends as well as the already famous preseeding feature. <literal>anna</literal>'s 
-not nearly apt but still manages it's job very well, which is loading udebs
+not nearly apt but still manages its job very well, which is loading udebs
 and placing them with the proper order into main-menu which in non-expert mode
 is hidden from the user.
 

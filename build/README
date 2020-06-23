@@ -1,6 +1,6 @@
 The files in this directory are used to build the Debian installer.
 Basically it consists of downloading udebs, unpacking them, applying some
-magic (library reduction etc.) and building an image.
+magic (font reduction etc.) and building an image.
 
 Warning: The build system for the installer is often tightly bound to the
 version of Debian for which it is targeted. If you are using stable, use
@@ -76,8 +76,6 @@ A more detailed overview of how the installer is built:
 * If you have some udebs that are not available on your mirror yet,
   you can drop them in 'localudebs/' and they will be used. 
 * dpkg is used to unpack the udebs into the build directory.
-* A customized set of reduced libraries is generated to correspond to the
-  udebs that were installed.
 * Some boot images have associated "driver" disks. These disks just get
   udebs put on them.
 * The final images are put in the dest/ directory.
@@ -391,8 +389,7 @@ GZIPPED
 EXTRADRIVERS
   This variable points to the directories where additional driver
   .udebs reside. This causes these .udebs to be considered in the font
-  and library reduction steps, so the characters and library symbols needed
-  for them are kept.
+  reduction step, so the characters needed for them are kept.
 
 EXTRATARGETS
   Additional targets which are run before the ones in TARGET. This is
@@ -401,9 +398,7 @@ EXTRATARGETS
 
 EXTRAUDEBS
   This variable points to additional udebs that should be considered by the
-  library reduction step. cdebconf plugins should be listed here so the
-  symbols they will need are available on the initrd (since cdebconf runs
-  using the initrd libc, its plugins do too)
+  font reduction step.
 
 DRIVER_FOR
   The variable indicates that the image is just a driver image for some

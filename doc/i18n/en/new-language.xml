@@ -209,7 +209,7 @@ Information included in a locale:
 <para>
 The writer of a locale must use the locale files format. The contents
 of this file must be in UTF-8. Translators shouldn't be afraid by
-this: this part may be handled by a i18n specialist in Debian, most
+this: this part may be handled by an i18n specialist in Debian, most
 often one of the &i18n-coords;. The new translator(s) will only need
 to provide him/her the above information when (s)he asks for it.
 </para>

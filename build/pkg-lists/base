@@ -23,7 +23,7 @@ ca-certificates-udeb
 
 #include "udev"
 
-libkmod2-udeb [linux]
+kmod-udeb [linux]
 kldutils-udeb [kfreebsd]
 
 # Avoid entropy starvation issues (#923675):

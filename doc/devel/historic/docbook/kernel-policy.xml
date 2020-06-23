@@ -120,7 +120,7 @@
       -->
       <note status="draft">
         <para>
-          binary packages may include a extra version part for binary
+          binary packages may include an extra version part for binary
           incompatible changes
         </para>
       </note>

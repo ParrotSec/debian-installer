@@ -6,14 +6,9 @@ DATE=$(shell echo $(VERSION) | cut -d '.' -f 1)
 SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
 SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
 
-
-SUITE=rolling
-USE_UDEBS_FROM=rolling
-TRANSSTATUS=
-BOOTMENU_BEEP=y
 # Daily builds vs. uploads to unstable:
 ifeq (${SUITE},UNRELEASED)
-USE_UDEBS_FROM=rolling-testing
+USE_UDEBS_FROM=unstable
 TRANSSTATUS=
 BOOTMENU_BEEP=n
 else

@@ -34,6 +34,11 @@ Build-Depends:
 #		For bdftobogl used in font reduction.
 	ca-certificates,
 #               To embed CA certificates to verify https connections
+	libgcc-s1 [!hppa !m68k], libgcc-s2 [m68k], libgcc-s4 [hppa],
+#		The GCC support library is copied to the to the installation
+#		image. This is a hack and needs to be replaced by a proper
+#		udeb.
+#
 # Filesystem tools:
 	genext2fs (>= 1.3-7.1),
 #		For creating ext2 filesystems without being root.
@@ -43,8 +48,6 @@ Build-Depends:
 #		them.
 #		Lintian: Yes, we know it's essential. We prefer not to
 #		count on it remaining so.
-	mklibs (>= 0.1.40), mklibs-copy (>= 0.1.40),
-#		We use mklibs for library reduction.
 	genisoimage [!s390 !s390x],
 #		For making mini isos.
 	genromfs [sparc sparc64],
@@ -111,7 +114,7 @@ Build-Depends:
 #		IEEE1275 bootloader support.
 	u-boot-imx (>= 2019.01+dfsg-3) [armhf],
 	u-boot-omap (>= 2016.09~rc1) [armhf],
-	u-boot-sunxi (>= 2019.01+dfsg-3) [armhf],
+	u-boot-sunxi (>= 2019.07+dfsg-1) [armhf],
 	u-boot-sunxi (>= 2019.01+dfsg-6) [arm64],
 	u-boot-rockchip (>= 2020.04+dfsg-1~) [armhf],
 	u-boot-rockchip (>= 2020.04+dfsg-2~) [arm64],
@@ -155,12 +158,11 @@ Build-Depends:
 #		Used for architectures hosted on debian-ports.org
 	librsvg2-bin [any-amd64 any-i386],
 #		Used to convert splash SVG to splash PNG during build
-	fdisk [armhf] | util-linux (<< 2.29.2-3~) [armhf],
+	fdisk [amd64 arm64 armhf i386],
 #		sfdisk is used by util/gen-hd-image when creating SD card
-#		images for armhf systems. Starting with buster, it is no longer
-#		part of util-linux but split out into a separate, non-essential
-#		"fdisk" package. For more information, please cf.
-#		https://lists.debian.org/debian-devel-announce/2017/08/msg00005.html
+#		images for arm64 and armhf systems.
+#		fdisk is used is used by util/geniso_hybrid_plus_firmware_partition
+#		when creating ISO hybrid images on amd64 and i386 systems.
 	fontconfig,
 #		Used to generate a font cache through fc-cache, for gtk flavours
 

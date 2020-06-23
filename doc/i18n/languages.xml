@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?xml-stylesheet href="languages.xsl" type="text/xsl"?>
 
+<!-- Last update of this file: 24-04-2020 holgerw
+     Note: keep this value current, when updating data in this file! -->
+
 <!-- Copyright (C) 2005 The Debian Installer team <debian-boot@lists.debian.org		-->
 <!--    Last updated: 2005-08-20						-->
 
@@ -706,10 +709,10 @@
 		coord_name="Changwoo Ryu"
 		coord_email="cwryu@debian.org"
 		coord_gpg="0xE0D49E99"
-		last_commit_di="2018"
+		last_commit_di="2020"
 		manual_coord_name="Changwoo Ryu"
 		manual_coord_email="cwryu@debian.org"
-		last_commit_manual="2019"
+		last_commit_manual="2020"
 		team_email="debian-l10n-korean@lists.debian.org"
 		supported="woody"
 		speakers="67019690"
@@ -869,7 +872,7 @@
 		english_name="Norwegian Bokmal"
 		coord_name="Allan Nordhøy, Petter Reinholdtsen, Alexander Jansen"
 		coord_email="epost@anotheragency.no, pere@hungry.com, bornxlo@gmail.com"
-		last_commit_di="2019"
+		last_commit_di="2020"
 		manual_coord_name="Allan Nordhøy"
 		manual_coord_email="epost@anotheragency.no"
 		last_commit_manual="2020"
@@ -1007,7 +1010,7 @@
 		english_name="Portuguese (Brazil)"
 		coord_name="Adriano Rafael Gomes"
 		coord_email="adrianorg@debian.org"
-		last_commit_di="2019"
+		last_commit_di="2020"
 		team_email="debian-l10n-portuguese@lists.debian.org"
 		supported="woody"
 		speakers="163153389"

@@ -519,7 +519,7 @@ endif
 	touch $(EXTRAUDEBSDPKGDIR)/status $(EXTRAUDEBSDPKGDIR)/available
 
 ifdef EXTRADRIVERS
-	# Unpack the udebs of additional driver disks, so mklibs runs on them too.
+	# Unpack the udebs of additional driver disks, so font reduction runs on them too.
 	dpkg $(DPKG_UNPACK_OPTIONS) --log=/dev/null --root=$(EXTRAUDEBSDIR) --unpack \
 		$(wildcard $(foreach dir,$(EXTRADRIVERS),$(dir)/*.udeb))
 endif
@@ -530,49 +530,15 @@ ifdef EXTRAUDEBS
 		$(foreach udeb,$(EXTRAUDEBS),$(UDEBDIR)/$(udeb).udeb)
 endif
 
-	# Library reduction. Existing libs from udebs are put in the udeblibs
-	# directory and mklibs is made to use those in preference to the
-	# system libs.
-	rm -rf $(TEMP)/udeblibs
-ifndef ONLY_KLIBC
-	mkdir -p $(TEMP)/udeblibs
-	find $(EXTRAUDEBSDIR)/lib \( -name '*.so.*' -o -name '*.so' \) -print0 | \
-		xargs -0r cp -a -t $(TEMP)/udeblibs
-	find $(TREE)/lib \( -name '*.so.*' -o -name '*.so' \) -print0 | \
-		xargs -0r cp -a -t $(TEMP)/udeblibs
-	mkdir -p $(TREE)/lib
-	# HACK ALERT: X.Org modules are excluded from the scan as mklibs
-	# is unable to find symbols provided by the /usr/bin/Xorg binary
-	$(MKLIBS) -L $(TREE)/usr/lib -L $(TREE)/usr/lib/$(DEB_HOST_MULTIARCH) \
-		-L $(TEMP)/udeblibs -v -d $(TREE)/lib --root=$(TREE) \
-		-L $(TREE)/usr/lib/cdebconf/frontend \
-		$(addprefix -l,$(notdir $(wildcard $(TREE)/usr/lib/cdebconf/frontend/*.so))) \
-		`find $(TEMP) -type f -a \( -perm /0111 -o -name '*.so' -o -name '*.so.*' \) | \
-		 grep -v udeblibs | grep -v 'usr/lib/xorg/modules/.*\.so'`
-
 ifeq ($(DEB_HOST_ARCH_OS),hurd)
-	# On Hurd the SONAME for the dynamic linker is ld.so.1, but binaries
-	# have the ld.so symlink as the interpreter. Ideally mklibs should
-	# be copying it along with the libraries.
-	ln -sf ld.so.1 $(TREE)/lib/ld.so
-
 	# We need /servers/exec and startup at boot time
 	touch $(TREE)/servers/exec
 	touch $(TREE)/servers/startup
 endif
-endif
 
-	# Add missing symlinks for libraries
-	ldconfig -n $(TREE)/lib $(TREE)/usr/lib
-
-	# Remove any libraries that are present in both usr/lib and lib,
-	# from lib. These were unnecessarily copied in by mklibs, and
-	# we want to use the ones in usr/lib instead since they came 
-	# from udebs. Only libdebconfclient0 has this problem so far.
-	set -e; \
-	for lib in `find $(TREE)/usr/lib/ -name "lib*" -type f -printf "%f\n" | cut -d . -f 1 | sort | uniq`; do \
-		rm -f $(TREE)/lib/$$lib.*; \
-	done
+	# HACK ALERT: copy libgcc_s.so.[124] from the host system as
+	# libgcc-s[124] is not packaged as a udeb
+	cp /lib/$(DEB_HOST_MULTIARCH)/libgcc_s.so.[124] $(TREE)/lib
 
 	# Reduce status file to contain only the elements we care about.
 	egrep -i '^((Status|Provides|Depends|Package|Version|Description|installer-menu-item|Description-..):|$$)' \

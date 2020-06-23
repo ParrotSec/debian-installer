@@ -29,10 +29,6 @@ EXTRAS ?=
 # It will be loaded by the initrd-preseed udeb.
 PRESEED = preseed.cfg
 
-# The library reducer to use. Set to mklibs (to build with library reduction)
-# or mklibs-copy (to build without library reduction).
-MKLIBS = mklibs-copy
-
 # Normally the sources.list for building d-i will be derived from your
 # "normal" sources.list. However, you can specify a mirror here to override
 # this. You can use copy:/ to use a local mirror
