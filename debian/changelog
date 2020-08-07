@@ -1,3 +1,9 @@
+debian-installer (20200529+parrot2) rolling; urgency=medium
+
+  * Bump new kernel version (5.7.10-1parrot2).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 07 Aug 2020 18:50:09 +0200
+
 debian-installer (20200529+parrot1) rolling; urgency=medium
 
   * Import new Debian release.
