@@ -1,3 +1,9 @@
+debian-installer (20200529+parrot4) rolling; urgency=medium
+
+  * Bump new kernel version (5.9.6-2parrot1).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 25 Nov 2020 16:59:20 +0100
+
 debian-installer (20200529+parrot3) rolling; urgency=medium
 
   * Use proper kernel version.
