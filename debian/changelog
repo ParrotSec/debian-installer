@@ -1,3 +1,10 @@
+debian-installer (20210731+parrot2) parrot-updates; urgency=medium
+
+  * Rebuild package.
+  * Fix typo.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 08 Jan 2022 00:23:41 +0100
+
 debian-installer (20210731+parrot1) lts-updates; urgency=medium
 
   * Import new Debian release.
