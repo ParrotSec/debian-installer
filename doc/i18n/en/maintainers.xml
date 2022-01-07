@@ -143,14 +143,13 @@ New debconf templates introduction
 
 <para>
 Maintainers must respect the <emphasis>Debconf Templates Style Guide
-(DTSG)</emphasis> (see the Debian Developers Reference, chapter
-<emphasis>Best Packaging Practices</emphasis>, section <emphasis>General
-recommendations for authors and translators</emphasis>) and the
-general style for writing templates for &d-i; (a special section of
-the DTSG mentions &d-i; templates). In any case,
+(DTSG)</emphasis> (see the section <ulink
+url="https://www.debian.org/doc/manuals/developers-reference/best-pkging-practices.en.html#general-recommendations-for-authors-and-translators">General
+recommendations for authors and translators</ulink> of the
+Debian Developers Reference). In any case,
 <emphasis>before</emphasis> committing new templates or templates
 changes, these templates must have been reviewed by other &d-i;
-developers.
+developers or an internationalisation (i18n) coordinator.
 </para>
 
 <para>
@@ -178,8 +177,8 @@ Description: New note.
 </informalexample>
 
 <para>
-New &d-i; packages with debconf templates do not need this. Their
-templates may be marked as <emphasis>translatable</emphasis> because
+Packages which are newly added to &d-i; can ignore this. Their
+templates may be marked as <emphasis>translatable</emphasis>, because
 these packages are ignored by the synchronisation scripts until they
 are added to the <filename>packages/po/packages_list</filename> file
 (<xref linkend="synchronisation-scripts"/>).

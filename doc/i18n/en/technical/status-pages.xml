@@ -66,7 +66,7 @@ status pages and learn about changes in packages listed in the various
 <para>
 For this, Peter Mann wrote a monitoring script named <classname>websec-txt</classname>.
 This script is available in the <classname>scripts/l10n</classname> directory in
-&d-i; SVN repository.
+&d-i; GIT repository.
 </para>
 
 <para>

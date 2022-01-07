@@ -7,11 +7,13 @@ cat build/tmp/*/built-using.txt \
     | sed 's/,/, /g;s/, $//g' >> debian/debian-installer.substvars
 echo >> debian/debian-installer.substvars
 
-EXTRA_PACKAGES="bf-utf-source syslinux u-boot-imx u-boot-omap u-boot-sunxi u-boot-rockchip arm-trusted-firmware"
+EXTRA_PACKAGES="bf-utf-source syslinux u-boot-imx u-boot-omap u-boot-sunxi u-boot-rockchip arm-trusted-firmware
+grub-efi-amd64-signed grub-efi-ia32-signed grub-efi-arm64-signed grub-common"
 echo -n "extra:Built-Using=" >> debian/debian-installer.substvars
 for package in $EXTRA_PACKAGES; do
   if dpkg-query -f '${db:Status-Status}' -W $package 2>/dev/null | grep -q ^installed$; then
     dpkg-query -f '${source:Package} (= ${source:Version}), ' -W $package 2>/dev/null
+    dpkg-query -f '${Built-Using}, ' -W $package 2>/dev/null
   else
     echo "INFO: $package not installed, not added to Built-Using" >&2
   fi

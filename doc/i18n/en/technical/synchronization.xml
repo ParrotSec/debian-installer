@@ -8,20 +8,20 @@ The need for a synchronization process
 
 <para>
 The files which are really used for building &d-i; packages are hosted
-in the <acronym>git</acronym> (Subversion) repository used for the development of &d-i;
+in the <acronym>git</acronym> repository used for the development of &d-i;
 packages. Each &d-i; package sources is hosted in a subdirectory of
 the <filename>packages/</filename> directory, with a very classical
 Debian package source tree organization, including the
 <filename>debian/po</filename> directory where the package's
-translation are hosted.
+translations are hosted.
 </para>
 
 <para>
 These files need to be synchronised with the so-called
-<emphasis>master</emphasis> files from the packages/po directory, as
-the translators only work with these master files. This
-synchronization must work both ways with changes to original strings
-going from individual packages to the master files and changes/updates
+<emphasis>master</emphasis> files from the packages/po directory, since
+translators only work on these master files. This
+synchronization must work both ways with changes on the English original strings
+going from individual packages to the master files and translation changes/updates
 from the master files going to individual packages:
 </para>
 
@@ -40,7 +40,7 @@ from the master files going to individual packages:
       <filename>packages/po</filename> directory, these changes have
       to be moved back into individual
       <filename>debian/po/*.po</filename> files for each package. This
-      does not need to be done at each translation update but must be
+      does not need to be done at each translation update, but must be
       done <emphasis>before</emphasis> building packages.
   </para>
   </listitem>
@@ -61,135 +61,24 @@ Localization files synchronisation process
 
 <sect3>
 <title>
-Initial synchronization
-</title>
-
-<para>
-This paragraph is here for historical reasons and is irrelevant after
-the initial process has run once.
-</para>
-
-<para>
-The <filename>template.pot</filename> is generated from the &d-i;
-repository by merging together all
-<filename>debian/po/templates.pot</filename> files. The
-<command>scripts/l10n/l10n-sync</command> script may be used
-for this. First check that no PO files stay in
-<filename>packages/po</filename> when running it for the first time.
-</para>
-
-</sect3>
-
-<sect3 id="switch-language">
-<title>
-Switch a language translations to the master file
-</title>
-
-<para>
-This paragraph is here for historical reasons and should be now
-irrelevant as all languages translations have been switched to the
-master file.
-</para>
-
-<para>
-This process is meant to collect together all translations spread out
-in the individual package, for one language, and merge them in a
-single master file.  This action should only happen once for each
-language.
-</para>
-
-<para>
-The detailed process follows. For each step, the following list will
-mention whether the action is to be done by the language translators
-or by the &i18n-coords;.
-</para>
-
-<itemizedlist>
-  <listitem>
-    <para>
-      (translators) bring this language to 100% translation in all
-      packages. This step is not mandatory but will help in tracking
-      down fuzzy strings;
-    </para>
-  </listitem>
-  <listitem>
-    <para>
-      (&i18n-coords;) stop the cron jobs running
-      <command>scripts/l10n/l10n-sync</command> to avoid
-      conflicts;
-    </para>
-  </listitem>
-  <listitem>
-    <para>
-      (translators) stop commiting <filename>&lt;language&gt;.po</filename> files
-      for this language;
-    </para>
-  </listitem>
-  <listitem>
-    <para>
-      (&i18n-coords;) build the general <filename>&lt;language&gt;.po</filename> file
-      in <filename>packages/po</filename> by using the
-      <command>scripts/l10n/gettext-helper</command> script;
-    </para>
-  </listitem>
-  <listitem>
-    <para>
-      (translators) fill in the PO file header properly. The
-      <userinput>Plural-Forms</userinput> header may need to be added
-      manually;
-    </para>
-  </listitem>
-  <listitem>
-    <para>
-      (&i18n-coords;) launch the synchronization script once with the
-      special <userinput>--keep-revision=&lt;language&gt;</userinput>
-      switch which will enforce the
-      <userinput>PO-Revision-Date</userinput> header to be left
-      unchanged in all packages. The synchronisation script will then
-      spread out the "new" translations to all packages;
-    </para>
-  </listitem>
-  <listitem>
-    <para>
-      (translators) in the newly created master file, track
-      <emphasis>fuzzy</emphasis> strings which are often caused by
-      identical strings with different translations in different &d-i;
-      packages. These fuzzy strings will temporarily show all
-      translation variants from which the translators will have to
-      pick up one version only, of course.
-    </para>
-  </listitem>
-  <listitem>
-    <para>
-      (translators) commit back the updated
-      <filename>&lt;language&gt;.po</filename> file to
-      <filename>packages/po</filename>. This will automatically
-      trigger individual PO files update when packages will be built.
-</para>
-</listitem>
-</itemizedlist>
-
-<para>
-An helper script named <command>switch-language</command> has been
-written to handle this switch to the master file. Using it absolutely
-needs that no action happens simultaneously on the switched language
-files. Translators are requested to <emphasis>not use</emphasis> it
-and rather ask one of the &i18n-coords; to do it for themselves.
-</para>
-
-</sect3>
-
-<sect3>
-<title>
 Synchronization process
 </title>
 
 <para>
-The <command>l10n-sync</command> script is run periodically by one of
-the &i18n-coords;. It should preferrably be run on a reliable Debian
-host such as people.debian.org and will update the general
+The <command>l10n-sync</command> script is run periodically by a cron
+job on dillon.debian.org. Its runs are monitored by the &i18n-coords;.
+See the <ulink
+url="https://salsa.debian.org/installer-team/d-i/-/blob/master/scripts/etc/cron/crontab">crontab file</ulink>.
+It will update the general
 <filename>template.pot</filename> and all PO files from individual
 <filename>templates.pot</filename> files from all &d-i; packages.
+</para>
+
+<para>
+In case of changings (commits) to the <emphasis>master templates files</emphasis>
+or <emphasis>master PO files</emphasis> (under packages/po) done by the l10n-sync
+script, the &i18n-coords; will need to perform a <command>git push</command> on
+dillon in the respective directory, to get the changings into GIT.
 </para>
 
 <para>
@@ -202,15 +91,8 @@ commiting changes to English templates).
 
 <para>
 During normal development, this synchronization process is run once a
-day. During release preparations, the frequency will be increased to
+day. During release preparations, the frequency might be increased to
 speed up the full cycle.
-</para>
-
-<para>
-When operating on the sarge branch, the l10n-sync will also merge
-translations from master files in the trunk branch, by using the
-<userinput>--merge</userinput> option. Synchronisations on the sarge
-branch only occur once a week.
 </para>
 
 <para>  
@@ -254,10 +136,13 @@ The general process is:
       <listitem>
         <para>
           merge all <filename>templates.pot</filename> files to
-          <filename>packages/po/template.pot</filename>. The
+          <filename>packages/po/template.pot</filename>.
+
+<!--      The
           <filename>packages/po/header.pot</filename> is mandatory
           (this file will provide the standard header for the merged
-          POT file;
+          POT file; -->
+
         </para>
       </listitem>
       <listitem>
@@ -293,8 +178,7 @@ The general process is:
           formatting details will depend on the version of this
           utility. For that reasons, the synchronization script should
           always be run from machines using the same Debian release
-          version (there are known differences between the woody and
-          sarge versions of the gettext utilities);
+          version (these days it permanently runs on dillon anyway);
         </para>
       </listitem>
       <listitem>
@@ -345,7 +229,7 @@ whole process a lot and triggers a lot of commit actions). So, the
 script is sometimes likely to trigger conflicts. For that reason, it
 will stop working on a <acronym>GIT</acronym> copy where <acronym>GIT</acronym> conflict files are
 present. This explains why this script must always be monitored even
-when it is scheduled to execute periodically.
+when it is scheduled to be executed periodically.
 </para>
 
 </sect3>
@@ -421,9 +305,10 @@ because they may have some new use in the future:
         need to limit possible conflicts;
     </para>
   </listitem>
+<!--
   <listitem>
     <para>
-        the <userinput>--keep-revision</userinput> switch needs an
+        the <userinput>-keep-revision</userinput> switch needs an
         argument which must be a language code (one only). It will
         force <command>l10n-sync</command> to restore the
         <userinput>PO-Revision-Date</userinput> field of this language
@@ -433,6 +318,7 @@ because they may have some new use in the future:
         <emphasis>not</emphasis> be used in other occasions;
     </para>
   </listitem>
+-->
   <listitem>
     <para>
         the <userinput>--debconf-updatepo</userinput> defines the
@@ -522,6 +408,9 @@ checking that the strings have been reviewed.
 </para>
 
 </sect3>
+
+
+<!--
 <sect3>
 <title>
 Synchronization script and automated commits
@@ -617,7 +506,7 @@ change the file and commit the new version.
 
 <para>
 While the script is disabled, runs can still be enforced by using the
-<command>--force</command> swith, which will ignore the
+<command>-force</command> swith, which will ignore the
 <filename>packages/po/run-l10n-sync</filename> file.
 </para>
 
@@ -675,6 +564,9 @@ script on other machines to avoid useless massive commits.
 </para>
 
 </sect3>
+-->
+
+
 </sect2>
 
 </sect1>

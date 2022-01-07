@@ -13,11 +13,7 @@ in the top right corner.
 <para>
 Official Debian developers will probably use the same login as their
 Debian login, but must go through the account creation process
-anyway. Non-Debian developers should be aware that the login they
-will choose on &salsa; will be followed by <quote>-guest</quote>. This has
-absolutely no meaning of any kind of <emphasis>second class
-citizens</emphasis>, but is just an easy way for &salsa; system
-administrators to know who is an official Debian developer.
+anyway.
 </para>
 
 </sect1>
@@ -29,13 +25,13 @@ Installing <acronym>git</acronym> and <acronym>myrepos</acronym>
 
 <para>
 Translators need to install <acronym>git</acronym>
-on their system. Just do <command>apt install git</command>
+on their system. Just do <command>apt install git</command>.
 </para>
 
 <para>
 &d-i; contributors who want to work on the code of the installer (so not just translation
 work), additionally need to install <acronym>myrepos</acronym>
-by <command>apt install myrepos</command>
+by <command>apt install myrepos</command>.
 </para>
 
 <para>
@@ -238,20 +234,20 @@ changes, to be sure that only relevant changes are committed.
 </title>
 <para>
 When committing translations directly to <acronym>GIT</acronym>
-repositories for Debian packages (except for level 1 translations),
+repositories for Debian packages,
 translators must update the <filename>debian/changelog</filename> file
 accordingly.
 </para>
 
 <para>
-This <emphasis>does not</emphasis> apply to level 1 translations, that
-is the &d-i; <emphasis>core</emphasis> packages translations. For
-these translations, no changelog updates are needed.
+Each change in Debian packages has to be documented in the
+<filename>debian/changelog</filename> file.
 </para>
 
 <para>
-Each change in Debian packages must be documented in the
-<filename>debian/changelog</filename> file.
+However, this <emphasis>does not</emphasis> apply to level 1 translations, that
+is the &d-i; <emphasis>core</emphasis> packages translations. For
+these translations, no changelog updates are needed by translators.
 </para>
 
 <para>

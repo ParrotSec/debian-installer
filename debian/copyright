@@ -41,6 +41,17 @@ BELIN, GPLv2+.
     build/boot/kfreebsd/pics/softwaves-kbsd.svg
     build/boot/x86/pics/softwaves.svg
 
+The futurePrototype theme images (list of files below) are © 2018 Alex
+Makastheme, published under GPLv2+.
+
+    build/boot/x86/pics/futurePrototype.svg
+
+The homeworld theme images (list of files below) are © 2020-2021 Juliette Taka
+BELIN, GPLv2+.
+
+    build/boot/artwork/11-homeworld/homeworld.svg
+    build/boot/artwork/11-homeworld/homeworld.png
+
 The gen-hd-image tool, used to build bootable partitioned disk images, is
 Copyright 2014,2015 Karsten Merker <merker@debian.org> and is dual-licensed.
 It is provided under the terms of the GNU GPL version 2 or any later

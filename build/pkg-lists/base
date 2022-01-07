@@ -28,3 +28,7 @@ kldutils-udeb [kfreebsd]
 
 # Avoid entropy starvation issues (#923675):
 haveged-udeb [linux]
+
+# Needed, when nic-wireless kernel modules are included,
+# which seems to be the case on nearly all linux arch images
+wireless-regdb-udeb [linux]

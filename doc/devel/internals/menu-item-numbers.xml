@@ -48,13 +48,9 @@ were before to give more flexibility.
      s390-netdevice (s390)
 1800 netcfg
      netcfg-static
-1900 auto-install (deprecated)
 2100 network-preseed
      network-console
 2110 localechooser (s390)
-2150 ai-localechooser (deprecated)
-2155 ai-kbd-chooser (deprecated)
-     ai-console-setup-udeb (deprecated)
 2300 choose-mirror
      download-installer
 2400 user-setup
@@ -78,13 +74,9 @@ were before to give more flexibility.
 4000 -> 5000 Disk preparation
 
 <informalexample><screen>
-4200 partman (as default partitioner)
-4300 partitioner (mips)
-4400 lvmcfg (mips)
-4400 partman (mips)
-4500 partconf (mips)
-4500 mdcfg (mips)
-4700 evms
+4200 partman
+4400 lvmcfg
+4500 mdcfg
 </screen></informalexample>
 </para></listitem>
 
@@ -95,18 +87,10 @@ were before to give more flexibility.
 6500 base-installer
 7000 apt-setup
      pkgsel
-7300 palo-installer (hppa)
-     yaboot-installer (powerpc/powermac_newworld, powerpc/chrp*)
-     quik-installer (powerpc/powermac_oldworld)
-     zipl-installer (s390)
-     arcboot-installer (mips)
-     silo-installer (sparc)
-     vmelilo-installer (m68k/vme*)
-     flash-kernel-installer (armel)
-7400 grub-installer (x86, powerpc/chrp_pegasos)
-7500 lilo-installer (x86)
-7600 elilo-installer (ia64, x86)
-7700 nobootloader (all)
+7300 zipl-installer (s390)
+     flash-kernel-installer (arm*)
+7400 grub-installer
+7700 nobootloader
 7800 finish-install
 </screen></informalexample>
 </para></listitem>
@@ -116,13 +100,16 @@ were before to give more flexibility.
 </para></listitem>
 
 <listitem><para>
-90000+ Neverdefault
+90000+ Misc
 
 <informalexample><screen>
 93000 cdebconf-priority
 94000 cdrom-checker
+      save-logs
 95000 di-utils-shell
 96000 eject-udeb
+99000 di-utils-exit-installer
+99500 di-utils-reboot
 
 99999 dummy menu item for components that should be listed in anna,
       but not in the main menu

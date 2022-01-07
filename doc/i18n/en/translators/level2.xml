@@ -55,7 +55,7 @@ other Debian packages:
 		</listitem>
 		<listitem>
 		  <para>
-		    eject
+		    util-linux (for eject)
 		  </para>
 		</listitem>
 		<listitem>
@@ -475,7 +475,7 @@ short</emphasis>.
 
 <sect2>
 <title>
-Eject
+Util-linux (eject)
 </title>
 
 <sect3>
@@ -484,12 +484,12 @@ Package description
 </title>
 
 <para>
-The <classname>eject</classname> package is used as part of &d-i; to offer a
-menu entry allowing to eject the CD that is eventually in the CD-ROM drive.
+The <classname>util-linux</classname> package is used as part of &d-i; to offer
+the eject program, which allows to eject the CD that is eventually in the CD-ROM drive.
 </para>
 
 <para>
-The translatable part is the menu entry title.
+The translatable part is the menu entry title for eject.
 </para>
 
 
@@ -508,7 +508,7 @@ it.
 
 <itemizedlist>
 <listitem>
-<acronym>GIT</acronym> access: ????? &git-eject; 
+<acronym>GIT</acronym> access: &git-eject; 
 </listitem>
   <listitem>
     <para>
@@ -517,12 +517,12 @@ it.
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="&url-level2-pot;/eject_debian_po.pot">&url-level2-pot;/eject_debian_po.pot</ulink>
+          <ulink url="&url-level2-pot;/util-linux_debian_po.pot">&url-level2-pot;/util-linux_debian_po.pot</ulink>
         </para>
       </listitem>
       <listitem>
         <para>
-          &url-level2-po;/eject_debian_po_&language;.po
+          &url-level2-po;/util-linux_debian_po_&language;.po
         </para>
       </listitem>
     </itemizedlist>
@@ -537,7 +537,8 @@ Updating/adding translations
 </title>
 
 <para>
-Translations should be reported as bugs against the <classname>eject</classname> package.
+Translations should be reported as bugs against the <classname>util-linux</classname> package;
+mention it concerns the eject program.
 </para>
 
 </sect3>

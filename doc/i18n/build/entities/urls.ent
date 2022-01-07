@@ -29,7 +29,7 @@
 
 <!ENTITY url-status "https://d-i.debian.org/l10n-stats">
 
-<!ENTITY url-languagelist "https://d-i.debian.org/doc/i18n/languages.html">
+<!ENTITY url-languagelist "https://d-i.debian.org/doc/languages.html">
 
 <!ENTITY url-spellchecker-status "https://d-i.debian.org/l10n-spellcheck/">
 
@@ -84,7 +84,7 @@
 <!ENTITY git-grub2 "git clone git@salsa.debian.org:grub-team/grub.git">
 <!ENTITY git-popcon "git clone git@salsa.debian.org:popularity-contest-team/popularity-contest.git">
 <!ENTITY git-debconf "git clone git@salsa.debian.org:pkg-debconf/debconf.git">
-<!ENTITY git-eject "git clone ssh://&git-debian;/git/collab-maint/eject"> <!-- FIXME: no upstream repo currently ??? -->
+<!ENTITY git-eject "git clone git@salsa.debian.org:debian/util-linux.git">
 <!ENTITY git-espeakup "git clone git@salsa.debian.org:a11y-team/espeakup.git">
 <!ENTITY git-newt "git clone git@salsa.debian.org:mckinstry/newt.git">
 

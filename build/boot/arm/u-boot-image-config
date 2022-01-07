@@ -4,7 +4,7 @@
 # platform_name SPL_filename SPL_offset TPL_filename TPL_offset
 #
 # Images from u-boot-imx
-MX53LOCO /usr/lib/u-boot/mx53loco/u-boot.imx 2
+MX53LOCO /usr/lib/u-boot/mx53loco/u-boot-dtb.imx 2
 MX6_Cubox-i /usr/lib/u-boot/mx6cuboxi/SPL 2 /usr/lib/u-boot/mx6cuboxi/u-boot.img 138
 Wandboard /usr/lib/u-boot/wandboard/SPL 2 /usr/lib/u-boot/wandboard/u-boot.img 138
 Novena  /usr/lib/u-boot/novena-rawsd/SPL 2 /usr/lib/u-boot/novena-rawsd/u-boot.img 138
@@ -23,6 +23,7 @@ A20-OLinuXino-Lime2-eMMC /usr/lib/u-boot/A20-OLinuXino-Lime2-eMMC/u-boot-sunxi-w
 A20-OLinuXino-MICRO /usr/lib/u-boot/A20-OLinuXino_MICRO/u-boot-sunxi-with-spl.bin 16
 BananaPi /usr/lib/u-boot/Bananapi/u-boot-sunxi-with-spl.bin 16
 BananaPiM2Berry /usr/lib/u-boot/bananapi_m2_berry/u-boot-sunxi-with-spl.bin 16
+Bananapi_M2_Ultra /usr/lib/u-boot/Bananapi_M2_Ultra/u-boot-sunxi-with-spl.bin 16
 BananaPro /usr/lib/u-boot/Bananapro/u-boot-sunxi-with-spl.bin 16
 Cubieboard /usr/lib/u-boot/Cubieboard/u-boot-sunxi-with-spl.bin 16
 Cubieboard2 /usr/lib/u-boot/Cubieboard2/u-boot-sunxi-with-spl.bin 16
@@ -33,6 +34,7 @@ orangepi_plus /usr/lib/u-boot/orangepi_plus/u-boot-sunxi-with-spl.bin 16
 pcDuino /usr/lib/u-boot/Linksprite_pcDuino/u-boot-sunxi-with-spl.bin 16
 pcDuino3 /usr/lib/u-boot/Linksprite_pcDuino3/u-boot-sunxi-with-spl.bin 16
 NanoPiNeo /usr/lib/u-boot/nanopi_neo/u-boot-sunxi-with-spl.bin 16
+NanoPiNeoAir /usr/lib/u-boot/nanopi_neo_air/u-boot-sunxi-with-spl.bin 16
 Sinovoip_BPI_M3 /usr/lib/u-boot/Sinovoip_BPI_M3/u-boot-sunxi-with-spl.bin 16
 
 #

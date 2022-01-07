@@ -115,7 +115,7 @@ in which they are executed during a standard installation.
     custom tasks (<classname>tasksel-data</classname>) from a source added
     during <classname>apt-setup</classname>.
 </para><para>
-    Directly accessing the installation CD and thus installing udebs is not
+    Directly accessing the installation media and thus installing udebs is not
     possible in these scripts (but should also not be needed).
 </para></listitem>
 

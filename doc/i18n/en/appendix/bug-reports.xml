@@ -95,7 +95,7 @@ Generic method to send bug reports
 </title>
 
 <para>
-Reporting a bug to a Debian package is just sending a specially
+Reporting a bug to a Debian package is just a matter of sending a specially
 formatted mail to &email-bts;.
 </para>
 
@@ -204,7 +204,7 @@ Attaching files to bug reports
 </title>
 
 <para>
-Translation bug report usually need a file to be attached to the bug report.
+Translation bug reports usually need a file to be attached to the bug report.
 </para>
 
 <para>

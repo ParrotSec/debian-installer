@@ -12,8 +12,8 @@ hand to translate the po files. They can get all files here:
 </informalexample>
 
 <para>
-where &lt;LEVEL&gt; is either level1, level2, level3, level4 or
-level5, and &lt;LANGUAGECODE&gt; is your language code like de, es, zh_CN, ...
+where &lt;LEVEL&gt; is either level1, level2 or level3,
+and &lt;LANGUAGECODE&gt; is your language code like de, es, zh_CN, ...
 </para>
 
 <para>
@@ -32,7 +32,7 @@ POT templates can be found at:
 
 <para>
 For translators who prefer working from developer's repositories, the
-following lists, level by level, all checkout commands to get access to
+following list contains, level by level, all checkout commands to get access to
 translation material.
 </para>
 
@@ -84,11 +84,11 @@ translation material.
 </sect4>
 
 <sect4>
-<title>eject</title>
+<title>eject (in util-linux)</title>
 
 <itemizedlist>
 <listitem>
-<command>????? &git-eject;</command>
+<command>&git-eject;</command>
 </listitem>
 </itemizedlist>
 

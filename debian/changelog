@@ -1,3 +1,167 @@
+debian-installer (20210731+parrot1) lts-updates; urgency=medium
+
+  * Import new Debian release.
+  * Update bootloader background.
+  * Use choose direct downloads from parrot servers.
+  * Bump Linux kernel ABI to 5.15.0-5parrot1.
+  * Update preseed.
+  * Disable secure boot (we don't support it yet).
+  * Use Parrot 5.0 repo.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 07 Jan 2022 20:13:24 +0100
+
+debian-installer (20210731+deb11u2) bullseye; urgency=medium
+
+  * Bump Linux kernel ABI to 5.10.0-10.
+
+ -- Cyril Brulebois <kibi@debian.org>  Mon, 13 Dec 2021 16:23:43 +0100
+
+debian-installer (20210731+deb11u1) bullseye; urgency=medium
+
+  * Set USE_PROPOSED_UPDATES=1 for the bullseye stable branch.
+  * Update USE_UDEBS_FROM default from unstable to bullseye, so that
+    users don't have to know about the debian/rules heuristics when
+    performing manual, local builds.
+  * Bump Linux kernel ABI to 5.10.0-9.
+
+ -- Cyril Brulebois <kibi@debian.org>  Mon, 04 Oct 2021 10:07:27 +0200
+
+debian-installer (20210731) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Update translation-status for the release.
+
+  [ Steve McIntyre ]
+  * Make mini.iso work with UEFI boot
+  * Bump Linux kernel ABI to 5.10.0-8
+
+ -- Cyril Brulebois <kibi@debian.org>  Sat, 31 Jul 2021 06:20:00 +0200
+
+debian-installer (20210415) unstable; urgency=medium
+
+  [ Shawn Guo ]
+  * Build in libinput instead of evdev driver for gtk installer.
+
+  [ Steve McIntyre ]
+  * Bump Linux kernel ABI to 5.10.0-6
+
+  [ Holger Wansing ]
+  * Add wireless-regdb-udeb to all Linux arch images (#979104).
+  * Correct keyword for bootloader arguments in netboot/xen/debian.cfg
+    example file. Closes: #904131
+  * Update of debian-internals manual to current development state.
+
+  [ Vagrant Cascadian ]
+  * [arm64] Add support for puma-rk3399.
+  * [arm64] Update to use u-boot-install-sunxi.
+  * [armhf] Make hd-media and netboot sdcard images start at offset 32768,
+    for compatibility with rockchip platforms.
+  * [arm64, armhf] Update SD-card-images sizes for netboot, netboot-gtk and hd-media.
+
+  [ Samuel Thibault ]
+  * On hurd-i386, mips, and powerpc, add debian-ports-archive-keyring-udeb also
+    in the monolithic images for bootstraping from debian-ports' unreleased.
+  * Update minimum disk and memory sizes.
+  * Makefile: Drop libmachuser/libhurduser manual copy, now fixed in glibc.
+  * Makefile: Drop /servers manual creation, now done in hurd-udeb package.
+
+  [ Cyril Brulebois ]
+  * Update translation-status for the release.
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 15 Apr 2021 00:06:14 +0200
+
+debian-installer (20201202) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel ABI to 5.9.0-4
+  * Drop fontconfig tweaks introduced in version 20170828 (See: #873462):
+     - Full hinting support was removed upstream, in pango 1.44.
+     - Forcing truetype:interpreter-version=35 through FREETYPE_PROPERTIES
+       now leads to arguably worse rendering than with default settings.
+  * With or without the aforementioned changes, the rendering looks much
+    worse than it used to (until Debian Installer Bullseye Alpha 3), due
+    to a behavioral change in pango. Since it affects default fonts, and
+    not only in the installer's context, one might have hoped for a fix
+    at some point but that doesn't seem to be happening. We might try to
+    use different fonts to try and dodge this issue… Until then, here
+    are some pointers to bugtracker entries:
+     - https://bugs.debian.org/956612
+     - https://gitlab.gnome.org/GNOME/pango/-/issues/404
+     - https://github.com/harfbuzz/harfbuzz/issues/1892
+  * Convert doc/devel/anna-install.txt to UTF-8.
+  * Clean whitespaces in doc/i18n/ChangeLog, making it UTF-8.
+  * Update translation-status for the release.
+
+  [ Vagrant Cascadian ]
+  * Update Firefly-RK3288 image for new u-boot version.
+  * [arm64] Add support for firefly-rk3399, pinebook-pro-rk3399,
+    rockpro64-rk3399, rock64-rk3328 and rock-pi-4-rk3399 to u-boot images
+    and netboot SD card images.
+  * [arm64] Make all netboot sdcard images start at offset 32768, for
+    compatibility with rockchip platforms.
+
+  [ Lubomir Rintel ]
+  * Add OLPC XO-1.75 laptop support. Closes: #949306
+
+  [ Aurelien Jarno ]
+  * Drop build-dependency on libgcc1. It has been renamed and it is not
+    needed since r62791.
+  * Add libgcc-s1 to the fake packages list as it doesn't have an udeb just
+    like libgcc1. Remove libc* and libnewt0.52 from that list.
+  * Install kmod-udeb instead of libkmod2-udeb now that the library and the
+    binaries are properly packaged in different udebs.
+  * Remove the mklibs library reduction pass. Add a hack to copy
+    libgcc_s.so.[124] from the host filesystem as it is not done anymore by
+    mklibs. This needs to be replaced by a proper udeb.
+  * Add explicit build-depends on fdisk on arm64, amd64 and i386 now that
+    util-linux doesn't depend on it anymore.
+
+  [ Wookey, Steve McIntyre, Alper Nebi Yasak ]
+  * Enable gtk build for arm64
+
+  [ Domenico Andreoli ]
+  * Add support for NanoPi NEO Air. Closes: #928863
+
+  [ Holger Wansing]
+  * d-i i18n guide: update for util-linux's eject overtaking.
+  * Add Occitan as new language for the installer (thanks to Quentin PAGÈS).
+
+  [ Steve McIntyre ]
+  * Tweaks for efi-image:
+    + Improve sizing calculation to reduce wasted space
+    + Include DTB files in the ESP for armhf and arm64 systems. Should
+      make U-Boot based systems work better when booting via UEFI
+  * Fix build failures related to #940056 "fakeroot does not fake
+    statx()". Don't use "ls" to check if /dev/console is a character
+    device, instead use "file". Thanks to JH Chatenet for helping to
+    debug this.
+
+  [ Samuel Thibault ]
+  * Copy over libmach/hurduser, until the fixed glibc is installed.
+  * Fix monolithic hurd build by excluding more packages.
+
+  [ Jessica Clarke ]
+  * kfreebsd: Update to use debian-ports-archive-keyring.
+  * kfreebsd: Don't try to build build_cdrom_gtk on kfreebsd-i386.
+
+  [ Julien Cristau ]
+  * Add grub2 to built-using (closes: #968998).
+
+  [ Ben Hutchings ]
+  * Add wireless-regdb-udeb to Linux builds that include nic-wireless-modules
+
+  [ Alper Nebi Yasak ]
+  * Include a /gtk/initrd.gz in graphical arm mini.iso builds
+  * Include fb-modules in non-gtk arm64 cdrom builds as well
+  * Build concatenateable images for arm64 netboot-gtk
+
+  [ John Paul Adrian Glaubitz ]
+  * powerpc: Add cdrom-core-modules and isofs-modules to cdrom pkg-lists
+  * ppc64: Add cdrom-core-modules and isofs-modules to cdrom pkg-lists
+
+ -- Cyril Brulebois <kibi@debian.org>  Wed, 02 Dec 2020 14:30:20 +0100
+
+
 debian-installer (20200529+parrot7) rolling; urgency=medium
 
   * Bump new kernel version (5.10.28-6parrot1).

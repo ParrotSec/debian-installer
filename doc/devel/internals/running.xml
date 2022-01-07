@@ -2,16 +2,13 @@
 <title>Running Debian Installer</title>
 <para>
 
-The examples in this chapter reflect the status of the Installer during the
-development of Squeeze, and are based on the CD-ROM and netboot installation
-methods for x86 (the i386 and amd64 architectures). The choice for x86 was
+The examples in this chapter are based on the CD-ROM and netboot installation
+methods for x86 (the amd64 and i386 architectures). The choice for x86 was
 made as this is most familiar to most users, but installations for other
 architectures are not structurally different<footnote>
 
 <para>
-The mips architectures currently do not use partman for partitioning, file
-system creation and mount point selection but instead use other components.
-Some architectures also use specific additional components as part of their
+Some architectures may use specific additional components as part of their
 default installation. However, this does not make them structurally different.
 </para>
 
@@ -19,22 +16,29 @@ default installation. However, this does not make them structurally different.
 
 </para><para>
 
+The <quote>CD-ROM</quote> installation method also covers DVD, BD and the
+popular netinst images. Please note, that images for amd64 and i386 are
+built using isohybrid, so they can be used on optical media as well as on
+USB sticks.
+
+</para><para>
+
 So what are the basic steps when the installer is run? In any installation
-five stages can be distinguished.
+five stages can be distinguished:
 
 <orderedlist>
   <listitem>
 boot and initialization &mdash; setting up the installer so that it can load
-any additional components
+any additional components;
   </listitem><listitem>
 loading additional components &mdash; expanding the installer to its full
-functionality
+functionality;
   </listitem><listitem>
-network configuration (unless already done in stage 1)
+network configuration (unless already done in stage 1);
   </listitem><listitem>
-partitioning
+partitioning;
   </listitem><listitem>
-installing the target system
+installing the target system.
   </listitem>
 </orderedlist>
 
@@ -42,16 +46,7 @@ installing the target system
 
 The first three stages are where the fundamental difference between
 installation methods can be seen. All components (udebs) used there need
-to be included in the initrd<footnote>
-
-<para>
-With one exception. In floppy disk based installations, the initrd does not
-contain all needed components for stage 2, but it does have the ability to
-load additional components that belong to stage 1 or are needed for stage 2
-from additional floppy disks.
-</para>
-
-</footnote> with which the installer is booted.
+to be included in the initrd with which the installer is booted.
 
 </para><para>
 
@@ -85,8 +80,8 @@ these differ.
       <entry>Language/location/locale selection</entry>
     </row><row>
       <entry>1</entry>
-      <entry namest="c2" nameend="c3">kbd-chooser</entry>
-      <entry>Keyboard selection</entry>
+      <entry namest="c2" nameend="c3">console-setup</entry>
+      <entry>Keyboard/keymap selection</entry>
     </row><row>
       <entry>1</entry>
       <entry>cdrom-detect</entry>
@@ -181,7 +176,7 @@ methods.
       <entry>Select and install additional packages (tasksel)</entry>
     </row><row>
       <entry>5</entry>
-      <entry>grub/lilo-installer; nobootloader</entry>
+      <entry>grub-installer; nobootloader</entry>
       <entry>Boot loader installation</entry>
     </row><row>
       <entry>5</entry>
@@ -252,19 +247,13 @@ installation methods.
       <entry>network</entry>
       <entry>network</entry>
     </row><row>
-      <entry>businesscard CD</entry>
-      <entry>CD</entry>
-      <entry>CD</entry>
-      <entry>network</entry>
-      <entry>network</entry>
-    </row><row>
       <entry>netinst CD</entry>
       <entry>CD</entry>
       <entry>CD</entry>
       <entry>CD</entry>
       <entry>network</entry>
     </row><row>
-      <entry>full CD/DVD</entry>
+      <entry>full CD/DVD/BD</entry>
       <entry>CD</entry>
       <entry>CD</entry>
       <entry>CD</entry>
@@ -275,18 +264,6 @@ installation methods.
       <entry>CD image</entry>
       <entry>CD image/network</entry>
       <entry>CD image/network</entry>
-    </row><row>
-      <entry>floppy (net)<superscript>b)</superscript></entry>
-      <entry>boot/root/net-drivers</entry>
-      <entry>network</entry>
-      <entry>network</entry>
-      <entry>network</entry>
-    </row><row>
-      <entry>floppy (cd)<superscript>a,b)</superscript></entry>
-      <entry>boot/root/cd-drivers</entry>
-      <entry>CD</entry>
-      <entry>CD/network</entry>
-      <entry>CD/network</entry>
     </row>
   </tbody>
 </tgroup>
@@ -297,12 +274,6 @@ installation methods.
 <superscript>a)</superscript> Whether packages for the base system and
 tasks are retrieved from CD (image) or the network depends on the type of
 CD used in combination with these boot methods.
-
-</para><para>
-
-<superscript>b)</superscript> Unfortunately there are no longer any
-architectures that support booting from floppy. The main reason is the
-increased size of the Linux kernel.
 
 </para>
    </sect1>

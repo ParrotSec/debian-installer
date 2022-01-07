@@ -1,5 +1,6 @@
 console-setup-pc-ekbd
 console-setup-freebsd-charmaps-udeb
+debian-ports-archive-keyring-udeb
 kbdcontrol-udeb
 
 # Exclude screen support

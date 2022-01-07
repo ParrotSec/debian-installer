@@ -259,15 +259,16 @@ formated in revision 0 ext2.
 	filesystem{ ext2r0 }
 	mountpoint{ /boot } .
 
-And finally, an example of how to set up the efi boot partition needed on
-ia64.
+Finally, an example of how to set up an efi boot partition on amd64.
 
-100 100 150 fat16
-        $primary{ }
+538 538 1075 free
+        $iflabel{ gpt }
+        $reusemethod{ }
         method{ efi }
         format{ } .
 
 For other examples, see the architecture-specific recipes in partman-auto.
+The EFI example above was taken from partman-auto/recipe-amd64-efi/atomic.
 
 
 5. LIMITATIONS

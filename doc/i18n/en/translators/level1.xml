@@ -42,8 +42,8 @@ Sublevels
 
 <para>
 In the past, all &d-i; level 1 strings were gathered into a single <quote>master</quote>
-file. While that was easy to manage, it had the inconvenience of grouping very important
-and often used strings with very obscure strings that are relevant for some architectures
+file. While that was easy to manage, it had the inconvenience of grouping together very important
+and often used strings with very obscure strings, that are relevant for some architectures
 only, or some special (and rarely used) features.
 </para>
 
@@ -218,7 +218,7 @@ Specific recommendations
 </title>
 
 <para>
-The &d-i; core file uses hundreds of strings which represent the content
+The &d-i; uses hundreds of strings which represent the content
 of the screens which are or may be shown to &d-i; users during the
 installation process.
 </para>
@@ -261,8 +261,8 @@ in this/these line(s).
 
 <para>
 This entry is the language selection screen entry for each
-language. Translators can translate it but they should keep <quote>Choose
-language</quote> in English as an alternative so that users mistakenly
+language. Translators can translate it, but they should keep <quote>Choose
+language</quote> in English as an alternative, so that users mistakenly
 choosing a language can still find the appropriate entry to change it
 back to their own language.
 </para>

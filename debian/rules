@@ -6,17 +6,11 @@ DATE=$(shell echo $(VERSION) | cut -d '.' -f 1)
 SOURCE_DATE_EPOCH = $(shell date -d "$$(dpkg-parsechangelog -SDate)" +%s)
 SUITE=$(shell LC_ALL=C dpkg-parsechangelog | grep ^Distribution: | cut -d ' ' -f 2)
 
-# Daily builds vs. uploads to unstable:
-ifeq (${SUITE},UNRELEASED)
-USE_UDEBS_FROM=unstable
+SUITE=parrot
+USE_UDEBS_FROM=parrot-updates
 TRANSSTATUS=
-BOOTMENU_BEEP=n
-else
-USE_UDEBS_FROM=rolling
-USE_PROPOSED_UPDATES=0
-TRANSSTATUS=translation-status
 BOOTMENU_BEEP=y
-endif
+
 
 # Don't integrate SSL certs in armel, the size limits will be missed
 ifeq ($(ARCH),armel)

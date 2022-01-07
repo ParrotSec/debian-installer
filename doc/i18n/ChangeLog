@@ -10,20 +10,20 @@
 	* Refer to Adam Conrad's subversion backport instead.
 
 2004/08/09  Christian Perrier  <bubulle@debian.org>
-	* Complete rewrite : 
-  	* "stages" are replaced by "levels"
-  	* core D-I translation is made in a general file
-  	* more details about each translation specifics
-  	* more details about getting/sending translations for each
+	* Complete rewrite:
+	* "stages" are replaced by "levels"
+	* core D-I translation is made in a general file
+	* more details about each translation specifics
+	* more details about getting/sending translations for each
 	  package
-  	* lots of other changes
-  	* XMLised
+	* lots of other changes
+	* XMLised
 
 2004/07/18  Dennis Stampfer  <seppy@debian.org>
 	* In statistics is no STATUS.utf8.txt anymore. It is called &lt;lang&gt;.txt
-  
+
 2004/06/12  Christian Perrier  <bubulle@debian.org>
-	* Change all references to D. Barbier pages to 
+	* Change all references to D. Barbier pages to
 	Dennis Stampfer  <seppy@debian.org> or Pierre Machard pages
 	* Change reference from CVS to SVN for base-config
 	* Adapt instructions for ISO-3166 translations
@@ -48,10 +48,10 @@
 
 2004/03/24  Christian Perrier  <bubulle@debian.org>
 	* Major update:
- 	* debian-installer switched to subversion
- 	* reference page is now Dennis Stampfer  <seppy@debian.org>'s 
+	* debian-installer switched to subversion
+	* reference page is now Dennis Stampfer  <seppy@debian.org>'s
 	page which references to other specialised status pages
- 	* general modifications for fitting the current context of d-i
+	* general modifications for fitting the current context of d-i
 	development
 
 2004/03/10  Christian Perrier  <bubulle@debian.org>

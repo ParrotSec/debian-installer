@@ -489,8 +489,8 @@ ifndef OMIT_LSB
 		set -e; \
 		mkdir -p $(TREE)/etc; \
 		echo 'DISTRIB_ID=$(LSB_DISTRIB_ID)' > $(TREE)/etc/lsb-release; \
-		echo 'DISTRIB_DESCRIPTION=$(LSB_DISTRIB_DESCRIPTION)' >> $(TREE)/etc/lsb-release; \
-		echo 'DISTRIB_RELEASE=$(LSB_DISTRIB_RELEASE)' >> $(TREE)/etc/lsb-release; \
+		echo 'DISTRIB_DESCRIPTION="$(LSB_DISTRIB_DESCRIPTION)"' >> $(TREE)/etc/lsb-release; \
+		echo 'DISTRIB_RELEASE="$(LSB_DISTRIB_RELEASE)"' >> $(TREE)/etc/lsb-release; \
 		echo 'X_INSTALLATION_MEDIUM=$(MEDIUM)' >> $(TREE)/etc/lsb-release; \
 	fi
 endif
@@ -528,12 +528,6 @@ ifdef EXTRAUDEBS
 	get-packages udeb $(EXTRAUDEBS)
 	dpkg $(DPKG_UNPACK_OPTIONS) --log=/dev/null --root=$(EXTRAUDEBSDIR) --unpack \
 		$(foreach udeb,$(EXTRAUDEBS),$(UDEBDIR)/$(udeb).udeb)
-endif
-
-ifeq ($(DEB_HOST_ARCH_OS),hurd)
-	# We need /servers/exec and startup at boot time
-	touch $(TREE)/servers/exec
-	touch $(TREE)/servers/startup
 endif
 
 	# HACK ALERT: copy libgcc_s.so.[124] from the host system as
@@ -589,16 +583,6 @@ endif
 	fi
 	if [ -f $(TREE)/usr/share/localechooser/languagelist.data.gz ]; then \
 		zcat $(TREE)/usr/share/localechooser/languagelist.data.gz >> $(TEMP)/all.utf; \
-	fi
-
-	# Keep the original rendering for the graphical installer, reverting
-	# changes in defaults for fontconfig and freetype, until they have
-	# been further discussed/analysed, see #873462:
-	if [ -L "$(TREE)/etc/fonts/conf.d/10-hinting-slight.conf" ]; then \
-		ln -sf /usr/share/fontconfig/conf.avail/10-hinting-full.conf \
-			"$(TREE)/etc/fonts/conf.d/10-hinting-slight.conf"; \
-		echo 'export FREETYPE_PROPERTIES="truetype:interpreter-version=35"' \
-			> "$(TREE)/lib/debian-installer.d/S63freetype-workaround"; \
 	fi
 
 	# Run fc-cache if needed, to avoid having to generate UUIDs
@@ -659,9 +643,9 @@ sources.list.udeb:
 			echo "deb $(MIRROR) unreleased $(UDEB_COMPONENTS)"; \
 		fi \
 	else \
-		gen-sources.list.udeb "$(SYSTEM_SOURCES_LIST)" $(USE_UDEBS_FROM) $(UDEB_COMPONENTS) $(USE_PROPOSED_UPDATES); \
+		gen-sources.list.udeb "$(SYSTEM_SOURCES_LIST)" $(USE_UDEBS_FROM) "$(UDEB_COMPONENTS)" $(USE_PROPOSED_UPDATES); \
 		if [ "$(USE_UNRELEASED)" = 1 ]; then \
-			gen-sources.list.udeb "$(SYSTEM_SOURCES_LIST)" unreleased $(UDEB_COMPONENTS); \
+			gen-sources.list.udeb "$(SYSTEM_SOURCES_LIST)" unreleased "$(UDEB_COMPONENTS)"; \
 		fi \
 	fi) > $@
 	@if [ -e $@.local ]; then \
@@ -708,10 +692,11 @@ $(TEMP_INITRD): $(STAMPS)tree-$(targetstring)-stamp arch_tree
 ifneq ($(DEB_HOST_ARCH_OS),hurd)
 	# Check for lost file attributes
 	@if [ -e $(TREE)/dev/console ] && \
-	    ! ls -l $(TREE)/dev/console | grep -q "^c"; then \
+	    ! file $(TREE)/dev/console | grep -q "character special"; then \
 		echo "Error: incorrect file attributes detected in initrd tree."; \
 		echo "Did you restart a (failed) fakeroot build?"; \
 		echo "See fakeroot(1) ('-s' and '-i' options) for additional information."; \
+		file $(TREE)/dev/console; \
 		exit 1; \
 	fi
 endif

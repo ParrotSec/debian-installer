@@ -11,9 +11,8 @@ Contents
 </title>
 
 <para>
-The level 3 of translations groups together packages which prompt
-users during the installation of the <emphasis>desktop</emphasis> and
-<emphasis>desktop</emphasis> tasks of <classname>tasksel</classname>.
+The level 3 of translations contains packages which provide general infrastructure for
+dialogs or for starting the installer from Windows systems.
 </para>
 
 <para>This includes one package maintained by the &d-i; team (win32-loader) as well as a few

@@ -2,7 +2,7 @@
 set -e
 
 # Copyright (C) 2010, 2011 Canonical Ltd.
-#           (C) 2019 Steve McIntyre <93sam@debian.org>
+#           (C) 2019-2020 Steve McIntyre <93sam@debian.org>
 # Author: Colin Watson <cjwatson@ubuntu.com>
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -21,16 +21,55 @@ set -e
 
 # Make an EFI boot image.
 
-if [ -z "$1" ] || [ -z "$2" ]; then
-	echo "usage: $0 OUTPUT-DIRECTORY GRUB-PLATFORM EFI-NAME NETBOOT-PREFIX EFI-SIGNED"
+usage () {
+	echo "usage: $0 [OPTIONS]"
+	echo "Options:"
+	echo "-o <output directory>    Set the output directory. Must be specified."
+	echo "-g <grub platform name>  Set the grub platform name. Must be specified."
+	echo "-e <efi platform name>   Set the EFI platform name. Must be specified."
+	echo "-n <netboot prefix>      Set the netboot prefix for Grub. Must be specified."
+	echo "-s <y|n>                 Whether to set up for EFI Secure Boot. Must be specified."
+	echo "-d <dtb directory>       Set the input directory for DTB files to be included. Optional."
+}
+
+outdir=""
+platform=""
+efi_name=""
+netboot_prefix=""
+efi_signed=""
+dtb_dir=""
+
+while getopts ":o:g:e:n:s:d:" o; do
+    case "${o}" in
+        o)
+            outdir="${OPTARG}"
+            ;;
+        g)
+            platform="${OPTARG}"
+            ;;
+        e)
+            efi_name="${OPTARG}"
+            ;;
+        n)
+            netboot_prefix="${OPTARG}"
+            ;;
+        s)
+            efi_signed="${OPTARG}"
+            ;;
+        d)
+            dtb_dir="${OPTARG}"
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+# Validate inputs
+if [ "$outdir"x = ""x ] || [ "$platform"x = ""x ] || \
+	[ "$efi_name"x = ""x ] || [ "$netboot_prefix"x = ""x ] || \
+	[ "$efi_signed"x = ""x ]; then
+	usage
 	exit 1
 fi
-
-outdir="$1"
-platform="$2"
-efi_name="$3"
-netboot_prefix="$4"
-efi_signed="$5"
 
 memdisk_img=
 workdir=
@@ -40,6 +79,45 @@ cleanup () {
 	[ -z "$workdir" ] || rm -rf "$workdir"
 }
 trap cleanup EXIT HUP INT QUIT TERM
+
+copy_files_into_image () {
+	mmd -i "$outdir/efi.img" ::efi
+	mmd -i "$outdir/efi.img" ::efi/boot
+	mcopy -i "$outdir/efi.img" "$workdir/boot$efi_name.efi" \
+		"::efi/boot/boot$efi_name.efi"
+
+	if [ $efi_signed = y ]; then
+		# In this case, also add the grub binary
+		mcopy -i "$outdir/efi.img" "$workdir/grub$efi_name.efi" \
+			"::efi/boot/grub$efi_name.efi"
+
+		# And finally the skeleton grub.cfg - the signed grub
+		# binaries will have prefix set to "/EFI/debian", so
+		# put this there to redirect to the correct location.
+		mmd -i "$outdir/efi.img" ::efi/debian
+		mcopy -i "$outdir/efi.img" "$workdir/boot/grub/grub.cfg" \
+			"::efi/debian/grub.cfg"
+	fi
+
+	# Copy in any DTB files we might have/want
+	if [ "$dtb_dir"x != ""x ]; then
+		mmd -i "$outdir/efi.img" ::dtb
+		mcopy -s -i "$outdir/efi.img" "$dtb_dir/." ::dtb
+	fi
+}
+
+count_free_clusters () {
+	image=$1
+	clusters_free=$(fsck.msdos -v $1 | \
+	awk '
+		/files.*cluster/ {
+			used_free=$4
+			split(used_free, sizes, "/")
+			print (sizes[2] - sizes[1])
+		}
+	')
+	echo $clusters_free
+}
 
 rm -rf "$outdir"
 mkdir -p "$outdir"
@@ -103,37 +181,43 @@ else
 fi
 
 # Stuff it into a FAT filesystem, making it as small as
-# possible. Count up the sizes of all the files we need to fit in there.
+# possible. Count up the sizes of all the files and directories we need to fit in there.
 #
 # 32KiB headroom seems to be enough; (x+31)/32*32 rounds up to multiple of 32.
 size=0
-for file in $(find $workdir -type f -name *.efi -o -name grub.cfg); do
-	this_size=$(( ($(stat -c %s $file) / 1024 + 1 + 32 + 31) / 32 * 32 ))
+block_size=1024
+for file in $(find $workdir $dtb_dir -type f -name *.efi -o -name grub.cfg -o -name *.dtb); do
+	this_size=$(( ($(stat -c %s $file) / $block_size + 1 + 32 + 31) / 32 * 32 ))
 	size=$(($size + $this_size))
+done
+for dir in $(find $workdir $dtb_dir -type d); do
+	size=$(($size + 1)) # Is 1 block enough for each directory?
 done
 
 # Specify a deterministic volume ID; we use DOS_VOLUME_ID here for
 # consistency.
+echo "$0: Running first pass of mkfs.msdos with size $size blocks"
 mkfs.msdos --invariant -v -i deb00001 -C "$outdir/efi.img" $size
+copy_files_into_image
 
-mmd -i "$outdir/efi.img" ::efi
-mmd -i "$outdir/efi.img" ::efi/boot
-mcopy -i "$outdir/efi.img" "$workdir/boot$efi_name.efi" \
-	"::efi/boot/boot$efi_name.efi"
+# The worst-case calculations above are potentially giving
+# significantly too-large EFI filesystems. Stop guessing. Look at what
+# we have using fsck.msdos, then recalculate directly how much we've
+# used and try again with a more accurate size.
+cluster_size=$(fsck.msdos -v "$outdir/efi.img" | awk '/bytes per cluster/ {print $1}')
+cluster_blocks=$(($cluster_size / $block_size))
+clusters_free=$(count_free_clusters "$outdir/efi.img")
 
-if [ $efi_signed = y ]; then
-	# In this case, also add the grub binary
-	mcopy -i "$outdir/efi.img" "$workdir/grub$efi_name.efi" \
-		"::efi/boot/grub$efi_name.efi"
+echo "$0: First pass has $clusters_free free clusters"
+# Add a little bit of free space, 32kB for luck?
+size=$(($size + 32 - ($cluster_blocks * $clusters_free)))
 
-	# And finally the skeleton grub.cfg - the signed grub binaries
-	# will have prefix set to "/EFI/debian", so put this there to
-	# redirect to the correct location.
-	mmd -i "$outdir/efi.img" ::efi/debian
-	mcopy -i "$outdir/efi.img" "$workdir/boot/grub/grub.cfg" \
-		"::efi/debian/grub.cfg"
-fi
-
+echo "$0: Running second pass of mkfs.msdos with size $size blocks"
+rm -f "$outdir/efi.img"
+mkfs.msdos --invariant -v -i deb00001 -C "$outdir/efi.img" $size
+copy_files_into_image
+clusters_free=$(count_free_clusters "$outdir/efi.img")
+echo "$0: Second pass has $clusters_free free clusters"
 grub-cpmodules "$outdir" "$platform"
 
 exit 0

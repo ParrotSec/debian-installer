@@ -2,9 +2,11 @@
 <title>Building installer images</title>
 <para>
 
-This document only provides an introduction to building installer images
-using existing definitions. The README in <filename>installer/build</filename>
-in the SVN repository contains more detailed information about the build
+This document only provides an introduction for building installer images
+using existing definitions. The <ulink
+url="https://salsa.debian.org/installer-team/debian-installer/-/blob/master/build/README">README</ulink>
+file under <filename>installer/build/</filename> in the GIT repository
+contains more detailed information about the build
 system and how to modify existing or define new images.
 
 </para><para>
@@ -25,15 +27,15 @@ in some cases a boot loader and/or configuration files used for booting.
 
 Most d-i images are <quote>ready for use</quote>. The exception are the
 cdrom images which form only the base (kernel and initrd) for creating
-the actual CD or DVD images. The package used for creating the CD/DVD
+the actual installer images. The package used for creating the installer
 images is <classname>debian-cd</classname>.
 
 </para><para>
 
-On some architectures there is one CD image that <emphasis>is</emphasis>
+On some architectures there is one D-I image that <emphasis>is</emphasis>
 ready for use: the <filename>mini.iso</filename>. This image is produced as
 a by-product of the netboot target. A mini.iso image does not really support
-installing from CD as it retrieves all additional udebs and packages over
+installing from local media as it retrieves all additional udebs and packages over
 the network.
 
 </para><para>
@@ -53,7 +55,7 @@ images. After the upload this tarball needs BYHAND processing<footnote>
 <para>
 This entails unpacking the tarball into the correct location on the master
 mirror server and creating/updating the correct symlinks. See for example
-<ulink url="http://ftp.debian.org/debian/dists/sid/main/installer-i386/"/>.
+<ulink url="http://ftp.debian.org/debian/dists/sid/main/installer-amd64/"/>.
 </para>
 
 </footnote> by FTP-masters before the buildds will pick up the upload for
@@ -78,7 +80,7 @@ generated and uploaded from machines run by d-i porters using the
 
 </para>
 
-   <sect1><title>The standard D-I and CD images</title>
+   <sect1><title>The D-I images</title>
 <para>
 
 An important difference between release and development builds is that
@@ -114,7 +116,7 @@ The two config variables that determine this are:
     <listitem><para>
 Defines the suite or codename from where udebs are taken. The default is
 set to <literal>unstable</literal> in <filename>./config/common</filename> for
-SVN/trunk. For official uploads the value of this variable is overruled in
+GIT/trunk. For official uploads the value of this variable is overruled in
 <filename>debian/rules</filename>.
     </para><para>
 The value in <filename>./config/common</filename> should be changed to the
@@ -144,30 +146,30 @@ option boot parameter.
 </para>
     </sect2>
 
-    <sect2><title>CD and DVD images</title>
+    <sect2><title>CD/DVD/BD images</title>
 
 <itemizedlist>
  <listitem>
-daily <quote>sid_d-i</quote> CD images are built using daily D-I builds,
-udebs from unstable and regular packages from testing
+daily <quote>sid_d-i</quote> installer images are built using daily D-I builds,
+udebs from unstable and regular packages from testing;
  </listitem><listitem>
-daily <quote>stretch_d-i</quote> CD/DVD images are built using the current
-D-I release in testing, udebs from testing and regular packages from testing
+daily <quote>testing_d-i</quote> installer images are built using the current
+D-I release in testing, udebs from testing and regular packages from testing;
  </listitem><listitem>
-weekly CD builds are built using the current D-I release in testing, udebs from
-testing and regular packages from testing
+weekly builds are built using the current D-I release in testing, udebs from
+testing and regular packages from testing;
  </listitem><listitem>
-official CD/DVD builds use everything from stable and thus can only be
+official image builds use everything from stable and thus can only be
 built <emphasis>after</emphasis> the archive has already been updated to
-a new stable (point) release
+a new stable (point) release.
  </listitem>
 </itemizedlist>
 
 <para>
 
-The <quote>sid_d-i</quote> CDs are what's normally linked as the daily
+The <quote>sid_d-i</quote> images are what's normally linked as the daily
 built images from the D-I project page; when preparing for a release
-those will link to <quote>stretch_d-i</quote> CDs to facilitate pre-release
+those will link to <quote>testing_d-i</quote> images to facilitate pre-release
 testing.
 
 </para>
@@ -182,7 +184,7 @@ in <filename>installer/debian/control</filename> need to be satisfied.
 
 </para><para>
 
-To build installer images from SVN trunk, the build machine needs to be
+To build installer images from GIT trunk, the build machine needs to be
 running unstable or you need to set up a sid chroot to build in. (To build
 images from one of the older release branches of the repository, the build
 machine needs to run or have a chroot for that release.)
@@ -215,6 +217,9 @@ The table below has the most often used targets for x86.
   </row><row>
     <entry><userinput>build_netboot</userinput></entry>
     <entry>Builds the netboot images and the mini.iso</entry>
+  </row><row>
+    <entry><userinput>build_netboot_gtk</userinput></entry>
+    <entry>Builds the netboot images and the graphical gtk/mini.iso</entry>
   </row><row>
     <entry><userinput>reallyclean</userinput></entry>
     <entry>Completely cleans the build environment</entry>
@@ -280,8 +285,8 @@ contains Makefile snippets.
     <sect2><title>config</title>
 <para>
 
-For example, the definition for i386 images starts with
-<filename>config/i386.cfg</filename> which, besides the current kernel
+For example, the definition for amd64 images starts with
+<filename>config/amd64.cfg</filename> which, besides the current kernel
 versions, defines the media supported with the line:
 
 <informalexample><screen>
@@ -290,8 +295,8 @@ MEDIUM_SUPPORTED = cdrom cdrom-xen netboot netboot-xen hd-media
 
 </para><para>
 
-These media correspond to the main targets for i386 and are further defined
-in <filename>config/i386</filename>. The <filename>hd-media.cfg</filename>
+These media correspond to the main targets for amd64 and are further defined
+in <filename>config/amd64</filename>. The <filename>hd-media.cfg</filename>
 file in that directory contains, amongst others, the following lines:
 
 <informalexample><screen>
@@ -303,7 +308,7 @@ EXTRATARGETS = build_hd-media_gtk
 
 The first line defines that the netboot image has two flavors: the default one
 (for the newt frontend), and a second one for the gtk frontend. The latter is
-further defined in the <filename>config/i386/hd-media/gtk.cfg</filename> file.
+further defined in the <filename>config/amd64/hd-media/gtk.cfg</filename> file.
 The second line ensures that the gtk image will always be built together with
 the newt image.
 
@@ -327,11 +332,11 @@ to keep track of the exact role of the different variables set in them.
 The list of udebs to be included in an image is built by the
 <command>util/pkg-list</command> script based on definitions in the
 <filename>pkg-lists</filename> directory. Again, processing can be quite
-complex. Let's take the netboot target for i386 as an example to explain it.
+complex. Let's take the netboot target for amd64 as an example to explain it.
 
 </para><para>
 
-First the file <filename>pkg-lists/netboot/i386.cfg</filename> is considered
+First the file <filename>pkg-lists/netboot/amd64.cfg</filename> is considered
 and all udebs listed in it are added. Some example lines from that file:
 
 <informalexample><screen>
