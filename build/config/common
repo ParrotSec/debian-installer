@@ -32,7 +32,7 @@ PRESEED = preseed.cfg
 # Normally the sources.list for building d-i will be derived from your
 # "normal" sources.list. However, you can specify a mirror here to override
 # this. You can use copy:/ to use a local mirror
-MIRROR = http://deb.parrot.sh/direct/parrot/
+#MIRROR = http://deb.parrot.sh/direct/parrot/
 
 # Options to pass to dpkg when it is unpacking the udebs to create the
 # image. None should be needed, but --force-overwrite might need to be
