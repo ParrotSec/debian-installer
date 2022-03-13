@@ -1,3 +1,9 @@
+debian-installer (20210731+parrot7) parrot; urgency=medium
+
+  * Bump Linux kernel ABI to 5.16.0-12parrot1.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 13 Mar 2022 23:24:29 +0100
+
 debian-installer (20210731+parrot6) parrot; urgency=medium
 
   * Bump Linux kernel ABI to 5.15.0-15parrot1.
