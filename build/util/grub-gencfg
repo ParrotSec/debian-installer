@@ -19,6 +19,8 @@
 #    IS_PURE_GTK        Set to 1 for netboot-gtk where the normal initrd
 #                       is a GTK one.
 #
+#    IS_X86             x86 and arm* have different needs
+#
 # At least KERNEL and INITRD must be given.
 #
 # Unsupported:
@@ -67,6 +69,7 @@ my $thirtytwo = defined $VARS{KERNEL32} && defined $VARS{INITRD32}
     && (!$graphical || defined $VARS{INITRD32_GTK});
 my $themed = defined $VARS{THEME_PATH};
 my $is_pure_gtk = defined $VARS{IS_PURE_GTK} ? $VARS{IS_PURE_GTK} : 0;
+my $is_x86 = defined $VARS{IS_X86} ? $VARS{IS_X86} : 0;
 
 my @menu_number = (1);
 
@@ -117,8 +120,10 @@ sub start_submenu ($;%)
         print_indented("set color_highlight=yellow/black\n");
         print_indented("background_image\n");
     }
-    else
+    elsif (!$is_x86)
     {
+        # Skip hardcoded colors in submenus for x86, but keep them for
+        # other archs, i.e. arm* (#1036771):
         print_indented("set menu_color_normal=cyan/blue\n");
         print_indented("set menu_color_highlight=white/blue\n");
     }

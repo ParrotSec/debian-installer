@@ -1,3 +1,208 @@
+debian-installer (20230607+parrot1) lory; urgency=medium
+
+  * Import new Debian release.
+  * Apply new parrot preseed.
+  * Apply new grub splash background.
+  * Disable secure boot (we don't support it).
+  * Prepare for Parrot 6.0.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 22 Jan 2024 03:21:14 +0100
+
+debian-installer (20230607+deb12u4) bookworm; urgency=medium
+
+  * Bump Linux kernel ABI to 6.1.0-15.
+  * Adjust linux-image build-deps as well.
+
+ -- Cyril Brulebois <kibi@debian.org>  Sun, 10 Dec 2023 01:20:34 +0100
+
+debian-installer (20230607+deb12u3) bookworm; urgency=medium
+
+  * Bump Linux kernel ABI to 6.1.0-14.
+  * Adjust linux-image build-deps as well.
+
+ -- Cyril Brulebois <kibi@debian.org>  Mon, 04 Dec 2023 15:43:29 +0100
+
+debian-installer (20230607+deb12u2) bookworm; urgency=medium
+
+  * Bump Linux kernel ABI to 6.1.0-13.
+  * Adjust linux-image build-deps as well.
+
+ -- Cyril Brulebois <kibi@debian.org>  Mon, 02 Oct 2023 00:16:20 +0200
+
+debian-installer (20230607+deb12u1) bookworm; urgency=medium
+
+  * Bootstrap bookworm stable branch:
+     - Set USE_PROPOSED_UPDATES=1 in debian/rules
+     - Set USE_UDEBS_FROM?=bookworm in build/config/common
+  * Bump Linux kernel ABI to 6.1.0-10.
+  * Adjust linux-image build-deps as well.
+
+ -- Cyril Brulebois <kibi@debian.org>  Sat, 15 Jul 2023 22:12:25 +0200
+
+debian-installer (20230607) unstable; urgency=medium
+
+  * Release early, release often!
+
+ -- Cyril Brulebois <kibi@debian.org>  Wed, 07 Jun 2023 03:01:56 +0200
+
+debian-installer (20230526) unstable; urgency=medium
+
+  [ Emanuele Rocca ]
+  * build/config/x86.cfg: add /splash.png symlink to make GRUB load the
+    splash screen when using netboot (Closes: #1036215).
+
+  [ Cyril Brulebois ]
+  * Update translation-status for the release.
+  * Fix colors in GRUB submenus for x86 netboot (Closes: #1036771).
+  * Add CHECK_MINIMAL_VERSION support, so that the release manager can
+    combine speedy uploads and peace of mind.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 26 May 2023 09:08:23 +0200
+
+debian-installer (20230515) unstable; urgency=medium
+
+  * Bump Linux kernel ABI to 6.1.0-9.
+  * Switch source format from 1.0 to 3.0 (native).
+  * Update translation-status for the release.
+  * Add temporary workaround for broken graphics when using the “bochs”
+    graphics driver (default in QEMU, where it is known as “std”) or the
+    “cirrus” one, under UEFI/Secure Boot (See: #1036019):
+     - The previous upload seems to trigger a color depth mismatch between
+       GRUB which defaults to 24 bpp in its bochs and cirrus video
+       modules, and Linux (efifb, built-in) that reports 32 bpp.
+     - This affects both the text installer and the graphical installer.
+     - To avoid running into those issues, and until a better solution is
+       determined, ship extra DRM modules for those graphics drivers:
+       bochs.ko, cirrus.ko, plus their dependencies.
+     - Limit the workaround to amd64, arm64, and i386 (where UEFI/Secure
+       Boot are relevant), when drm.ko is detected in the build tree,
+       copying files from the relevant linux-image package.
+     - Add linux-image-6.1.0-9-amd64-{amd64,arm64,686,686-pae} to
+       Build-Depends accordingly.
+  * Many thanks to Ben Hutchings for the kernel-side insights!
+
+ -- Cyril Brulebois <kibi@debian.org>  Mon, 15 May 2023 03:33:27 +0000
+
+debian-installer (20230427) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Update translation-status for the release.
+
+  [ Steve McIntyre ]
+  * Fix grub font loading, making sure we get the nice graphical splash
+    screen in secure boot mode too (Closes: #1034535).
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 27 Apr 2023 16:51:19 +0200
+
+debian-installer (20230401) unstable; urgency=medium
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel ABI to 6.1.0-7.
+  * Add pigz to Build-Depends.
+  * Replace `gzip -n` with `pigz -nm` in various places (keeping other
+    flags like -9, -v, -f):
+     - build/Makefile
+     - build/config/*.cfg (x86 and arm* only)
+     - build/util/gen-hd-image
+     - build/util/gen-tarball
+  * Update translation-status for the release.
+
+  [ Samuel Thibault ]
+  * build/boot/x86/f2.txt: Update minimum disk size for installation.
+  * build/pkg-lists/{cdrom/grub/gtk/arm64.cfg,netboot/gtk/arm64.cfg}: Enable
+    sound modules and speakup on arm64 gtk images.
+  * build/boot/x86/f[29].txt: Make documentation link more precise.
+    Closes: #1033193.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 31 Mar 2023 23:11:45 +0200
+
+debian-installer (20230217) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * Switch to using bookworm artwork for the splash screens (Emerald).
+
+  [ Cyril Brulebois ]
+  * Update translation-status for the release.
+  * Fix build-depends-on-1-revision lintian warning for u-boot-imx and
+    u-boot-sunxi.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 17 Feb 2023 04:22:37 +0100
+
+debian-installer (20230207) unstable; urgency=medium
+
+  [ Samuel Thibault ]
+  * Revert the build-dependencies changes of "Add support for cross-building".
+  * Build-depend on bogl-utils instead of libbogl-dev for getting bdftobogl.
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel ABI to 6.1.0-3.
+  * Update MIRROR example with a better value (http://deb.debian.org/debian).
+  * Update translation-status for the release.
+
+  [ Holger Wansing ]
+  * Add ka.utf with needed characters for Georgian language, to fix broken
+    rendering in text installer. Closes: #1017435
+
+  [ Alper Nebi Yasak ]
+  * [amd64, arm64] Build netboot images for ChromeOS devices
+    - Make the disk images reproducible
+    - Add the images to manifests
+    - Refactor into a Makefile target
+
+ -- Cyril Brulebois <kibi@debian.org>  Tue, 07 Feb 2023 14:59:08 +0100
+
+debian-installer (20220914) unstable; urgency=medium
+
+  [ Samuel Thibault ]
+  * Double the number of available inodes on the hurd initrd.
+  * Start speech synthesis after 30s timeout.
+
+  [ Youngtaek Yoon ]
+  * Support multiple udeb components.
+
+  [ Vagrant Cascadian ]
+  * [armhf] Add support for Bananapi_M2_Ultra (Closes: #982913).
+  * [armhf] Update MX53LOCO filename with newer u-boot.
+
+  [ John Paul Adrian Glaubitz ]
+  * ia64: Remove ide-core-modules and ide-modules from pkg-lists
+  * m68k: Remove ide-core-modules and ide-modules from pkg-lists
+  * powerpc: Add sata-modules to cdrom pkg-lists
+  * ppc64: Add sata-modules to cdrom pkg-lists
+
+  [ Cyril Brulebois ]
+  * Bump Linux kernel ABI to 5.19.0-1.
+  * Install bookworm, using bookworm udebs.
+  * Work around FTBFS on armel and mipsel, where libcrypto3-udeb depends
+    on libatomic1: use libatomic1.so* from the host system (as that's done
+    for libgcc_s.so*), instead of introducing libatomic1-udeb.
+  * Update translation-status for the release.
+
+  [ Sophie Brun ]
+  * Harmonize UEFI (grub) and BIOS (syslinux) boot menus:
+    - use same label for "dark theme menu"
+    - use same inclusion rules for the "Install with speech synthesis" menu
+  * Do not hardcode the name of the distribution in syslinux's menu.cfg
+
+  [ Frédéric Bonnard ]
+  * Minimal support for cross-building.
+
+  [ Roland Clobus ]
+  * build/Makefile:
+     - use install -p to preserve timestamps.
+  * build/daily-build:
+     - use rsync -t to preserve timestamps.
+     - export SOURCE_DATE_EPOCH, also setting it if needed.
+
+ -- Cyril Brulebois <kibi@debian.org>  Wed, 14 Sep 2022 15:44:07 +0200
+
+
+debian-installer (20210731+parrot12) parrot; urgency=medium
+
+  * Bump linux kernel ABI to 6.1.0-1parrot1.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 27 Apr 2023 02:47:00 +0200
+
 debian-installer (20210731+parrot11) parrot; urgency=medium
 
   * Bump linux kernel ABI to 6.0.0-12parrot1.

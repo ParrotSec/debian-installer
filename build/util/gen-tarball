@@ -29,6 +29,6 @@ fi
 # and without timestamp in the gzip header, see
 # https://wiki.debian.org/ReproducibleBuilds/TimestampsInGzipHeaders
 (
-	gzip=$(which pigz >/dev/null 2>&1 && echo "pigz -9 -n -T" || echo "gzip -9 -n")
+	gzip="pigz -9nm"
 	cd "$SOURCE_DIR" && find . -print0 | LC_ALL=C sort -z | tar --no-recursion --null -T - -I "$gzip" -cvf -
 ) > "$OUTPUT_FILE"

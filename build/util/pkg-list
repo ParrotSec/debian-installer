@@ -66,6 +66,7 @@ sub apt_cache {
 		-o Dir::Etc::Preferences=./preferences.udeb.local \\
 		-o Dir::State=./apt.udeb/state \\
 		-o Dir::State::Status=./apt.udeb/state/status \\
+		-o APT::Architecture=$deb_host_arch \\
 		-o Dir::Cache=./apt.udeb/cache $params 2>/dev/null`;
 }
 

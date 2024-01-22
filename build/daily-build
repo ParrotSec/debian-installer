@@ -28,8 +28,11 @@ if [ -z "$BASEDIR" ]; then
 	# override the variable.
 	BASEDIR=public_html/d-i/images
 fi
+if [ -z "$SOURCE_DATE_EPOCH" ]; then
+	export SOURCE_DATE_EPOCH=$(date -u +%s)
+fi
 if [ -z "$DIR" ]; then
-	DIR=$(date -u '+%Y%m%d-%H:%M')
+	DIR=$(date -u '+%Y%m%d-%H:%M' -d@${SOURCE_DATE_EPOCH})
 fi
 if [ "$HOST" = local ]; then
 	SYNC="rsync"
@@ -68,7 +71,7 @@ esac
 LOG_TO_STDOUT=${LOG_TO_STDOUT:-0}
 
 overview () {
-	echo "$(dpkg --print-architecture) ($(date)) $(whoami)@$(hostname | cut -d . -f 1) $1" >> dest/overview.log
+	echo "$(dpkg --print-architecture) ($(date -u -d@${SOURCE_DATE_EPOCH})) $(whoami)@$(hostname | cut -d . -f 1) $1" >> dest/overview.log
 }
 
 header () {
@@ -136,7 +139,7 @@ upload () {
 	else
 		$CALL mkdir -p $BASEDIR/${DIR}_RSYNC_IN_PROGRESS
 		$CALL test ! -d $BASEDIR/daily || $CALL cp -a $BASEDIR/daily/* $BASEDIR/${DIR}_RSYNC_IN_PROGRESS/
-		$SYNC --stats -rvl --safe-links --delete --rsh="ssh $SSHKEY" dest/ $SYNC_BASEDIR/${DIR}_RSYNC_IN_PROGRESS/
+		$SYNC --stats -rvlt --safe-links --delete --rsh="ssh $SSHKEY" dest/ $SYNC_BASEDIR/${DIR}_RSYNC_IN_PROGRESS/
 		$CALL rm -rf $BASEDIR/$DIR
 		$CALL mv $BASEDIR/${DIR}_RSYNC_IN_PROGRESS $BASEDIR/$DIR
 		$CALL rm -rf $BASEDIR/daily

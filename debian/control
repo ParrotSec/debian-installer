@@ -1,8 +1,7 @@
 Source: debian-installer
 Section: devel
 Priority: optional
-XSBC-Original-Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
-Maintainer: Parrot Dev Team <team@parrotsec.org
+Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Standards-Version: 4.3.0
 Build-Depends:
@@ -15,7 +14,7 @@ Build-Depends:
 # 		apt-ftparchive is used for including localudebs.
 	gnupg,
 #		New versions of apt need gnupg for security checks.
-	parrot-archive-keyring,
+	debian-archive-keyring (>= 2006.11.22),
 #		To provide the archive key for security checks.
 	dctrl-tools,
 #		Various manipulations of the udeb Packages files.
@@ -27,10 +26,10 @@ Build-Depends:
 	docbook-xml,
 	docbook-xsl,
 #		The d-i partman-doc and internals manual is in DocBook XML 4.x.
-	libbogl-dev,
+	unifont-bin,
+#		For hex2bdf used in font building.
+	bogl-utils,
 #		For bdftobogl used in font reduction.
-	ca-certificates,
-#               To embed CA certificates to verify https connections
 	libgcc-s1 [!hppa !m68k], libgcc-s2 [m68k], libgcc-s4 [hppa],
 #		The GCC support library is copied to the to the installation
 #		image. This is a hack and needs to be replaced by a proper
@@ -57,6 +56,8 @@ Build-Depends:
 #		armhf uses it for building bootable SD card images
 	cpio (>= 2.11+dfsg-6),
 #		For creating (reproducible) initramfs images.
+	pigz,
+#		For compressing various files.
 	xz-utils,
 #		For compressing initramfs images.
 	devio [armeb armel],
@@ -66,6 +67,8 @@ Build-Depends:
 #		For building firmware images for the D-Link DNS-32(0|3).
 	u-boot-tools [armel armhf arm64],
 #		For creating u-boot images
+	depthcharge-tools [amd64 arm64],
+#		For creating images for ChromeOS devices
 #
 # Boot loaders:
 #	On many arches boot loaders are copied onto or ran on the boot
@@ -95,12 +98,11 @@ Build-Depends:
 	emile [m68k],
 	emile-bootblocks [m68k],
 #		Bootloader for m68k/mac machines.
-#	shim-signed [amd64 i386 arm64],
-#	grub-efi-amd64-signed [amd64],
-#	grub-efi-ia32-signed [i386],
-#	grub-efi-arm64-signed [arm64],
-#	        Signed bootloader components for UEFI Secure Boot
-	grub-efi-amd64-bin [amd64],
+	shim-unsigned [amd64 i386 arm64],
+	grub-efi-amd64 [amd64],
+	grub-efi-ia32 [i386],
+	grub-efi-arm64 [arm64],
+#	        Unigned bootloader components (Parrot does not support secure boot)
 	grub-efi-arm64-bin [arm64],
 	grub-efi-ia32-bin [hurd-i386 i386],
 	grub-efi-ia64-bin [ia64],
@@ -109,9 +111,9 @@ Build-Depends:
 #		Used to make EFI bootable images
 	grub-ieee1275-bin [powerpc ppc64 ppc64el sparc sparc64],
 #		IEEE1275 bootloader support.
-	u-boot-imx (>= 2021.04~rc4+dfsg-1) [armhf],
+	u-boot-imx (>= 2021.04~rc4+dfsg-1~) [armhf],
 	u-boot-omap (>= 2016.09~rc1) [armhf],
-	u-boot-sunxi (>= 2019.07+dfsg-1) [armhf],
+	u-boot-sunxi (>= 2019.07+dfsg-1~) [armhf],
 	u-boot-sunxi (>= 2021.01+dfsg-1~) [arm64],
 	u-boot-rockchip (>= 2020.04+dfsg-1~) [armhf],
 	u-boot-rockchip (>= 2021.01+dfsg-1~) [arm64],
@@ -136,7 +138,7 @@ Build-Depends:
 	kmod [linux-any],
 #		depmod.
 #
-	bf-utf-source [!s390 !s390x],
+	unifont [!s390 !s390x],
 #		Contains the unicode font we use. Not a udeb since we
 #		perform font reduction at build time.
 	openssl,
@@ -162,6 +164,12 @@ Build-Depends:
 #		when creating ISO hybrid images on amd64 and i386 systems.
 	fontconfig,
 #		Used to generate a font cache through fc-cache, for gtk flavours
+	linux-image-amd64 [amd64],
+	linux-image-arm64 [arm64],
+	linux-image-686 [i386],
+	linux-image-686-pae [i386],
+#		Ship some more drm modules, without waiting on fb-modules (#1036019)
+	parrot-archive-keyring,
 
 Package: debian-installer
 Architecture: any

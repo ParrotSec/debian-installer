@@ -56,10 +56,21 @@
 # Temporary workaround for #823881:
 export MTOOLS_SKIP_CHECK=1
 
+# Temporary workaround for #1036019:
+export DRM_DIR := /lib/modules/$(KERNELVERSION)/kernel/drivers/gpu/drm
+ifndef DRM_MODULES
+export DRM_MODULES :=          \
+	drm_shmem_helper.ko    \
+	drm_ttm_helper.ko      \
+	drm_vram_helper.ko     \
+	tiny/bochs.ko          \
+	tiny/cirrus.ko         \
+	ttm/ttm.ko
+endif
+
 # Add to PATH so dpkg will always work, and so local programs will be found.
 PATH := util:$(PATH):/usr/sbin:/sbin
 EATMYDATA = $(shell which eatmydata 2>/dev/null)
-gzip = $(shell which pigz >/dev/null 2>&1 && echo "pigz -n -T" || echo "gzip -n")
 
 # We don't want this to be run each time we re-enter.
 ifndef DEB_HOST_ARCH
@@ -169,6 +180,10 @@ define e2fsck
   e2fsck -fy
 endef
 
+define gzip
+  pigz -nm
+endef
+
 # Define MKFS_JFFS2 in the config file for your target.
 # For example: MKFS_JFFS2 = mkfs.jffs2 -f -p -b -e 0x20000
 define mkjffs2
@@ -178,7 +193,7 @@ endef
 # A generic recursion rule
 .PHONY: all_%
 all_%:
-	@install -d $(STAMPS)
+	@install -p -d $(STAMPS)
 	$(call recurse,SUBARCH,subarch,$*)
 
 .PHONY: subarch_%
@@ -288,7 +303,7 @@ _clean: tree_umount
 # we provide a generic build rule.
 .PHONY: build_%
 build_%:
-	@install -d $(STAMPS)
+	@install -p -d $(STAMPS)
 	@$(submake) _build $(shell $(submake) $(subst build_,validate_,$@))
 
 # The general build rule.
@@ -430,6 +445,19 @@ endif
 
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 ifdef KERNELVERSION
+
+ifneq (,$(filter $(ARCH),amd64 arm64 i386))
+	# HACK alert (#1036019): this isn't just a problem for the graphical
+	# installer, complement fb-modules with extra modules for all images
+	# including DRM modules.
+	if [ -e "$(DRM_DIR)/drm.ko" ]; then \
+		for module in $(DRM_MODULES); do \
+			mkdir -p $(TREE)$(DRM_DIR)/$$(dirname $$module); \
+			cp $(DRM_DIR)/$$module $(TREE)$(DRM_DIR)/$$module; \
+		done; \
+	fi
+endif
+
 	# Set up modules.dep, ensure there is at least one standard dir (kernel
 	# in this case), so depmod will use its prune list for archs with no
 	# modules.
@@ -476,11 +504,7 @@ endif
 
 ifdef PRESEED
 	# Copy in preseed file.
-	sed -e 's/@DEBIAN_RELEASE@/$(DEBIAN_RELEASE)/g' \
-	    -e 's/@USE_UDEBS_FROM@/$(USE_UDEBS_FROM)/g' \
-	    -e 's/@DEBIAN_VERSION@/$(DEBIAN_VERSION)/g' \
-	    -e 's/@LINUX_KERNEL_ABI@/$(LINUX_KERNEL_ABI)/g' \
-	    $(PRESEED) >$(TREE)/preseed.cfg
+	cp -a $(PRESEED) $(TREE)/preseed.cfg
 endif
 
 ifndef OMIT_LSB
@@ -533,6 +557,8 @@ endif
 	# HACK ALERT: copy libgcc_s.so.[124] from the host system as
 	# libgcc-s[124] is not packaged as a udeb
 	cp /lib/$(DEB_HOST_MULTIARCH)/libgcc_s.so.[124] $(TREE)/lib
+	# HACK ALERT: ditto for libatomic1
+	cp /usr/lib/$(DEB_HOST_MULTIARCH)/libatomic.so.1* $(TREE)/usr/lib/$(DEB_HOST_MULTIARCH)
 
 	# Reduce status file to contain only the elements we care about.
 	egrep -i '^((Status|Provides|Depends|Package|Version|Description|installer-menu-item|Description-..):|$$)' \
@@ -626,6 +652,13 @@ $(STAMPS)get_udebs-$(targetstring)-stamp: sources.list.udeb
 	dh_testroot
 	@rm -f $@
 
+	# Check mirror freshness:
+	for pv in $(CHECK_MINIMAL_VERSION); do \
+		p=$$(echo $$pv|sed 's/_.*//'); \
+		v=$$(echo $$pv|sed 's/.*_//'); \
+		CHECKMINVER=$$v get-packages udeb $$p; \
+	done
+
 	get-packages udeb $(UDEBS)
 	@touch $@
 
@@ -636,9 +669,6 @@ sources.list.udeb:
 	echo "deb [trusted=yes] copy:$(shell pwd)/ $(LOCALUDEBDIR)/"; \
 	if [ "$(MIRROR)x" != "x" ]; then \
 		echo "deb $(MIRROR) $(USE_UDEBS_FROM) $(UDEB_COMPONENTS)"; \
-		if [ "$(USE_PROPOSED_UPDATES)" = 1 ]; then  \
-			echo "deb $(MIRROR) $(USE_UDEBS_FROM)-proposed-updates $(UDEB_COMPONENTS)"; \
-		fi; \
 		if [ "$(USE_UNRELEASED)" = 1 ]; then \
 			echo "deb $(MIRROR) unreleased $(UDEB_COMPONENTS)"; \
 		fi \
@@ -674,7 +704,13 @@ $(TEMP)/unifont.bdf: $(TEMP)/all.utf
 		echo "a version of glibc with a different locale data format.)"; \
 	        exit 1; \
 	    fi
-	LOCPATH=$(LOCALE_PATH) LC_ALL=C.UTF-8 reduce-font /usr/src/unifont.bdf < $(TEMP)/all.utf > $@.tmp
+	hex2bdf \
+	    -v "`dpkg-query -W -f '$${Version}' unifont`" \
+	    -c "`dpkg-query -W -f '$${Homepage}' unifont`" \
+	    < /usr/share/unifont/unifont.hex \
+	    > $@.full
+	LOCPATH=$(LOCALE_PATH) LC_ALL=C.UTF-8 reduce-font $@.full < $(TEMP)/all.utf > $@.tmp
+	rm $@.full
 	mv $@.tmp $@
 
 $(TREE)/lib/unifont.bgf: $(TEMP)/unifont.bdf
@@ -703,13 +739,13 @@ endif
 
 	# Only build the font if we have installation-locale
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-	if [ -d "$(LOCALE_PATH)/C.UTF-8" ] && [ -e /usr/src/unifont.bdf ]; then \
+	if [ -d "$(LOCALE_PATH)/C.UTF-8" ] && [ -e /usr/share/unifont/unifont.hex ]; then \
 		$(submake) $(TREE)/lib/unifont.bgf; \
 	fi
 endif
 ifeq ($(DEB_HOST_ARCH_OS),hurd)
 	# The hurd console uses a BDF font
-	if [ -d "$(LOCALE_PATH)/C.UTF-8" ] && [ -e /usr/src/unifont.bdf ]; then \
+	if [ -d "$(LOCALE_PATH)/C.UTF-8" ] && [ -e /usr/share/unifont/unifont.hex ]; then \
 		$(submake) $(TREE)/lib/unifont.bdf; \
 	fi
 endif
@@ -719,7 +755,7 @@ endif
 	$(clamp_mtimes) $(TREE)/lib
 	$(normalise_permissions) $(TREE)/lib
 
-	install -d $(TEMP)
+	install -p -d $(TEMP)
 
 	set -e; \
 	case $(INITRD_FS) in \
@@ -748,7 +784,7 @@ endif
 
 ifeq ($(SYMLINK_INITRD),)
 $(INITRD): $(TEMP_INITRD)
-	install -m 644 -D $< $@
+	install -p -m 644 -D $< $@
 	update-manifest $@ $(MANIFEST-INITRD) $(UDEB_LISTS)
 else
 $(INITRD): $(realpath $(dir $(INITRD))/$(SYMLINK_INITRD))
@@ -758,7 +794,7 @@ $(INITRD): $(realpath $(dir $(INITRD))/$(SYMLINK_INITRD))
 endif
 
 $(RAMDISK): $(TEMP_INITRD)
-	install -m 644 -D $< $@
+	install -p -m 644 -D $< $@
 	update-manifest $@ $(MANIFEST-RAMDISK) $(UDEB_LISTS)
 
 # raw kernel images
@@ -766,7 +802,7 @@ ifeq ($(SYMLINK_KERNEL),)
 $(KERNEL): TEMP_REAL_KERNEL = $(TEMP)/$(shell echo ./$@ |sed 's,$(SOME_DEST)/$(EXTRANAME),,')
 $(KERNEL):
 	@$(MAKE) $(STAMPS)tree-unpack-$(targetstring)-stamp $(TEMP_REAL_KERNEL)
-	install -m 644 -D $(TEMP_REAL_KERNEL) $@
+	install -p -m 644 -D $(TEMP_REAL_KERNEL) $@
 	update-manifest $@ $(MANIFEST-KERNEL)
 else
 $(KERNEL): $(realpath $(dir $(KERNEL))/$(SYMLINK_KERNEL))
@@ -789,7 +825,7 @@ $(DTBS): $(TEMP_KERNEL)
 
 # bootable images
 $(BOOT): $(TEMP_BOOT)
-	install -m 644 -D $(TEMP_BOOT)$(GZIPPED) $@
+	install -p -m 644 -D $(TEMP_BOOT)$(GZIPPED) $@
 	update-manifest $@ $(MANIFEST-BOOT) $(UDEB_LISTS)
 
 $(TEMP_KERNEL): $(STAMPS)tree-unpack-$(targetstring)-stamp
@@ -798,14 +834,14 @@ $(TEMP_BOOT): $(TEMP_INITRD) $(TEMP_KERNEL) $(TEMP_BOOT_SCREENS) arch_boot
 
 # non-bootable root images
 $(ROOT): $(TEMP_ROOT)
-	install -m 644 -D $(TEMP_ROOT)$(GZIPPED) $@
+	install -p -m 644 -D $(TEMP_ROOT)$(GZIPPED) $@
 	update-manifest $@ $(MANIFEST-ROOT) $(UDEB_LISTS)
 
 $(TEMP_ROOT): $(TEMP_INITRD) arch_root
 
 # miniature ISOs with only a boot image
 $(MINIISO): $(TEMP_MINIISO)
-	install -m 644 -D $(TEMP_MINIISO) $@
+	install -p -m 644 -D $(TEMP_MINIISO) $@
 	update-manifest $@ $(MANIFEST-MINIISO) $(UDEB_LISTS)
 
 $(TEMP_MINIISO): $(TEMP_BOOT_SCREENS) arch_miniiso
@@ -838,21 +874,30 @@ $(TEMP_BOOT_SCREENS): arch_boot_screens
 $(TEMP_CD_INFO_DIR): arch_cd_info_dir
 $(TEMP_NETBOOT_DIR): arch_netboot_dir
 
+# disk/partition images for ChromeOS devices
+$(DEPTHCHARGE): $(TEMP_DEPTHCHARGE)
+	rm -rf $(SOME_DEST)/$(EXTRANAME)/depthcharge
+	mkdir -p $(SOME_DEST)/$(EXTRANAME)/depthcharge
+	cp -a $(TEMP_DEPTHCHARGE)/* $@
+	update-manifest $@ $(MANIFEST-DEPTHCHARGE) $(UDEB_LISTS)
+
+$(TEMP_DEPTHCHARGE): arch_depthcharge
+
 $(MISC): TEMP_REAL_MISC = $(shell echo ./$@ |sed 's,$(SOME_DEST)/$(EXTRANAME),,')
 $(MISC): 
-	install -m 644 $(TEMP_REAL_MISC) $(SOME_DEST)/$(EXTRANAME)
+	install -p -m 644 $(TEMP_REAL_MISC) $(SOME_DEST)/$(EXTRANAME)
 	update-manifest \
 		$(SOME_DEST)/$(EXTRANAME)$(shell basename $(TEMP_REAL_MISC)) \
 		$(MANIFEST-MISC)
 
 # Other images, e.g. driver floppies. Those are simply handled as flavours
 $(EXTRA): $(TEMP_EXTRA)
-	install -m 644 -D $(TEMP_EXTRA)$(GZIPPED) $@
+	install -p -m 644 -D $(TEMP_EXTRA)$(GZIPPED) $@
 	update-manifest $@ $(MANIFEST-EXTRA) $(UDEB_LISTS)
 
 $(TEMP_EXTRA): $(STAMPS)extra-$(targetstring)-stamp
-	install -d $(shell dirname $@)
-	install -d $(TREE)
+	install -p -d $(shell dirname $@)
+	install -p -d $(TREE)
 	set -e; case $(INITRD_FS) in \
 	ext2) \
 		genext2fs -d $(TREE) -b $(IMAGE_SIZE) -m 0 $@ ; \
@@ -915,7 +960,7 @@ pkg-lists/kernel-module-udebs:
 # Write (floppy) images
 .PHONY: write_%
 write_%:
-	@install -d $(STAMPS)
+	@install -p -d $(STAMPS)
 	@$(submake) _write $(shell $(submake) $(subst write_,validate_,$@))
 
 .PHONY: _write
@@ -926,7 +971,7 @@ _write: _build
 # you can check the floppy to make sure it wrote properly.
 .PHONY: checkedwrite_%
 checkedwrite_%:
-	@install -d $(STAMPS)
+	@install -p -d $(STAMPS)
 	@$(submake) _checkedwrite $(shell $(submake) $(subst checkedwrite_,validate_,$@))
 
 .PHONY: _checkedwrite

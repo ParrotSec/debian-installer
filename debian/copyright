@@ -52,7 +52,15 @@ BELIN, GPLv2+.
     build/boot/artwork/11-homeworld/homeworld.svg
     build/boot/artwork/11-homeworld/homeworld.png
 
+The Emerald theme images (list of files below) are Copyright 2022
+Juliette Taka, License: CC-BY-SA-4.0 or GNU GPL-2.0+ (at recipient's
+choice)
+
+    build/boot/artwork/12-emerald/emerald.svg
+    build/boot/artwork/12-emerald/emerald.png
+
 The gen-hd-image tool, used to build bootable partitioned disk images, is
 Copyright 2014,2015 Karsten Merker <merker@debian.org> and is dual-licensed.
 It is provided under the terms of the GNU GPL version 2 or any later
 version, or alternatively under the terms of the X11 license.
+

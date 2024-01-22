@@ -271,9 +271,9 @@ while getopts "hi:o:s:t:d:p:b:zjJv" option; do
       esac
       ;;
     z)
-      COMPRESS="gzip"
-      COMPRESS_OPTS="-n"
-      PREREQUISITES="${PREREQUISITES} gzip"
+      COMPRESS="pigz"
+      COMPRESS_OPTS="-nm"
+      PREREQUISITES="${PREREQUISITES} pigz"
       ;;
     j)
       COMPRESS="bzip2"

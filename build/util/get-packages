@@ -18,6 +18,7 @@
 #   UDEBDIR      - directory for ready-to-use udebs (default: udebs)
 #   LOCALUDEBDIR - directory for locally provided udebs (default: localudebs)
 #   ONLINE       - update Packages files (default: y)
+#   CHECKMINVER  - check whether the specified package (singular) satisfies this minimal version
 
 set -e
 
@@ -111,9 +112,9 @@ if [ "$TYPE" != "deb" ]; then
 	# currently have udebs, or which udebs still depend on for various
 	# reasons.
 	echo -n > $APTDIR/state/status
-	# libgcc1 and libgcc-s1 are not used on all architectures.
+	# libgcc1, libgcc-s1, and libatomic1 are not used on all architectures.
 	# NOTE: Please keep the edos udeb checker in sync with this list:
-	for i in libgcc1:$DEB_HOST_ARCH libgcc-s1:$DEB_HOST_ARCH; do
+	for i in libgcc1:$DEB_HOST_ARCH libgcc-s1:$DEB_HOST_ARCH libatomic1:$DEB_HOST_ARCH; do
 		if dpkg -s $i >/dev/null 2>&1; then
 			dpkg -s $i | grep -v Depends: >> $APTDIR/state/status
 			echo >> $APTDIR/state/status
@@ -170,6 +171,17 @@ if [ "$KERNELVERSION" ]; then
 		done
 	}
 	trap cleanup EXIT HUP INT QUIT TERM
+fi
+
+# Version check only, no fetching.
+if [ -n "$CHECKMINVER" ]; then
+	version=$(apt-cache show $PACKAGES | awk '/^Version:/ { print $2}')
+	if ! dpkg --compare-versions $version '>=' $CHECKMINVER; then
+		echo "E: Minimal version requirement not satisfied for $PACKAGES: $version >= $CHECKMINVER"
+		exit 1
+	else
+		exit 0
+	fi
 fi
 
 # Get udebs.

@@ -41,7 +41,7 @@ from the master files going to individual packages:
       to be moved back into individual
       <filename>debian/po/*.po</filename> files for each package. This
       does not need to be done at each translation update, but must be
-      done <emphasis>before</emphasis> building packages.
+      done <emphasis>before</emphasis> building/uploading packages.
   </para>
   </listitem>
 </itemizedlist>
@@ -65,20 +65,24 @@ Synchronization process
 </title>
 
 <para>
-The <command>l10n-sync</command> script is run periodically by a cron
-job on dillon.debian.org. Its runs are monitored by the &i18n-coords;.
-See the <ulink
-url="https://salsa.debian.org/installer-team/d-i/-/blob/master/scripts/etc/cron/crontab">crontab file</ulink>.
-It will update the general
-<filename>template.pot</filename> and all PO files from individual
-<filename>templates.pot</filename> files from all &d-i; packages.
+The <command>l10n-sync</command> script is run periodically under the "D-I role"
+account by a <ulink
+url="https://salsa.debian.org/installer-team/d-i/-/blob/master/scripts/etc/cron/crontab">cron job</ulink>
+on dillon.debian.org:
+
+<informalexample>
+<screen>
+0 20 * * * cd $DI; mr -q up ; nice -n 19 $DI/scripts/l10n/l10n-sync --levels=5 --online --commit $DI
+</screen>
+</informalexample>
+
+Its runs are monitored by the &i18n-coords;.
 </para>
 
 <para>
-In case of changings (commits) to the <emphasis>master templates files</emphasis>
-or <emphasis>master PO files</emphasis> (under packages/po) done by the l10n-sync
-script, the &i18n-coords; will need to perform a <command>git push</command> on
-dillon in the respective directory, to get the changings into GIT.
+It will update the general
+<filename>template.pot</filename> and all PO files from individual
+<filename>templates.pot</filename> files from all &d-i; packages.
 </para>
 
 <para>
@@ -145,11 +149,6 @@ The general process is:
 
         </para>
       </listitem>
-      <listitem>
-        <para>
-          commit this file.
-        </para>
-      </listitem>
     </orderedlist>
   </listitem>
   <listitem>
@@ -174,7 +173,7 @@ The general process is:
         <para>
           update with
           <filename>packages/po/template.pot</filename>. This step
-          uses the <command>msgmerge</command>. The resulting PO file
+          uses the <command>msgmerge</command> command. The resulting PO file
           formatting details will depend on the version of this
           utility. For that reasons, the synchronization script should
           always be run from machines using the same Debian release
@@ -183,7 +182,7 @@ The general process is:
       </listitem>
       <listitem>
         <para>
-          commit back the changed file to &d-i; <acronym>GIT</acronym>.
+          commit back the changed files to &d-i; <acronym>GIT</acronym>.
         </para>
       </listitem>
     </orderedlist>
@@ -223,9 +222,7 @@ This system minimizes race conditions which could trigger conflicts.
 The conflict windows have been minimised as much as possible in the
 <command>l10n-sync</command> script. However, in order to limit the
 number of commits made by the script, files are not commited as soon
-as they are modified (except by using the
-<userinput>--atomic-commits</userinput> switch which slows down the
-whole process a lot and triggers a lot of commit actions). So, the
+as they are modified. So, the
 script is sometimes likely to trigger conflicts. For that reason, it
 will stop working on a <acronym>GIT</acronym> copy where <acronym>GIT</acronym> conflict files are
 present. This explains why this script must always be monitored even
@@ -241,12 +238,12 @@ Synchronization script use
 
 <para>
 The l10n synchronisation script is kept in &d-i; repository in the
-<filename>scripts/l10n-utilities</filename> directory and is named
+<filename>scripts/l10n/</filename> directory and is named
 <filename>l10n-sync</filename>.
 </para>
 
 <para>
-This is a shell script (which may contain some bashisms until a
+It is a shell script (which may contain some bashisms until a
 skilled shell programmer cleans it out).
 </para>
 
@@ -285,9 +282,10 @@ because they may have some new use in the future:
         production. Omitting it is useful only for testing.
     </para>
   </listitem>
+<!--
   <listitem>
     <para>
-        the <userinput>--atomic</userinput> switch instructs
+        the <userinput>-atomic</userinput> switch instructs
         <command>l10n-sync</command> to commit files as soon as they
         are modified. This makes the script quite slow and may trigger
         dozens of commits. As &d-i; commits are sent to the
@@ -298,14 +296,13 @@ because they may have some new use in the future:
   </listitem>
   <listitem>
     <para>
-        the <userinput>--atomic-updates</userinput> switch instructs
+        the <userinput>-atomic-updates</userinput> switch instructs
         l10n-sync to issue a <command>git pull</command> command
         before working on each package. This may be very CPU, network-
         and time-consuming and should only be used when there is some
         need to limit possible conflicts;
     </para>
   </listitem>
-<!--
   <listitem>
     <para>
         the <userinput>-keep-revision</userinput> switch needs an
@@ -327,18 +324,20 @@ because they may have some new use in the future:
         <command>debconf-updatepo</command> switch, often the
         <userinput>--skip-merge</userinput> switch which only updates
         <filename>templates.pot</filename> files and not PO files
-        (using this speeds up the general synchronization script);
+        (using this generally speeds up the synchronization script);
     </para>
   </listitem>
+<!--
   <listitem>
     <para>
-        the <userinput>--sort-order</userinput> switch allows giving
+        the <userinput>-sort-order</userinput> switch allows giving
         at the command line the order the packages should be dealt
         with. This allows to put a crafted order in the generated
         <filename>templates.pot</filename> file so that the
         translators begin to work on the most important packages;
     </para>
   </listitem>
+-->
   <listitem>
     <para>
         the <userinput>--merge</userinput> switch allows merging
@@ -394,10 +393,15 @@ List of handled packages
 
 <para>
 A special file, named <filename>packages/po/packages_list</filename>,
-lists the &d-i; packages which are included in the master files. This
-file also sorts these packages by order or priority for
+lists the &d-i; packages which are handled by the
+<command>l10n-sync</command> script and are therefore
+included in the master files.
+<!--
+This
+file also sorts these packages by order of priority for
 translations. The strings at the beginning of the files are to be
 translated first.
+-->
 </para>
 
 <para>
@@ -477,6 +481,7 @@ that the account the script is run with should be very safely
 protected.
 </para>
 </sect3>
+-->
 
 <sect3>
 <title>
@@ -524,48 +529,6 @@ the same &d-i; repository checkout copy.
 </para>
 
 </sect3>
-
-<sect3>
-<title>
-Synchronization script automated runs
-</title>
-
-<para>
-(this section should be updated when the script run conditions are changed)
-</para>
-
-<para>
-The script actually runs under Christian Perrier account on people.debian.org.
-</para>
-
-<para>
-It is run through cron jobs:
-</para>
-
-<informalexample>
-<screen>
-TODO
-</screen>
-</informalexample>
-
-<para>
-A special cron entry is also added in order to allow other &d-i;
-developers to trigger runs of the script at any moment. They just need
-to create a specialf "flag" file on people.debian.org (this restricts
-the feature to official Debian developers who have an account on this
-machine).
-</para>
-
-<para>
-As people.debian.org is a woody machine and as the behaviour of
-gettext utilities such as <command>msgmerge</command> changes with the
-version of &debian; systems, &d-i; developers should avoid using the
-script on other machines to avoid useless massive commits.
-</para>
-
-</sect3>
--->
-
 
 </sect2>
 

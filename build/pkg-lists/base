@@ -16,6 +16,7 @@ rootskel
 udpkg
 rescue-check
 env-preseed
+parrot-archive-keyring-udeb
 pciutils-udeb
 screen-udeb
 wget-udeb

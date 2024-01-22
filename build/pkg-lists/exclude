@@ -2,7 +2,8 @@
 # they are currently provided not in udeb form but by the library
 # reduction step.
 
-# some arches and versions of some udebs link against libgcc1 or libgcc-s1,
-# it will be pulled in via library reduction
+# some arches and versions of some udebs link against libgcc1, libgcc-s1, or libatomic1;
+# they will be pulled in via library reduction
 libgcc1 -
 libgcc-s1 -
+libatomic1 -
