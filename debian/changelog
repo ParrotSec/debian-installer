@@ -1,3 +1,9 @@
+debian-installer (20230607+parrot2) lory-updates; urgency=medium
+
+  * Use unsigned kernel and grub for i386.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 25 Jan 2024 04:06:26 +0100
+
 debian-installer (20230607+parrot1) lory; urgency=medium
 
   * Import new Debian release.
