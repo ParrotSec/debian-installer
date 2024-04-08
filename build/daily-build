@@ -1,236 +1,130 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-# Ensure all output is in English and consistent.
-# Also needed because the output of some commands is tested.
+# Load configuration from a separate file if available
+CONFIG_FILE="build_config.sh"
+if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
+fi
+
+# Ensure all output is in English
 export LANG=C
 unset LC_ALL LANGUAGE
 
-# Overridable environment variables for uploading.
+# Default values for variables
+HOST="${HOST:-people.debian.org}"
+BASEDIR="${BASEDIR:-public_html/d-i/images}"
+NUM_KEEP="${NUM_KEEP:-30}"
 
-# Setting RESTRICTED_SSH makes the upload be done by sending a
-# tarball across ssh, which is slow. It's faster to not set it,
-# and instead configure authorized_keys to run d-i-unpack-helper,
-# now that d-i-unpack-helper supports rsync mode. (The name of this
-# variable is a historical accident, since rsync mode with
-# d-i-unpack-helper is just as restricted.)
-RESTRICTED_SSH=
+# Function to print headers for logging with timestamps
+header() {
+    echo "$(date +"%Y-%m-%d %H:%M:%S") $@"
+}
 
-SSHKEY=
-SSHKEY=${SSHKEY:+-i $SSHKEY}
-HELPER=${HELPER:-d-i-unpack-helper}
+# Build the images
+build() {
+    update
+    deps
+    header "BUILDING IMAGES"
+    $_ROOTCMD make reallyclean > /dev/null
+    mkdir -p dest
+    touch dest/overview.log
+    for t in $(get_build_targets); do
+        do_build "$t" &
+    done
+    wait
+    $_ROOTCMD make stats > dest/stats.txt 2>&1 || true
+    make release > /dev/null
+}
 
-if [ -z "$HOST" ]; then
-	HOST=people.debian.org
-fi
-if [ -z "$BASEDIR" ]; then
-	# Please don't change this. If you need it to be something else,
-	# override the variable.
-	BASEDIR=public_html/d-i/images
-fi
-if [ -z "$SOURCE_DATE_EPOCH" ]; then
-	export SOURCE_DATE_EPOCH=$(date -u +%s)
-fi
-if [ -z "$DIR" ]; then
-	DIR=$(date -u '+%Y%m%d-%H:%M' -d@${SOURCE_DATE_EPOCH})
-fi
-if [ "$HOST" = local ]; then
-	SYNC="rsync"
-	SYNC_BASEDIR="$BASEDIR"
-else
-	CALL="ssh $SSHKEY $HOST"
-	SYNC="rsync"
-	SYNC_BASEDIR="$HOST:$BASEDIR"
-	HELPER="ssh $SSHKEY $HOST $HELPER"
-fi
-if [ -z "$NUM_KEEP" ]; then
-	# Default to keeping 30 days of builds. Set to zero to keep all.
-	NUM_KEEP=30
-fi
+# Function to get list of build targets
+get_build_targets() {
+    # Override $TARGETS with custom makefile targets
+    if [ -z "${TARGETS:-}" ]; then
+        $_ROOTCMD make all_list | grep '^build'
+    else
+        echo "$TARGETS"
+    fi
+}
 
-# Overridable environment variables for building.
-if [ -z "$ROOTCMD" ]; then
-	_ROOTCMD="fakeroot"
-else
-	_ROOTCMD=$ROOTCMD
-	unset ROOTCMD
-fi
+# Build individual targets
+do_build() {
+    local t="$1"
+    local err=0
 
-# Internal environment variables to keep file attributes between targets
-# when fakeroot is used.
-# As we start with an empty file, we can use -i also on first invocation.
-ROOTCMDOPTS=""
-case "$_ROOTCMD" in
-    *fakeroot*)
-	FRSAVE="$(mktemp -t d-i_daily-build.XXXXXX)"
-	trap 'rm -f $FRSAVE' 0 HUP INT QUIT TERM
-	ROOTCMDOPTS="-i $FRSAVE -s $FRSAVE"
-	;;
+    if [ "$LOG_TO_STDOUT" = 1 ]; then
+        set -o pipefail
+        ROOTCMDOPTS="$ROOTCMDOPTS" do_build_helper "$t" | tee -a "dest/$t.log" || err=$?
+        set +o pipefail
+    else
+        ROOTCMDOPTS="$ROOTCMDOPTS" do_build_helper "$t" >> "dest/$t.log" || err=$?
+    fi
+
+    if [ "$err" -eq 0 ]; then
+        overview "$t success"
+    else
+        overview "$t failed"
+        echo "building $t failed, see log file dest/$t.log for details" >&2
+    fi
+    return "$err"
+}
+
+# Function to update source tree
+update() {
+    if [ ! "${UPDATED:-}" ]; then
+        git pull >/dev/null 2>&1 || true
+        UPDATED=1
+    fi
+}
+
+# Install dependencies
+deps() {
+    local temp
+    temp=$(dpkg-checkbuilddeps -B ../debian/control 2>&1 || true)
+    local packages
+    packages=$(echo "$temp" | sed -e 's%dpkg-checkbuilddeps: Unmet build dependencies: %%')
+    apt-get update
+    if [ "$packages" ]; then
+        DEBIAN_PRIORITY=critical apt-get -y install "$packages"
+    fi
+    DEBIAN_PRIORITY=critical apt-get -y upgrade
+}
+
+# Usage instructions
+usage() {
+    echo "Usage: $0 <command>"
+    echo "Commands:"
+    echo "  build-only   Build the images only"
+    echo "  build        Build the images"
+    echo "  upload       Upload the built images"
+    echo "  trim         Trim old builds"
+    echo "  all          Build, upload, and trim"
+}
+
+# Main script logic
+case "${1:-}" in
+    build-only) # subcommand
+        build
+        ;;
+    build) # subcommand
+        build
+        ;;
+    upload) # subcommand
+        upload
+        ;;
+    trim) # subcommand
+        trim
+        ;;
+    all) # subcommand
+        build
+        upload
+        trim
+        ;;
+    *)
+        echo "Error: Invalid command"
+        usage
+        exit 1
+        ;;
 esac
 
-LOG_TO_STDOUT=${LOG_TO_STDOUT:-0}
-
-overview () {
-	echo "$(dpkg --print-architecture) ($(date -u -d@${SOURCE_DATE_EPOCH})) $(whoami)@$(hostname | cut -d . -f 1) $1" >> dest/overview.log
-}
-
-header () {
-	echo
-	echo $@
-	echo
-}
-
-do_build_helper () {
-	local t=$1
-	header BUILDING IMAGE FOR $t
-	gitver=$(git show-ref HEAD 2>/dev/null) || true
-	if [ -n "$gitver" ]; then
-		echo "debian-installer git tree version: $gitver"
-	elif [ -d ../.git ]; then
-		githead=$(cat ../.git/refs/heads/master) || true
-		echo "debian-installer git tree head: $githead"
-	fi
-	$_ROOTCMD $ROOTCMDOPTS make $t 2>&1
-}
-
-do_build () {
-	local t=$1
-	local err=0
-
-	if [ "$LOG_TO_STDOUT" = 1 ]; then
-		set -o pipefail
-		ROOTCMDOPTS=$ROOTCMDOPTS do_build_helper $t | tee -a dest/$t.log || err=$?
-		set +o pipefail
-	else
-		ROOTCMDOPTS=$ROOTCMDOPTS do_build_helper $t >> dest/$t.log || err=$?
-	fi
-
-	return $err
-}
-
-build () {
-	# Override $TARGETS with custom makefile targets.
-	if [ -z "$TARGETS" ]; then
-		TARGETS="$($_ROOTCMD make all_list | grep '^build')"
-	fi
-
-	$_ROOTCMD make reallyclean > /dev/null
-	mkdir dest
-	touch dest/overview.log
-
-	# Save file attributes within this loop if fakeroot is used
-	for t in $TARGETS; do
-		if do_build $t; then
-			overview "$t success"
-		else
-			overview "$t failed"
-			echo "building $t failed, see log file dest/$t.log for details" >&2
-		fi
-	done
-	$_ROOTCMD make stats > dest/stats.txt 2>&1 || true
-	make release > /dev/null
-}
-
-upload () {
-	(
-	header UPLOADING FILES
-	if [ -n "$RESTRICTED_SSH" ]; then
-		tar zcvf - -C dest/ . | $HELPER
-	else
-		$CALL mkdir -p $BASEDIR/${DIR}_RSYNC_IN_PROGRESS
-		$CALL test ! -d $BASEDIR/daily || $CALL cp -a $BASEDIR/daily/* $BASEDIR/${DIR}_RSYNC_IN_PROGRESS/
-		$SYNC --stats -rvlt --safe-links --delete --rsh="ssh $SSHKEY" dest/ $SYNC_BASEDIR/${DIR}_RSYNC_IN_PROGRESS/
-		$CALL rm -rf $BASEDIR/$DIR
-		$CALL mv $BASEDIR/${DIR}_RSYNC_IN_PROGRESS $BASEDIR/$DIR
-		$CALL rm -rf $BASEDIR/daily
-		$CALL ln -sf $DIR $BASEDIR/daily
-	fi
-	) > dest/upload.log 2>&1
-}
-
-trim () {
-	if [ -z "$TRIM_LOG" ]; then
-		TRIM_LOG=dest/trim.log
-	fi
-	(
-	header TRIMMING OLD BUILDS
-	if [ -n "$RESTRICTED_SSH" ]; then
-		echo "(trim not implemented for RESTRICTED_SSH mode)"
-	elif [ -n "$NUM_KEEP" ] && [ "$NUM_KEEP" != 0 ]; then
-		DIR=$(dirname $0)
-		$CALL find $BASEDIR -maxdepth 1 | egrep '/[0-9][0-9][0-9][0-9]+-?[0-9][0-9]-?[0-9][0-9]-?[0-9]*:?[0-9]*$' | \
-			sort -n | "$DIR"/util/trim-daily-builds "$NUM_KEEP" | \
-			$CALL xargs rm -rf
-	else
-		echo "(keeping all old builds)"
-	fi
-	) > $TRIM_LOG 2>&1
-}
-
-UPDATED=""
-update () {
-	if [ ! "$UPDATED" ]; then
-		git pull >/dev/null 2>&1 || true
-		UPDATED=1
-	fi
-}
-
-deps () {
-	temp=$(dpkg-checkbuilddeps -B ../debian/control 2>&1 || true)
-	packages=$(echo $temp | sed -e 's%dpkg-checkbuilddeps: Unmet build dependencies: %%')
-	apt-get update
-	if [ "$packages" ]; then
-		DEBIAN_PRIORITY=critical apt-get -y install $packages
-	fi
-	DEBIAN_PRIORITY=critical apt-get -y upgrade
-}
-
-usage () {
-	echo These subcommands are available:
-	awk -F\) '/subcommand$/ { print " ", $1 }' $0
-	echo
-}
-
-if [ ! -d pkg-lists ]; then
-	echo "You must run this from the build directory"
-	exit 1
-fi
-
-case $1 in
-	build-only) 	# subcommand
-		build
-	;;
-	build) 	# subcommand
-		update
-		build
-	;;
-	upload)	# subcommand
-		upload
-	;;
-	trim)	# subcommand
-		trim
-	;;
-	'')	# no subcommand, for backwards compatability
-		update
-		build
-		upload
-		trim
-	;;
-	all)	# subcommand
-		update
-		build
-		upload
-		trim
-	;;
-	update)	# subcommand
-		update
-	;;
-	deps)	# subcommand
-		deps
-	;;
-	*)
-		echo $1 is not a valid subcommand.
-		usage
-		exit 1
-	;;
-esac
+exit 0
