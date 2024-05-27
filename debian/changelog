@@ -1,3 +1,9 @@
+debian-installer (20230607+parrot3) lory; urgency=medium
+
+  * Rebuild installer with new udebs.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 27 May 2024 04:30:38 +0200
+
 debian-installer (20230607+parrot2) lory-updates; urgency=medium
 
   * Use unsigned kernel and grub for i386.
