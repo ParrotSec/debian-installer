@@ -1,3 +1,9 @@
+debian-installer (20230607+parrot4) lory; urgency=medium
+
+  * Bump kernel version 6.9.7.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 01 Aug 2024 18:28:33 +0200
+
 debian-installer (20230607+parrot3) lory; urgency=medium
 
   * Rebuild installer with new udebs.
